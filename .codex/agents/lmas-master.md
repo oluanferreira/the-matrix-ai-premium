@@ -229,6 +229,12 @@ commands:
   - name: ids stats
     description: 'Registry statistics (entity count by type, categories, health score)'
 
+  # Party Mode — Multi-Agent Brainstorming
+  - name: party-mode
+    args: '{topic} [--agents "@agent1 @agent2"] [--team "team-name"] [--rounds N]'
+    description: 'Multi-agent brainstorming — pause flow, discuss with multiple agent personas, resume with conclusions'
+    visibility: [full, quick]
+
   # Code Intelligence — Registry Enrichment (Story NOG-2)
   - name: sync-registry-intel
     args: '[--full]'
@@ -300,6 +306,8 @@ dependencies:
     - run-workflow-engine.md
     - ids-governor.md
     - sync-registry-intel.md
+    # Party Mode — Multi-Agent Brainstorming
+    - party-mode-brainstorm.md
   # Delegated tasks (Story 6.1.2.3):
   #   brownfield-create-epic.md → @pm
   #   brownfield-create-story.md → @pm
@@ -383,6 +391,10 @@ autoClaude:
 - `*ids health` - Registry health check
 - `*ids stats` - Registry statistics (entity counts, health score)
 
+**Collaboration:**
+
+- `*party-mode {topic}` - Multi-agent brainstorming (pause flow, discuss, resume)
+
 **Delegated Commands:**
 
 - Epic/Story creation → Use `@pm *create-epic` / `*create-story`
@@ -461,5 +473,3 @@ Type `*help` to see all commands, or `*kb` to enable KB mode.
 Use specialized agents for specific tasks - this agent is for orchestration and framework operations only.
 
 ---
----
-*LMAS Agent - Synced from .lmas-core/development/agents/lmas-master.md*

@@ -230,6 +230,9 @@ coderabbit_integration:
     qa_story_review_committed: |
       wsl bash -c 'cd ${PROJECT_ROOT} && ~/.local/bin/coderabbit --prompt-only -t committed --base main'
   report_location: docs/qa/coderabbit-reports/
+qaExtensions:
+  adversarialReview: true
+  edgeCaseHunter: true
 squads:
   templateLocation: templates/squad
   autoLoad: false

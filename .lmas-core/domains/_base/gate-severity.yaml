@@ -1,0 +1,40 @@
+# LMAS Gate Severity Definitions — Universal
+# These severity levels apply to ALL domains.
+# Domain constitutions reference these levels in their gate definitions.
+
+version: "1.0.0"
+
+severity_levels:
+  BLOCK:
+    description: "Impede execução. Requer correção antes de prosseguir."
+    behavior: halt_execution
+    use_for:
+      - "Violações de princípios NON-NEGOTIABLE"
+      - "Violações de princípios MUST críticos"
+      - "Falhas em quality gates obrigatórios"
+    icon: "🚫"
+
+  WARN:
+    description: "Permite continuar com alerta registrado."
+    behavior: log_and_continue
+    use_for:
+      - "Violações de princípios MUST não-críticos"
+      - "Padrões questionáveis que merecem atenção"
+      - "Debt técnico ou de processo identificado"
+    icon: "⚠️"
+
+  INFO:
+    description: "Apenas reporta. Não impede execução."
+    behavior: report_only
+    use_for:
+      - "Violações de princípios SHOULD"
+      - "Sugestões de melhoria"
+      - "Oportunidades de otimização"
+    icon: "ℹ️"
+
+# Gate execution order: BLOCK checks first, then WARN, then INFO.
+# If any BLOCK check fails, execution halts immediately.
+execution_order:
+  - BLOCK
+  - WARN
+  - INFO

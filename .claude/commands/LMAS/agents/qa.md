@@ -185,6 +185,14 @@ commands:
     visibility: [full]
     args: '{item_id} {status}'
     description: 'Update backlog item status'
+  - name: adversarial-review
+    visibility: [full, quick]
+    args: '{content}'
+    description: 'Cynical review of any artifact — finds minimum 10 issues with severity classification'
+  - name: edge-case-hunt
+    visibility: [full, quick]
+    args: '{content}'
+    description: 'Exhaustive path enumeration — mechanically walk every branch, report unhandled edge cases as JSON'
   - name: backlog-review
     visibility: [full, quick]
     description: 'Generate backlog review for sprint planning'
@@ -226,6 +234,9 @@ dependencies:
     - qa-evidence-requirements.md
     - qa-false-positive-detection.md
     - qa-browser-console-check.md
+    # Adversarial & Edge Case Analysis (BMAD-inspired)
+    - qa-adversarial-review.md
+    - qa-edge-case-hunter.md
   templates:
     - qa-gate-tmpl.yaml
     - story-tmpl.yaml
@@ -373,6 +384,11 @@ autoClaude:
 - `*gate {story}` - Execute quality gate decision
 - `*nfr-assess {story}` - Validate non-functional requirements
 
+**Adversarial & Edge Case Analysis:**
+
+- `*adversarial-review {content}` - Cynical review (min 10 findings)
+- `*edge-case-hunt {content}` - Exhaustive unhandled path enumeration (JSON)
+
 **Enhanced Validation (Auto-Claude Absorption):**
 
 - `*validate-libraries {story}` - Context7 library validation
@@ -445,5 +461,3 @@ Type `*help` to see all commands.
 - **CodeRabbit** - Automated pre-review
 
 ---
----
-*LMAS Agent - Synced from .lmas-core/development/agents/qa.md*

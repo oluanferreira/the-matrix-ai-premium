@@ -1,0 +1,204 @@
+# Software Development Domain Constitution
+# Extends: LMAS Constitution Base v2.0.0
+# Applies to: All software development teams and squads
+
+domain:
+  id: software-dev
+  name: "Software Development"
+  version: "1.0.0"
+  extends: base
+
+# ─────────────────────────────────────────────
+# Domain-Specific Articles
+# These COMPLEMENT the universal articles in constitution.md
+# ─────────────────────────────────────────────
+
+articles:
+  - id: SD-I
+    name: "No Invention"
+    severity: MUST
+    description: >
+      Especificações não inventam — apenas derivam dos requisitos.
+      Todo statement técnico deve rastrear para uma fonte verificável.
+    rules:
+      - "MUST: Todo statement em spec.md DEVE rastrear para FR-*, NFR-*, CON-*, ou research finding verificado"
+      - "MUST NOT: Adicionar features não presentes nos requisitos"
+      - "MUST NOT: Assumir detalhes de implementação não pesquisados"
+      - "MUST NOT: Especificar tecnologias não validadas"
+    gate:
+      task: spec-write-spec.md
+      action: BLOCK
+      condition: "spec contiver statements sem rastreabilidade"
+
+  - id: SD-II
+    name: "Absolute Imports"
+    severity: SHOULD
+    description: >
+      Imports relativos criam acoplamento e dificultam refatoração.
+      Sempre preferir imports absolutos com alias.
+    rules:
+      - "SHOULD: Sempre usar imports absolutos com alias @/"
+      - "SHOULD NOT: Usar imports relativos (../../../)"
+      - "EXCEPTION: Imports dentro do mesmo módulo/feature podem ser relativos"
+    gate:
+      tool: eslint
+      action: INFO
+    example:
+      correct: "import { useStore } from '@/stores/feature/store'"
+      incorrect: "import { useStore } from '../../../stores/feature/store'"
+
+  - id: SD-III
+    name: "Code Quality Standards"
+    severity: MUST
+    description: >
+      Todo código deve passar por quality gates automatizados antes de merge.
+      Nenhum código com erros de lint, tipo, ou testes quebrados é aceito.
+    rules:
+      - "MUST: npm run lint passa sem erros"
+      - "MUST: npm run typecheck passa sem erros"
+      - "MUST: npm test passa sem falhas"
+      - "MUST: npm run build completa com sucesso"
+      - "MUST: CodeRabbit não reporta issues CRITICAL"
+      - "SHOULD: Cobertura de testes não diminui"
+    gate:
+      task: pre-push.md
+      action: BLOCK
+
+# ─────────────────────────────────────────────
+# Authority Matrix
+# Defines exclusive authorities for software dev agents
+# ─────────────────────────────────────────────
+
+authority_matrix:
+  git_push:
+    exclusive_to: "@devops"
+    description: "Apenas @devops pode executar git push para remote"
+    severity: NON-NEGOTIABLE
+
+  pr_creation:
+    exclusive_to: "@devops"
+    description: "Apenas @devops pode criar Pull Requests"
+    severity: NON-NEGOTIABLE
+
+  release_management:
+    exclusive_to: "@devops"
+    description: "Apenas @devops pode criar releases e tags"
+    severity: NON-NEGOTIABLE
+
+  story_creation:
+    exclusive_to: ["@sm", "@po"]
+    description: "Apenas SM e PO podem criar stories"
+    severity: MUST
+
+  architecture_decisions:
+    exclusive_to: "@architect"
+    description: "Decisões de arquitetura são exclusivas do architect"
+    severity: MUST
+
+  quality_verdicts:
+    exclusive_to: "@qa"
+    description: "Vereditos de qualidade (PASS/FAIL/CONCERNS) são exclusivos do QA"
+    severity: MUST
+
+  schema_design:
+    exclusive_to: "@data-engineer"
+    description: "Design de schema delegado pelo @architect ao @data-engineer"
+    severity: MUST
+
+# ─────────────────────────────────────────────
+# Quality Gates
+# Domain-specific quality checks for software development
+# ─────────────────────────────────────────────
+
+quality_gates:
+  layer1_automated:
+    description: "Checks automatizados que DEVEM passar"
+    checks:
+      lint:
+        command: "npm run lint"
+        failOn: "error"
+        timeout: 60000
+        action: BLOCK
+      typecheck:
+        command: "npm run typecheck"
+        failOn: "error"
+        timeout: 120000
+        action: BLOCK
+      test:
+        command: "npm test"
+        failOn: "failure"
+        timeout: 300000
+        action: BLOCK
+      build:
+        command: "npm run build"
+        failOn: "error"
+        timeout: 180000
+        action: BLOCK
+
+  layer2_review:
+    description: "Code review automatizado e manual"
+    coderabbit:
+      enabled: true
+      blockOn: [CRITICAL]
+      warnOn: [HIGH]
+      trackOn: [MEDIUM]
+      ignoreOn: [LOW]
+      max_self_healing_iterations: 3
+
+  layer3_signoff:
+    description: "Aprovação final antes de merge"
+    require_signoff: true
+    default_reviewer: "@architect"
+    qa_gate_required: true
+
+# ─────────────────────────────────────────────
+# Deliverable Format
+# How work items are structured in this domain
+# ─────────────────────────────────────────────
+
+deliverable_format:
+  type: story
+  template: story-tmpl.yaml
+  required_sections:
+    - acceptance_criteria
+    - tasks
+    - file_list
+    - scope
+    - status
+  tracking:
+    method: checkboxes
+    status_flow:
+      - Draft
+      - Ready
+      - InProgress
+      - InReview
+      - Done
+  workflow: story-development-cycle.yaml
+
+# ─────────────────────────────────────────────
+# Code Conventions
+# Standards for this domain
+# ─────────────────────────────────────────────
+
+conventions:
+  syntax: ES2022
+  module_system: CommonJS
+  indentation: 2_spaces
+  quotes: single
+  semicolons: required
+  file_naming: kebab-case
+  component_naming: PascalCase
+  constant_naming: SCREAMING_SNAKE_CASE
+  import_order:
+    - core_libraries
+    - external_libs
+    - ui_components
+    - utilities
+    - stores
+    - features
+    - css
+  typescript:
+    no_any: true
+    explicit_props_interface: true
+    use_as_const: true
+    explicit_ref_types: true

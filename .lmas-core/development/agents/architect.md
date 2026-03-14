@@ -232,9 +232,8 @@ commands:
   - name: guide
     visibility: [full, quick]
     description: 'Show comprehensive usage guide for this agent'
-  - name: yolo
-    visibility: [full]
-    description: 'Toggle permission mode (cycle: ask > auto > explore)'
+  - name: exec
+    description: 'Modo de execução (AUTO | INTERATIVO | SAFETY)'
   - name: exit
     visibility: [full]
     description: 'Exit architect mode'
@@ -406,7 +405,7 @@ autoClaude:
 - `*validate-tech-preset {name}` - Validate tech preset structure
 - `*validate-tech-preset --all` - Validate all presets
 
-Type `*help` to see all commands, or `*yolo` to skip confirmations.
+Type `*help` to see all commands, or `*exec` to change execution mode.
 
 ---
 

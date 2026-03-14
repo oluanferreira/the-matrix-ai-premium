@@ -1,0 +1,218 @@
+# Marketing Domain Constitution
+# Extends: LMAS Constitution Base v2.0.0
+# Applies to: All marketing teams and squads
+
+domain:
+  id: marketing
+  name: "Marketing Digital"
+  version: "1.0.0"
+  extends: base
+
+# ─────────────────────────────────────────────
+# Domain-Specific Articles
+# These COMPLEMENT the universal articles in constitution.md
+# ─────────────────────────────────────────────
+
+articles:
+  - id: MK-I
+    name: "Creative Freedom"
+    severity: MUST
+    description: >
+      Marketing requer criatividade. Propostas criativas são encorajadas,
+      não bloqueadas. Ideias devem ser validadas contra brand guidelines
+      e dados de mercado, não contra requisitos técnicos (FR-*/NFR-*).
+    rules:
+      - "MUST: Propostas criativas são encorajadas e esperadas"
+      - "MUST: Ideias devem ser validadas contra brand guidelines e dados de mercado"
+      - "SHOULD: Testar múltiplas variações (A/B) antes de aprovar versão final"
+      - "SHOULD: Embasar decisões criativas em dados quando disponíveis"
+    gate:
+      checklist: creative-review-checklist.md
+      action: WARN
+      condition: "conteúdo sem embasamento em brand guidelines ou dados"
+
+  - id: MK-II
+    name: "Brand Alignment"
+    severity: NON-NEGOTIABLE
+    description: >
+      Todo conteúdo publicado DEVE estar alinhado com as brand guidelines.
+      Tom de voz, identidade visual e messaging devem ser consistentes.
+    rules:
+      - "MUST: Tom de voz consistente com brand persona definida"
+      - "MUST: Elementos visuais seguem brand guidelines (cores, tipografia, layout)"
+      - "MUST: Messaging alinhada com posicionamento da marca"
+      - "MUST NOT: Publicar conteúdo sem revisão de brand alignment"
+      - "MUST NOT: Alterar brand assets sem aprovação do @marketing-chief"
+    gate:
+      checklist: brand-alignment-checklist.md
+      action: BLOCK
+      condition: "conteúdo desalinhado com brand guidelines"
+
+  - id: MK-III
+    name: "Legal Compliance"
+    severity: NON-NEGOTIABLE
+    description: >
+      Todo conteúdo deve cumprir regulações legais, políticas de plataforma
+      e normas do setor. Proteção contra claims falsas e responsabilidade.
+    rules:
+      - "MUST: Sem claims falsas, enganosas ou não comprováveis"
+      - "MUST: Termos de responsabilidade incluídos onde legalmente necessário"
+      - "MUST: Conformidade com políticas de cada plataforma (Meta, Google, TikTok, etc.)"
+      - "MUST: Respeitar LGPD para uso de dados pessoais em campanhas"
+      - "MUST NOT: Usar imagens ou conteúdo sem licenciamento adequado"
+    gate:
+      checklist: legal-compliance-checklist.md
+      action: BLOCK
+      condition: "conteúdo com claims não verificáveis ou violações de plataforma"
+
+  - id: MK-IV
+    name: "Data-Informed Decisions"
+    severity: SHOULD
+    description: >
+      Decisões de marketing devem ser embasadas em dados quando possível.
+      Métricas de performance guiam otimização contínua.
+    rules:
+      - "SHOULD: Definir KPIs claros antes de lançar campanha"
+      - "SHOULD: Documentar baseline de métricas para comparação"
+      - "SHOULD: Revisar performance com dados reais antes de escalar investimento"
+      - "SHOULD: Manter histórico de performance para aprendizado"
+    gate:
+      task: review-campaign-metrics.md
+      action: INFO
+
+# ─────────────────────────────────────────────
+# Authority Matrix
+# Defines exclusive authorities for marketing agents
+# ─────────────────────────────────────────────
+
+authority_matrix:
+  content_publish:
+    exclusive_to: "@social-media-manager"
+    description: "Apenas @social-media-manager pode publicar conteúdo nas plataformas"
+    severity: NON-NEGOTIABLE
+
+  strategy_approval:
+    exclusive_to: "@content-strategist"
+    description: "Estratégia de conteúdo requer aprovação do strategist"
+    severity: MUST
+
+  content_quality_verdicts:
+    exclusive_to: "@content-reviewer"
+    description: "Vereditos de qualidade de conteúdo (APPROVE/REVISE/REJECT) são exclusivos do reviewer"
+    severity: MUST
+
+  campaign_budget:
+    exclusive_to: "@traffic-manager"
+    description: "Decisões de alocação de budget e lances são exclusivas do traffic-manager"
+    severity: NON-NEGOTIABLE
+
+  brand_guardian:
+    exclusive_to: "@marketing-chief"
+    description: "Alterações em brand guidelines e posicionamento requerem aprovação do chief"
+    severity: NON-NEGOTIABLE
+
+  research_insights:
+    exclusive_to: "@content-researcher"
+    description: "Pesquisa de mercado e análise competitiva são conduzidas pelo researcher"
+    severity: MUST
+
+# ─────────────────────────────────────────────
+# Quality Gates
+# Domain-specific quality checks for marketing content
+# ─────────────────────────────────────────────
+
+quality_gates:
+  layer1_content:
+    description: "Checks de conteúdo que DEVEM passar antes de publicação"
+    checks:
+      brand_alignment:
+        checklist: brand-alignment-checklist.md
+        failOn: "any_critical_fail"
+        timeout: 60000
+        action: BLOCK
+      content_quality:
+        checklist: content-quality-checklist.md
+        scoring:
+          minimum: 7
+          scale: 10
+        timeout: 60000
+        action: BLOCK
+      legal_compliance:
+        checklist: legal-compliance-checklist.md
+        failOn: "any_fail"
+        timeout: 60000
+        action: BLOCK
+
+  layer2_review:
+    description: "Review editorial e de estratégia"
+    editorial_review:
+      enabled: true
+      agent: "@content-reviewer"
+      verdicts:
+        APPROVE: "Conteúdo aprovado para publicação"
+        REVISE: "Necessita revisão — retorna ao criador"
+        REJECT: "Reprovado — requer retrabalho significativo"
+      blockOn: [REJECT]
+      warnOn: [REVISE]
+
+  layer3_signoff:
+    description: "Aprovação final antes de publicação"
+    require_signoff: true
+    default_reviewer: "@marketing-chief"
+    signoff_required_for:
+      - "Campanhas com budget acima de R$ 1.000"
+      - "Conteúdo institucional ou PR"
+      - "Alterações em posicionamento de marca"
+
+# ─────────────────────────────────────────────
+# Deliverable Format
+# How work items are structured in this domain
+# ─────────────────────────────────────────────
+
+deliverable_format:
+  type: brief
+  template: content-brief-template.md
+  required_sections:
+    - objective
+    - target_audience
+    - key_messages
+    - platforms
+    - tone_and_voice
+    - deadline
+  tracking:
+    method: checkboxes
+    status_flow:
+      - Brief
+      - Researched
+      - Drafted
+      - Reviewed
+      - Approved
+      - Published
+  workflow: content-pipeline.yaml
+
+# ─────────────────────────────────────────────
+# Content Conventions
+# Standards for marketing content
+# ─────────────────────────────────────────────
+
+conventions:
+  tone_of_voice: "Defined per brand — see brand-guidelines.md"
+  content_types:
+    - social_media_post
+    - blog_article
+    - email_marketing
+    - ad_copy
+    - landing_page
+    - video_script
+  platforms:
+    - instagram
+    - facebook
+    - tiktok
+    - linkedin
+    - youtube
+    - google_ads
+    - email
+  naming:
+    campaigns: "YYYY-MM-{campaign-slug}"
+    content_pieces: "{platform}-{type}-{slug}"
+    assets: "{campaign}/{platform}/{asset-type}-{variant}"
