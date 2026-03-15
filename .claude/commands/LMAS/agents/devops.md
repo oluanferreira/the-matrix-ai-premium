@@ -242,9 +242,8 @@ commands:
   - name: guide
     visibility: [full, quick, key]
     description: 'Show comprehensive usage guide for this agent'
-  - name: yolo
-    visibility: [full, quick, key]
-    description: 'Toggle permission mode (cycle: ask > auto > explore)'
+  - name: exec
+    description: 'Modo de execução (AUTO | INTERATIVO | SAFETY)'
   - name: exit
     visibility: [full, quick, key]
     description: 'Exit DevOps mode'
