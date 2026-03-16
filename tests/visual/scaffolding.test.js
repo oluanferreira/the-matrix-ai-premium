@@ -152,13 +152,13 @@ describe('Story 1.1: apps/visual scaffolding', () => {
       configTs = fs.readFileSync(path.join(VISUAL_DIR, 'src/client/config.ts'), 'utf8');
     });
 
-    test('has 320x180 base resolution', () => {
-      expect(configTs).toContain('WIDTH: 320');
-      expect(configTs).toContain('HEIGHT: 180');
+    test('has 960x540 base resolution', () => {
+      expect(configTs).toContain('WIDTH: 960');
+      expect(configTs).toContain('HEIGHT: 540');
     });
 
     test('has 6x scale factor', () => {
-      expect(configTs).toContain('SCALE: 6');
+      expect(configTs).toContain('SCALE: 2');
     });
   });
 

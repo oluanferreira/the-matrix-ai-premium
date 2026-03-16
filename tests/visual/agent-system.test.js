@@ -34,7 +34,7 @@ describe('Story 2.1: Base Character Sprite System', () => {
     test('creates sprite or placeholder rectangle', () => {
       expect(agentSource).toContain('scene.textures.exists');
       expect(agentSource).toContain('scene.add.sprite');
-      expect(agentSource).toContain('scene.add.rectangle');
+      expect(agentSource).toContain('createProceduralSprite');
     });
 
     test('has moveTo method', () => {
@@ -341,9 +341,9 @@ describe('Story 2.1: Base Character Sprite System', () => {
       );
     });
 
-    test('uses 16x32 sprite dimensions', () => {
-      expect(agentSource).toContain('SPRITE_WIDTH = 16');
-      expect(agentSource).toContain('SPRITE_HEIGHT = 32');
+    test('uses 64x96 sprite dimensions', () => {
+      expect(agentSource).toContain('SPRITE_WIDTH = 64');
+      expect(agentSource).toContain('SPRITE_HEIGHT = 96');
     });
   });
 });

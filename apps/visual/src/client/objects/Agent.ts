@@ -14,8 +14,8 @@ const ANIMATION_TRANSITIONS: Record<AnimationState, AnimationState[]> = {
   'walk-right': ['idle', 'working', 'walk-down', 'walk-up', 'walk-left'],
 };
 
-const SPRITE_WIDTH = 16;
-const SPRITE_HEIGHT = 32;
+const SPRITE_WIDTH = 64;
+const SPRITE_HEIGHT = 96;
 
 export interface AgentConfig {
   agentId: string;
@@ -34,7 +34,7 @@ export interface AgentConfig {
 export class Agent extends Phaser.GameObjects.Container {
   readonly agentId: string;
   readonly alwaysSeated: boolean;
-  private sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Rectangle;
+  private sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Rectangle | Phaser.GameObjects.Container;
   private statusIndicator: StatusIndicator;
   private floatingIcon: Phaser.GameObjects.Text;
   private speechBubble: SpeechBubble;
@@ -48,13 +48,13 @@ export class Agent extends Phaser.GameObjects.Container {
     this.alwaysSeated = config.alwaysSeated ?? false;
     scene.add.existing(this);
 
-    // Create sprite or placeholder rectangle
+    // Create sprite or procedural character
     if (config.spriteKey && scene.textures.exists(config.spriteKey)) {
       this.sprite = scene.add.sprite(0, 0, config.spriteKey);
     } else {
-      // Placeholder colored rectangle
+      // Procedural mini-character: head + body + distinct silhouette
       const color = this.getAgentColor(config.agentId);
-      this.sprite = scene.add.rectangle(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT, color);
+      this.sprite = this.createProceduralSprite(scene, color, config.agentId);
     }
     this.add(this.sprite);
 
@@ -180,6 +180,130 @@ export class Agent extends Phaser.GameObjects.Container {
   }
 
   // ── Color by agent role ──
+
+  /**
+   * Creates a procedural mini-character (32x48) with head, body, legs, and identity.
+   * Placeholder until real Aseprite sprites are created.
+   */
+  private createProceduralSprite(
+    scene: Phaser.Scene,
+    color: number,
+    agentId: string,
+  ): Phaser.GameObjects.Container {
+    const container = scene.add.container(0, 0);
+    const gfx = scene.add.graphics();
+
+    // Outline (dark border)
+    gfx.fillStyle(0x0F0F1A, 1);
+    gfx.fillCircle(0, -28, 18);          // Head outline
+    gfx.fillRoundedRect(-20, -12, 40, 52, 6); // Body outline
+    gfx.fillRect(-16, 36, 12, 16);       // Left leg outline
+    gfx.fillRect(4, 36, 12, 16);         // Right leg outline
+
+    // Body fill
+    const bodyGfx = scene.add.graphics();
+    bodyGfx.fillStyle(color, 1);
+    bodyGfx.fillRoundedRect(-16, -8, 32, 44, 4);
+    bodyGfx.fillStyle(0x1A1A2E, 1);      // Legs (dark pants)
+    bodyGfx.fillRect(-12, 36, 8, 12);
+    bodyGfx.fillRect(4, 36, 8, 12);
+
+    // Head fill (skin tone)
+    const headGfx = scene.add.graphics();
+    const skinColor = this.getSkinColor(agentId);
+    headGfx.fillStyle(skinColor, 1);
+    headGfx.fillCircle(0, -28, 14);
+
+    // Hair
+    const hairGfx = scene.add.graphics();
+    const hairColor = this.getHairColor(agentId);
+    hairGfx.fillStyle(hairColor, 1);
+    hairGfx.fillRect(-14, -44, 28, 12);  // top hair
+    hairGfx.fillRect(-14, -44, 6, 20);   // left side
+    hairGfx.fillRect(8, -44, 6, 20);     // right side
+
+    // Eyes
+    const eyeGfx = scene.add.graphics();
+    const hasGlasses = ['dev', 'smith', 'pm', 'lmas-master'].includes(agentId);
+    if (hasGlasses) {
+      eyeGfx.fillStyle(0x222222, 1);
+      eyeGfx.fillRect(-12, -32, 10, 6);
+      eyeGfx.fillRect(2, -32, 10, 6);
+      eyeGfx.fillStyle(0x88CCFF, 0.5);
+      eyeGfx.fillRect(-10, -32, 4, 2);
+      eyeGfx.fillRect(4, -32, 4, 2);
+    } else {
+      eyeGfx.fillStyle(0x000000, 1);
+      eyeGfx.fillRect(-8, -32, 4, 4);
+      eyeGfx.fillRect(4, -32, 4, 4);
+      eyeGfx.fillStyle(0xFFFFFF, 1);
+      eyeGfx.fillRect(-8, -32, 2, 2);
+      eyeGfx.fillRect(4, -32, 2, 2);
+    }
+
+    container.add(gfx);
+    container.add(bodyGfx);
+    container.add(headGfx);
+    container.add(hairGfx);
+    container.add(eyeGfx);
+
+    // Name label below feet
+    const displayName = this.getShortName(agentId);
+    const label = scene.add.text(0, 56, displayName, {
+      fontSize: '10px',
+      color: '#00FF41',
+      fontFamily: 'monospace',
+    }).setOrigin(0.5);
+    container.add(label);
+
+    return container as unknown as Phaser.GameObjects.Container;
+  }
+
+  private getSkinColor(agentId: string): number {
+    const dark: string[] = ['qa', 'sm', 'analyst', 'data-engineer', 'marketing-chief', 'lmas-master'];
+    return dark.includes(agentId) ? 0x8B6914 : 0xDEB887;
+  }
+
+  private getHairColor(agentId: string): number {
+    const colors: Record<string, number> = {
+      'dev': 0x1A1A1A,        // Neo: black slicked
+      'qa': 0x8B7355,         // Oracle: gray-brown curly
+      'architect': 0xDDDDDD,  // Architect: white
+      'pm': 0x1A1A1A,         // Trinity: black short
+      'po': 0xAAAAAA,         // Keymaker: gray wispy
+      'sm': 0x1A1A1A,         // Niobe: black cropped
+      'analyst': 0x1A1A1A,    // Link: black
+      'data-engineer': 0x1A1A1A, // Tank: bald (minimal)
+      'ux-design-expert': 0x1A1A1A, // Sati: dark
+      'devops': 0x4A3A2A,     // Operator: brown
+      'smith': 0x4A3A2A,      // Smith: brown slicked
+      'lmas-master': 0x1A1A1A, // Morpheus: bald
+      'marketing-chief': 0x1A1A1A, // Lock: cropped
+      'copywriter': 0x6B4E2A, // Mouse: messy brown
+      'social-media-manager': 0x1A1A1A, // Sparks: spiky
+      'traffic-manager': 0x2A2A2A, // Merovingian: dark slicked
+      'content-strategist': 0x1A1A1A, // Persephone: straight dark
+      'content-researcher': 0x1A1A1A, // Ghost: hooded
+      'content-reviewer': 0x1A1A1A,  // Seraph: dark
+      'player': 0x4A3A2A,     // Player: brown
+    };
+    return colors[agentId] ?? 0x1A1A1A;
+  }
+
+  private getShortName(agentId: string): string {
+    const names: Record<string, string> = {
+      'dev': 'Neo', 'qa': 'Oracle', 'architect': 'Arch',
+      'pm': 'Trinity', 'po': 'Key', 'sm': 'Niobe',
+      'analyst': 'Link', 'data-engineer': 'Tank',
+      'ux-design-expert': 'Sati', 'devops': 'Op',
+      'smith': 'Smith', 'lmas-master': 'Morph',
+      'marketing-chief': 'Lock', 'copywriter': 'Mouse',
+      'social-media-manager': 'Sparks', 'traffic-manager': 'Merv',
+      'content-strategist': 'Pers', 'content-researcher': 'Ghost',
+      'content-reviewer': 'Seraph', 'player': 'You',
+    };
+    return names[agentId] ?? agentId;
+  }
 
   private getAgentColor(agentId: string): number {
     const colors: Record<string, number> = {

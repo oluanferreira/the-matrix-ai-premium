@@ -52,11 +52,23 @@ export class ProjectSelectScene extends Phaser.Scene {
     const { width, height } = this.cameras.main;
     this.cameras.main.setBackgroundColor(MATRIX_BG);
 
+    // Disable Phaser input so DOM overlay receives clicks
+    this.input.enabled = false;
+    const canvas = this.game.canvas;
+    canvas.style.pointerEvents = 'none';
+
     this.initCodeRain(width, height);
     this.createOverlay();
 
     this.keyHandler = (e: KeyboardEvent) => this.handleKeyboard(e);
     document.addEventListener('keydown', this.keyHandler);
+
+    // Cleanup on scene shutdown (prevents leaked listeners + DOM)
+    this.events.on('shutdown', () => {
+      this.destroyOverlay();
+      // Re-enable Phaser input for ConstructScene
+      canvas.style.pointerEvents = 'auto';
+    });
 
     this.fetchProjects();
   }
@@ -157,7 +169,8 @@ export class ProjectSelectScene extends Phaser.Scene {
   private bindListEvents(): void {
     if (!this.contentEl) return;
 
-    this.contentEl.querySelectorAll('.project-row').forEach(el => {
+    const rows = this.contentEl.querySelectorAll('.project-row');
+    rows.forEach(el => {
       el.addEventListener('click', () => {
         const idx = parseInt((el as HTMLElement).dataset.index ?? '0', 10);
         this.selectedIndex = idx;
@@ -167,7 +180,8 @@ export class ProjectSelectScene extends Phaser.Scene {
       el.addEventListener('mouseenter', () => {
         const idx = parseInt((el as HTMLElement).dataset.index ?? '0', 10);
         this.selectedIndex = idx;
-        this.showProjectList();
+        // Update styles in-place instead of re-rendering (avoids destroying click handlers)
+        this.updateRowStyles(rows);
       });
     });
 
@@ -175,6 +189,18 @@ export class ProjectSelectScene extends Phaser.Scene {
     newBtn?.addEventListener('click', () => this.showNewProjectInstructions());
     newBtn?.addEventListener('mouseenter', () => (newBtn as HTMLElement).style.background = 'rgba(0,255,65,0.1)');
     newBtn?.addEventListener('mouseleave', () => (newBtn as HTMLElement).style.background = 'transparent');
+  }
+
+  private updateRowStyles(rows: NodeListOf<Element>): void {
+    rows.forEach((el, i) => {
+      const htmlEl = el as HTMLElement;
+      const selected = i === this.selectedIndex;
+      htmlEl.style.color = selected ? MATRIX_GREEN : MATRIX_DIM;
+      htmlEl.style.border = `1px solid ${selected ? MATRIX_GREEN : 'transparent'}`;
+      htmlEl.style.background = selected ? 'rgba(0,255,65,0.05)' : 'transparent';
+      const arrow = htmlEl.querySelector('span');
+      if (arrow) arrow.innerHTML = selected ? '&gt;' : '&nbsp;';
+    });
   }
 
   private showNewProjectInstructions(): void {

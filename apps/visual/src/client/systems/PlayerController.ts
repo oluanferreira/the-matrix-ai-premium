@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import type { Agent } from '@/client/objects/Agent';
 
 const TILE_SIZE = 16;
-const PLAYER_SPEED = 1.2; // pixels per frame (~72px/s at 60fps)
+const PLAYER_SPEED = 3.6; // pixels per frame (~216px/s at 60fps) — scaled for 960x540 resolution
 
 export interface PlayerControllerConfig {
   collisionGrid: boolean[][];

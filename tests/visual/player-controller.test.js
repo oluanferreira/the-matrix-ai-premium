@@ -186,7 +186,7 @@ describe('Player-Controlled Morpheus & Camera Follow', () => {
     });
 
     test('sets initial zoom for close view', () => {
-      expect(sceneSource).toContain('initialZoom: 2');
+      expect(sceneSource).toContain('initialZoom: 1');
     });
 
     test('updates player controller in update loop', () => {

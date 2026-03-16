@@ -27,6 +27,9 @@ export class LoginScene extends Phaser.Scene {
   private currentLine = 0;
   private currentChar = 0;
   private typewriterInterval: ReturnType<typeof setInterval> | null = null;
+  private pendingTimeouts: ReturnType<typeof setTimeout>[] = [];
+  private skipHandler: ((e: KeyboardEvent | MouseEvent) => void) | null = null;
+  private skipped = false;
 
   constructor() {
     super({ key: 'LoginScene' });
@@ -45,7 +48,43 @@ export class LoginScene extends Phaser.Scene {
       resolution: 2,
     }).setOrigin(0.5);
 
+    this.add.text(width / 2, height - 12, 'Pressione qualquer tecla para pular', {
+      fontSize: '5px',
+      color: '#005500',
+      fontFamily: 'monospace',
+      resolution: 2,
+    }).setOrigin(0.5);
+
+    // Skip on any key or click
+    this.skipHandler = () => this.skipToProjectSelect();
+    document.addEventListener('keydown', this.skipHandler);
+    document.addEventListener('click', this.skipHandler);
+
+    // Cleanup on scene shutdown (prevents leaked intervals/timeouts)
+    this.events.on('shutdown', () => this.cleanup());
+
     this.startTypewriter();
+  }
+
+  private skipToProjectSelect(): void {
+    if (this.skipped) return;
+    this.skipped = true;
+    this.cleanup();
+    this.scene.start('ProjectSelectScene');
+  }
+
+  private cleanup(): void {
+    if (this.typewriterInterval) {
+      clearInterval(this.typewriterInterval);
+      this.typewriterInterval = null;
+    }
+    for (const t of this.pendingTimeouts) clearTimeout(t);
+    this.pendingTimeouts = [];
+    if (this.skipHandler) {
+      document.removeEventListener('keydown', this.skipHandler);
+      document.removeEventListener('click', this.skipHandler);
+      this.skipHandler = null;
+    }
   }
 
   private initCodeRain(width: number, height: number): void {
@@ -81,23 +120,26 @@ export class LoginScene extends Phaser.Scene {
       } else {
         // Pausa antes da próxima linha
         if (this.typewriterInterval) clearInterval(this.typewriterInterval);
-        setTimeout(() => {
+        const t = setTimeout(() => {
           this.currentLine++;
           this.currentChar = 0;
           this.startTypewriter();
         }, TYPEWRITER_LINE_PAUSE_MS);
+        this.pendingTimeouts.push(t);
       }
     }, TYPEWRITER_CHAR_DELAY_MS);
   }
 
   private transitionToProjectSelect(): void {
-    setTimeout(() => {
+    const t1 = setTimeout(() => {
       this.cameras.main.fadeOut(500, 0, 0, 0);
     }, 800);
+    this.pendingTimeouts.push(t1);
 
-    setTimeout(() => {
+    const t2 = setTimeout(() => {
       this.scene.start('ProjectSelectScene');
     }, 1400);
+    this.pendingTimeouts.push(t2);
   }
 
   update(): void {

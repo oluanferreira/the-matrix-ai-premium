@@ -247,13 +247,13 @@ describe('Story 2.2: First 5 Agent Sprites (Core Team)', () => {
       expect(agentSource).toContain('scene.add.sprite');
     });
 
-    test('falls back to colored rectangle', () => {
-      expect(agentSource).toContain('scene.add.rectangle');
+    test('falls back to procedural sprite', () => {
+      expect(agentSource).toContain('createProceduralSprite');
     });
 
-    test('uses 16x32 sprite dimensions', () => {
-      expect(agentSource).toContain('SPRITE_WIDTH = 16');
-      expect(agentSource).toContain('SPRITE_HEIGHT = 32');
+    test('uses 64x96 sprite dimensions', () => {
+      expect(agentSource).toContain('SPRITE_WIDTH = 64');
+      expect(agentSource).toContain('SPRITE_HEIGHT = 96');
     });
 
     test('has animation state machine', () => {

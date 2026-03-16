@@ -56,12 +56,31 @@ export class ConstructScene extends Phaser.Scene {
   }
 
   create(): void {
-    const mapData = this.cache.json.get('office-map') as LDtkProject;
+    try {
+      this.initScene();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`[ConstructScene] Falha ao inicializar cena: ${message}`, error);
+      // Show error on screen so user sees something
+      this.add.text(
+        this.cameras.main.width / 2,
+        this.cameras.main.height / 2,
+        `Erro ao carregar: ${message}`,
+        { fontSize: '8px', color: '#FF4444', fontFamily: 'monospace', resolution: 2 },
+      ).setOrigin(0.5);
+    }
+  }
+
+  private initScene(): void {
+    const mapData = this.cache.json.get('office-map') as LDtkProject | undefined;
+    if (!mapData) {
+      throw new Error('Mapa office-map não carregado — verifique se o asset existe em /assets/tilesets/');
+    }
+
     const level = mapData.levels[0];
 
     if (!level) {
-      console.error('[ConstructScene] Nenhum nível encontrado nos dados do mapa');
-      return;
+      throw new Error('Nenhum nível encontrado nos dados do mapa');
     }
 
     const parser = new LDtkParser(this, 'tileset');
@@ -152,7 +171,7 @@ export class ConstructScene extends Phaser.Scene {
       mapHeight: level.pxHei,
       followTarget: this.playerAvatar,
       followLerp: 0.1,
-      initialZoom: 2,
+      initialZoom: 1,
     });
 
     // Matrix Visual Effects (Story 5.3)

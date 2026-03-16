@@ -71,8 +71,8 @@ describe('Story 5.2: Login Scene — Escolha sua Pílula', () => {
       expect(loginSource).toContain("'Acorde...'");
     });
 
-    test('texto em português: A Matrix possui você...', () => {
-      expect(loginSource).toContain("'A Matrix possui você...'");
+    test('texto em português: A Matrix possui voce...', () => {
+      expect(loginSource).toContain("'A Matrix possui voce...'");
     });
 
     test('texto em português: Siga o coelho branco.', () => {
@@ -91,7 +91,7 @@ describe('Story 5.2: Login Scene — Escolha sua Pílula', () => {
 
     test('implementa startTypewriter com timer', () => {
       expect(loginSource).toContain('startTypewriter');
-      expect(loginSource).toContain('typewriterTimer');
+      expect(loginSource).toContain('typewriterInterval');
     });
 
     test('texto verde Matrix', () => {
