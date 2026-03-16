@@ -58,7 +58,7 @@ Configure in `~/.claude/settings.json` (global) or `.claude/settings.json` (proj
 { "language": "portuguese" }
 ```
 
-The installer writes this automatically during `npx lmas-core install`. No language config in `core-config.yaml`.
+The installer writes this automatically during `npx the-matrix-ai install`. No language config in `core-config.yaml`.
 
 ---
 
@@ -330,9 +330,9 @@ npm run build               # Build produção
 
 ### LMAS
 ```bash
-npx lmas-core install       # Instalar LMAS
-npx lmas-core doctor        # Diagnóstico do sistema
-npx lmas-core info          # Informações do sistema
+npx the-matrix-ai install       # Instalar LMAS
+npx the-matrix-ai doctor        # Diagnóstico do sistema
+npx the-matrix-ai info          # Informações do sistema
 ```
 
 ### Dashboard (apps/dashboard/)

@@ -1,12 +1,12 @@
 {
-  "name": "lmas-core",
+  "name": "the-matrix-ai",
   "version": "4.4.6",
-  "description": "LMAS: AI-Orchestrated System for Full Stack Development - Core Framework",
+  "description": "The Matrix AI: Framework Universal de Agentes IA para Desenvolvimento Full Stack",
   "bin": {
-    "lmas": "bin/lmas.js",
-    "lmas-core": "bin/lmas.js",
-    "lmas-minimal": "bin/lmas-minimal.js",
-    "lmas-graph": "bin/lmas-graph.js"
+    "matrix": "bin/lmas.js",
+    "the-matrix-ai": "bin/lmas.js",
+    "matrix-minimal": "bin/lmas-minimal.js",
+    "matrix-graph": "bin/lmas-graph.js"
   },
   "preferGlobal": false,
   "workspaces": [
@@ -107,8 +107,8 @@
   },
   "keywords": [
     "ai",
-    "lmas",
-    "agile",
+    "the-matrix-ai",
+    "matrix",
     "agents",
     "orchestrator",
     "fullstack",
@@ -118,19 +118,20 @@
     "interactive",
     "wizard",
     "modern-ux",
-    "vite-style",
-    "automation"
+    "automation",
+    "multi-agent",
+    "scrum"
   ],
   "author": "Luan Ferreira",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oluanferreira/luan-multiagent-scrum.git"
+    "url": "git+https://github.com/oluanferreira/the-matrix-ai.git"
   },
   "bugs": {
-    "url": "https://github.com/oluanferreira/luan-multiagent-scrum/issues"
+    "url": "https://github.com/oluanferreira/the-matrix-ai/issues"
   },
-  "homepage": "https://github.com/oluanferreira/luan-multiagent-scrum#readme",
+  "homepage": "https://github.com/oluanferreira/the-matrix-ai#readme",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"

@@ -119,15 +119,15 @@ function completeProgress(progressBar) {
 }
 
 /**
- * ASCII Art Banner for LMAS
+ * Welcome Banner for The Matrix AI
  */
 const BANNER = `
-  █████╗ ██╗ ██████╗ ██╗  ██╗     ███████╗ ██████╗ ██╗   ██╗ █████╗ ██████╗
- ██╔══██╗██║██╔═══██╗╚██╗██╔╝     ██╔════╝██╔═══██╗██║   ██║██╔══██╗██╔══██╗
- ███████║██║██║   ██║ ╚███╔╝█████╗███████╗██║   ██║██║   ██║███████║██║  ██║
- ██╔══██║██║██║   ██║ ██╔██╗╚════╝╚════██║██║▄▄ ██║██║   ██║██╔══██║██║  ██║
- ██║  ██║██║╚██████╔╝██╔╝ ██╗     ███████║╚██████╔╝╚██████╔╝██║  ██║██████╔╝
- ╚═╝  ╚═╝╚═╝ ╚═════╝╚═╝  ╚═╝     ╚══════╝ ╚══▀▀═╝  ╚═════╝ ╚═╝  ╚═╝╚═════╝
+ ████████╗██╗  ██╗███████╗    ███╗   ███╗ █████╗ ████████╗██████╗ ██╗██╗  ██╗
+ ╚══██╔══╝██║  ██║██╔════╝    ████╗ ████║██╔══██╗╚══██╔══╝██╔══██╗██║╚██╗██╔╝
+    ██║   ███████║█████╗      ██╔████╔██║███████║   ██║   ██████╔╝██║ ╚███╔╝
+    ██║   ██╔══██║██╔══╝      ██║╚██╔╝██║██╔══██║   ██║   ██╔══██╗██║ ██╔██╗
+    ██║   ██║  ██║███████╗    ██║ ╚═╝ ██║██║  ██║   ██║   ██║  ██║██║██╔╝ ██╗
+    ╚═╝   ╚═╝  ╚═╝╚══════╝    ╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝
 `;
 
 /**
@@ -147,8 +147,9 @@ function showWelcome() {
   }
 
   console.log(colors.primary(BANNER));
-  console.log(colors.secondary('Universal AI Agent Framework for Any Domain'));
-  console.log(colors.tertiary(`Installer v${version}`));
+  console.log(colors.secondary('Bem vindo a Matrix, aproveite a jornada.'));
+  console.log(colors.tertiary(`made by @oluanferreira`));
+  console.log(colors.dim(`v${version}`));
   console.log('');
   console.log(colors.dim('═'.repeat(80)));
   console.log('');

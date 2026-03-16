@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * LMAS-FullStack CLI
+ * The Matrix AI CLI
  * Main entry point - Standalone (no external dependencies for npx compatibility)
- * Version: 4.0.0
+ * Version: 4.4.6
  */
 
 const path = require('path');
@@ -38,7 +38,7 @@ async function runWizard(options = {}) {
       return;
     }
     console.error('❌ Initialization wizard not found');
-    console.error('Please ensure LMAS-FullStack is installed correctly.');
+    console.error('Please ensure The Matrix AI is installed correctly.');
     process.exit(1);
   }
 
@@ -55,20 +55,20 @@ async function runWizard(options = {}) {
 // Helper: Show help
 function showHelp() {
   console.log(`
-LMAS-FullStack v${packageJson.version}
+The Matrix AI v${packageJson.version}
 AI-Orchestrated System for Full Stack Development
 
 USAGE:
-  npx lmas-core@latest              # Run installation wizard
-  npx lmas-core@latest install      # Install in current project
-  npx lmas-core@latest init <name>  # Create new project
-  npx lmas-core@latest update       # Update to latest version
-  npx lmas-core@latest validate     # Validate installation integrity
-  npx lmas-core@latest info         # Show system info
-  npx lmas-core@latest doctor       # Run diagnostics
-  npx lmas-core@latest --version    # Show version
-  npx lmas-core@latest --version -d # Show detailed version info
-  npx lmas-core@latest --help       # Show this help
+  npx the-matrix-ai@latest              # Run installation wizard
+  npx the-matrix-ai@latest install      # Install in current project
+  npx the-matrix-ai@latest init <name>  # Create new project
+  npx the-matrix-ai@latest update       # Update to latest version
+  npx the-matrix-ai@latest validate     # Validate installation integrity
+  npx the-matrix-ai@latest info         # Show system info
+  npx the-matrix-ai@latest doctor       # Run diagnostics
+  npx the-matrix-ai@latest --version    # Show version
+  npx the-matrix-ai@latest --version -d # Show detailed version info
+  npx the-matrix-ai@latest --help       # Show this help
 
 UPDATE:
   lmas update                    # Update to latest version
@@ -99,18 +99,18 @@ SERVICE DISCOVERY:
 
 EXAMPLES:
   # Install in current directory
-  npx lmas-core@latest
+  npx the-matrix-ai@latest
 
   # Install with minimal mode (only expansion-creator)
-  npx lmas-core-minimal@latest
+  npx the-matrix-ai-minimal@latest
 
   # Create new project
-  npx lmas-core@latest init my-project
+  npx the-matrix-ai@latest init my-project
 
   # Search for workers
   lmas workers search "json csv"
 
-For more information, visit: https://github.com/oluanferreira/lmas-core
+For more information, visit: https://github.com/oluanferreira/the-matrix-ai
 `);
 }
 
@@ -125,8 +125,8 @@ async function showVersion() {
   }
 
   // Detailed version output (Story 7.2: Version Tracking)
-  console.log(`LMAS-FullStack v${packageJson.version}`);
-  console.log('Package: lmas-core');
+  console.log(`The Matrix AI v${packageJson.version}`);
+  console.log('Package: the-matrix-ai');
 
   // Check for local installation
   const localVersionPath = path.join(process.cwd(), '.lmas-core', 'version.json');
@@ -162,7 +162,7 @@ async function showVersion() {
         console.log('\n⚠️  Version mismatch!');
         console.log(`  Local:  ${versionInfo.version}`);
         console.log(`  Latest: ${packageJson.version}`);
-        console.log('  Run \'npx lmas-core update\' to update.');
+        console.log('  Run \'npx the-matrix-ai update\' to update.');
       } else {
         console.log('\n✅ Up to date');
       }
@@ -171,13 +171,13 @@ async function showVersion() {
     }
   } else {
     console.log('\n📭 No local installation found');
-    console.log('  Run \'npx lmas-core install\' to install LMAS in this project.');
+    console.log('  Run \'npx the-matrix-ai install\' to install LMAS in this project.');
   }
 }
 
 // Helper: Show system info
 function showInfo() {
-  console.log('📊 LMAS-FullStack System Information\n');
+  console.log('📊 The Matrix AI System Information\n');
   console.log(`Version: ${packageJson.version}`);
   console.log(`Platform: ${process.platform}`);
   console.log(`Node.js: ${process.version}`);
@@ -211,33 +211,6 @@ function showInfo() {
     console.log('\n⚠️  LMAS Core not found');
   }
 
-  // Check LMAS Pro status (Task 5.1)
-  const proDir = path.join(__dirname, '..', 'pro');
-  if (fs.existsSync(proDir)) {
-    console.log('\n✓ LMAS Pro installed');
-
-    try {
-      const { featureGate } = require(path.join(proDir, 'license', 'feature-gate'));
-      const state = featureGate.getLicenseState();
-      const info = featureGate.getLicenseInfo();
-
-      const stateEmoji = {
-        'Active': '✅',
-        'Grace': '⚠️',
-        'Expired': '❌',
-        'Not Activated': '➖',
-      };
-
-      console.log(`  - License: ${stateEmoji[state] || ''} ${state}`);
-
-      if (info && info.features) {
-        const availableCount = featureGate.listAvailable().length;
-        console.log(`  - Features: ${availableCount} available`);
-      }
-    } catch {
-      console.log('  - License: Unable to check status');
-    }
-  }
 }
 
 // Helper: Run installation validation
@@ -303,7 +276,7 @@ async function runUpdate() {
 
     if (!fs.existsSync(updaterPath)) {
       console.error('❌ Updater module not found');
-      console.error('Please ensure LMAS-FullStack is installed correctly.');
+      console.error('Please ensure The Matrix AI is installed correctly.');
       process.exit(1);
     }
 
@@ -417,7 +390,7 @@ function cleanGitignore(gitignorePath) {
 // Helper: Show uninstall help
 function showUninstallHelp() {
   console.log(`
-Usage: npx lmas-core uninstall [options]
+Usage: npx the-matrix-ai uninstall [options]
 
 Remove LMAS from the current project.
 
@@ -442,23 +415,23 @@ Exit Codes:
 
 Examples:
   # Interactive uninstall (with confirmation)
-  npx lmas-core uninstall
+  npx the-matrix-ai uninstall
 
   # Force uninstall without prompts
-  npx lmas-core uninstall --force
+  npx the-matrix-ai uninstall --force
 
   # See what would be removed
-  npx lmas-core uninstall --dry-run
+  npx the-matrix-ai uninstall --dry-run
 
   # Uninstall but keep project data
-  npx lmas-core uninstall --keep-data
+  npx the-matrix-ai uninstall --keep-data
 `);
 }
 
 // Helper: Show doctor help
 function showDoctorHelp() {
   console.log(`
-Usage: npx lmas-core doctor [options]
+Usage: npx the-matrix-ai doctor [options]
 
 Run health checks on your LMAS installation.
 
@@ -482,13 +455,13 @@ Exit Codes:
 
 Examples:
   # Run health check
-  npx lmas-core doctor
+  npx the-matrix-ai doctor
 
   # Auto-fix detected issues
-  npx lmas-core doctor --fix
+  npx the-matrix-ai doctor --fix
 
   # Preview what would be fixed
-  npx lmas-core doctor --fix --dry-run
+  npx the-matrix-ai doctor --fix --dry-run
 `);
 }
 
@@ -627,14 +600,14 @@ async function runUninstall(options = {}) {
     if (keepData) {
       console.log('   Your project data in .lmas/ has been preserved.');
     }
-    console.log('\n   To reinstall: npx lmas-core install');
+    console.log('\n   To reinstall: npx the-matrix-ai install');
   }
 }
 
 // Helper: Show install help
 function showInstallHelp() {
   console.log(`
-Usage: npx lmas-core install [options]
+Usage: npx the-matrix-ai install [options]
 
 Install LMAS in the current directory.
 
@@ -659,19 +632,19 @@ Exit Codes:
 
 Examples:
   # Interactive installation
-  npx lmas-core install
+  npx the-matrix-ai install
 
   # Force reinstall without prompts
-  npx lmas-core install --force
+  npx the-matrix-ai install --force
 
   # Brownfield: merge configs automatically
-  npx lmas-core install --merge
+  npx the-matrix-ai install --merge
 
   # Silent install for CI/CD
-  npx lmas-core install --quiet --force
+  npx the-matrix-ai install --quiet --force
 
   # Preview what would be installed
-  npx lmas-core install --dry-run
+  npx the-matrix-ai install --dry-run
 `);
 }
 
@@ -679,7 +652,7 @@ Examples:
 // Helper: Show init help
 function showInitHelp() {
   console.log(`
-Usage: npx lmas-core init <project-name> [options]
+Usage: npx the-matrix-ai init <project-name> [options]
 
 Create a new LMAS project with the specified name.
 
@@ -696,10 +669,10 @@ Available Templates:
   enterprise  Everything + dashboards + team integrations
 
 Examples:
-  npx lmas-core init my-project
-  npx lmas-core init my-project --template minimal
-  npx lmas-core init my-project --force --skip-install
-  npx lmas-core init . --template enterprise
+  npx the-matrix-ai init my-project
+  npx the-matrix-ai init my-project --template minimal
+  npx the-matrix-ai init my-project --force --skip-install
+  npx the-matrix-ai init . --template enterprise
 `);
 }
 
@@ -748,7 +721,7 @@ async function initProject() {
 
   if (!projectName) {
     console.error('❌ Project name is required');
-    console.log('\nUsage: npx lmas-core init <project-name> [options]');
+    console.log('\nUsage: npx the-matrix-ai init <project-name> [options]');
     console.log('Run with --help for more information.');
     process.exit(1);
   }
@@ -823,17 +796,6 @@ async function main() {
       }
       break;
 
-    case 'pro':
-      // LMAS Pro License Management - Story PRO-6
-      try {
-        const { run } = require('../.lmas-core/cli/index.js');
-        await run(process.argv);
-      } catch (error) {
-        console.error(`❌ Pro command error: ${error.message}`);
-        process.exit(1);
-      }
-      break;
-
     case 'install': {
       // Install in current project with flag support
       const installArgs = args.slice(1);
@@ -849,7 +811,7 @@ async function main() {
         noMerge: installArgs.includes('--no-merge'),
       };
       if (!installOptions.quiet) {
-        console.log('LMAS-FullStack Installation\n');
+        console.log('The Matrix AI Installation\n');
       }
       await runWizard(installOptions);
       break;
@@ -922,7 +884,7 @@ async function main() {
 
     case undefined:
       // No arguments - run wizard directly (npx default behavior)
-      console.log('LMAS-FullStack Installation\n');
+      console.log('The Matrix AI Installation\n');
       await runWizard();
       break;
 

@@ -1,12 +1,11 @@
-# LMAS: Framework Universal de Agentes IA 🚀
+# The Matrix AI: Framework Universal de Agentes IA 🚀
 
 > 🌍 [English](README.en.md) | **[Português](README.md)**
 
-[![Versão NPM](https://img.shields.io/npm/v/lmas-core.svg)](https://www.npmjs.com/package/lmas-core)
+[![Versão NPM](https://img.shields.io/npm/v/the-matrix-ai.svg)](https://www.npmjs.com/package/the-matrix-ai)
 [![Licença: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Versão Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
-[![CI](https://github.com/oluanferreira/luan-multiagent-scrum/actions/workflows/ci.yml/badge.svg)](https://github.com/oluanferreira/luan-multiagent-scrum/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/LMAS/lmas-core/branch/main/graph/badge.svg)](https://codecov.io/gh/LMAS/lmas-core)
+[![CI](https://github.com/oluanferreira/the-matrix-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/oluanferreira/the-matrix-ai/actions/workflows/ci.yml)
 [![Documentação](https://img.shields.io/badge/docs-disponível-orange.svg)](https://lmas.ai)
 [![Open Source](https://img.shields.io/badge/Open%20Source-Yes-success.svg)](LICENSE)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
@@ -23,11 +22,11 @@ Se é sua primeira vez no LMAS, siga este caminho linear:
 1. Instale em um projeto novo ou existente:
 ```bash
 # novo projeto
-npx lmas-core init meu-projeto
+npx the-matrix-ai init meu-projeto
 
 # projeto existente
 cd seu-projeto
-npx lmas-core install
+npx the-matrix-ai install
 ```
 2. Escolha sua IDE/CLI e o caminho de ativação:
 - Claude Code: `/agent-name`
@@ -126,14 +125,14 @@ Esta abordagem de duas fases elimina tanto a **inconsistência de planejamento**
 - **[Criar meus próprios agentes IA](#criando-seu-próprio-squad)** → Construir agentes para seu domínio
 - **[Navegar Squads prontos](docs/guides/squads-overview.md)** → Veja como criar e usar equipes de agentes IA
 - **[Entender a arquitetura](docs/architecture/ARCHITECTURE-INDEX.md)** → Mergulho técnico profundo
-- **[Reportar problemas](https://github.com/oluanferreira/luan-multiagent-scrum/issues)** → Bug reports e feature requests
+- **[Reportar problemas](https://github.com/oluanferreira/the-matrix-ai/issues)** → Bug reports e feature requests
 
 ## Importante: Mantenha Sua Instalação LMAS Atualizada
 
 **Mantenha-se atualizado sem esforço!** Para atualizar sua instalação LMAS existente:
 
 ```bash
-npx lmas-core@latest install
+npx the-matrix-ai@latest install
 ```
 
 Isto vai:
@@ -153,14 +152,14 @@ Isto facilita beneficiar-se das últimas melhorias, correções de bugs e novos 
 
 ```bash
 # Criar um novo projeto com assistente interativo moderno
-npx lmas-core init meu-projeto
+npx the-matrix-ai init meu-projeto
 
 # Ou instalar em projeto existente
 cd seu-projeto
-npx lmas-core install
+npx the-matrix-ai install
 
 # Ou usar uma versão específica
-npx lmas-core@latest init meu-projeto
+npx the-matrix-ai@latest init meu-projeto
 ```
 
 ### ✨ Assistente de Instalação Moderno
@@ -198,7 +197,7 @@ O LMAS agora inclui uma experiência de instalação interativa de última gera�
 Se você já tem o LMAS instalado:
 
 ```bash
-npx lmas-core@latest install
+npx the-matrix-ai@latest install
 # O instalador detectará sua instalação existente e a atualizará
 ```
 
@@ -248,7 +247,7 @@ Estas regras fornecem:
 
 ### Início Mais Rápido com Interface Web (2 minutos)
 
-1. **Instale o LMAS**: Execute `npx lmas-core init meu-projeto`
+1. **Instale o LMAS**: Execute `npx the-matrix-ai init meu-projeto`
 2. **Configure seu IDE**: Siga as instruções de configuração para Codex CLI, Cursor ou Claude Code
 3. **Comece a Planejar**: Ative um agente como `@analyst` para começar a criar seu briefing
 4. **Use comandos LMAS**: Digite `*help` para ver comandos disponíveis
@@ -260,27 +259,27 @@ O LMAS oferece uma CLI moderna e cross-platform com comandos intuitivos:
 
 ```bash
 # Gerenciamento de Projeto (com assistente interativo)
-npx lmas-core init <nome-projeto> [opções]
+npx the-matrix-ai init <nome-projeto> [opções]
   --force              Forçar criação em diretório não vazio
   --skip-install       Pular instalação de dependências npm
   --template <nome>    Usar template específico (default, minimal, enterprise)
 
 # Instalação e Configuração (com prompts modernos)
-npx lmas-core install [opções]
+npx the-matrix-ai install [opções]
   --force              Sobrescrever configuração existente
   --quiet              Saída mínima durante instalação
   --dry-run            Simular instalação sem modificar arquivos
 
 # Comandos do Sistema
-npx lmas-core --version   Exibir versão instalada
-npx lmas-core --help      Exibir ajuda detalhada
-npx lmas-core info        Exibir informações do sistema
-npx lmas-core doctor      Executar diagnósticos do sistema
-npx lmas-core doctor --fix Corrigir problemas detectados automaticamente
+npx the-matrix-ai --version   Exibir versão instalada
+npx the-matrix-ai --help      Exibir ajuda detalhada
+npx the-matrix-ai info        Exibir informações do sistema
+npx the-matrix-ai doctor      Executar diagnósticos do sistema
+npx the-matrix-ai doctor --fix Corrigir problemas detectados automaticamente
 
 # Manutenção
-npx lmas-core update      Atualizar para versão mais recente
-npx lmas-core uninstall   Remover LMAS
+npx the-matrix-ai update      Atualizar para versão mais recente
+npx the-matrix-ai uninstall   Remover LMAS
 ```
 
 **Recursos da CLI:**
@@ -296,7 +295,7 @@ npx lmas-core uninstall   Remover LMAS
 #### Instalação Interativa Completa
 
 ```bash
-$ npx lmas-core install
+$ npx the-matrix-ai install
 
 🚀 LMAS Installation
 
@@ -334,15 +333,15 @@ $ npx lmas-core install
 
 Next steps:
   cd my-awesome-project
-  lmas-core doctor     # Verify installation
-  lmas-core --help     # See available commands
+  the-matrix-ai doctor     # Verify installation
+  the-matrix-ai --help     # See available commands
 ```
 
 #### Instalação Silenciosa (CI/CD)
 
 ```bash
 # Instalação automatizada sem prompts
-$ npx lmas-core install --quiet --force
+$ npx the-matrix-ai install --quiet --force
 ✔ LMAS installed successfully
 ```
 
@@ -350,7 +349,7 @@ $ npx lmas-core install --quiet --force
 
 ```bash
 # Testar instalação sem modificar arquivos
-$ npx lmas-core install --dry-run
+$ npx the-matrix-ai install --dry-run
 
 [DRY RUN] Would create: ./my-project/
 [DRY RUN] Would copy: .lmas-core/ (45 files)
@@ -362,7 +361,7 @@ $ npx lmas-core install --dry-run
 #### Diagnóstico do Sistema
 
 ```bash
-$ npx lmas-core doctor
+$ npx the-matrix-ai doctor
 
 🏥 LMAS System Diagnostics
 
@@ -391,11 +390,11 @@ Dependencies:
 #### Obter Ajuda
 
 ```bash
-$ npx lmas-core --help
+$ npx the-matrix-ai --help
 
-Usage: lmas-core [options] [command]
+Usage: the-matrix-ai [options] [command]
 
-LMAS: AI-Orchestrated System for Full Stack Development
+The Matrix AI: Framework Universal de Agentes IA
 
 Options:
   -V, --version                output the version number
@@ -408,7 +407,7 @@ Commands:
   doctor [options]             Run system diagnostics and health checks
   help [command]               display help for command
 
-Run 'lmas-core <command> --help' for detailed information about each command.
+Run 'the-matrix-ai <command> --help' for detailed information about each command.
 ```
 
 ### Alternativa: Clonar e Construir
@@ -417,8 +416,8 @@ Para contribuidores ou usuários avançados que queiram modificar o código font
 
 ```bash
 # Clonar o repositório
-git clone https://github.com/oluanferreira/luan-multiagent-scrum.git
-cd lmas-core
+git clone https://github.com/oluanferreira/the-matrix-ai.git
+cd the-matrix-ai
 
 # Instalar dependências
 npm install
@@ -433,7 +432,7 @@ Para membros da equipe ingressando no projeto:
 
 ```bash
 # Instalar LMAS no projeto
-npx lmas-core@latest install
+npx the-matrix-ai@latest install
 
 # Isto vai:
 # 1. Detectar instalação existente (se houver)
@@ -598,34 +597,11 @@ Squads são equipes modulares de agentes IA. Veja a [Visão Geral de Squads](doc
 
 ### Squads Externos
 
-- **[hybrid-ops](https://github.com/oluanferreira/luan-multiagent-scrum)** - Operações híbridas humano-agente (repositório separado)
-
-## LMAS Pro
-
-O **LMAS Pro** (`@lmas-fullstack/pro`) é o módulo premium do LMAS, oferecendo funcionalidades avançadas para equipes e projetos de maior escala.
-
-> **Disponibilidade restrita:** O LMAS Pro está disponível exclusivamente para membros do **LMAS Cohort Advanced**. [Saiba mais sobre o programa](https://lmas.ai).
-
-### Instalação
-
-```bash
-npm install @lmas-fullstack/pro
-```
-
-### Features Premium
-
-- **Squads Avançados** - Squads especializados com capacidades expandidas
-- **Memory Layer** - Memória persistente de padrões e insights entre sessões
-- **Métricas & Analytics** - Dashboard de produtividade e métricas de desenvolvimento
-- **Integrações Enterprise** - Conectores para Jira, Linear, Notion e mais
-- **Configuração em Camadas** - Sistema de configuração L1-L4 com herança
-- **Licenciamento** - Gerenciamento de licença via `lmas pro activate --key <KEY>`
-
-Para mais informações, execute `npx lmas-core pro --help` após a instalação.
+- **[hybrid-ops](https://github.com/oluanferreira/the-matrix-ai)** - Operações híbridas humano-agente (repositório separado)
 
 ## Suporte
 
-- 🐛 [Rastreador de Issues](https://github.com/oluanferreira/luan-multiagent-scrum/issues) - Bug reports e feature requests
+- 🐛 [Rastreador de Issues](https://github.com/oluanferreira/the-matrix-ai/issues) - Bug reports e feature requests
 - 💡 [Processo de Features](docs/FEATURE_PROCESS.md) - Como propor novas funcionalidades
 - 📋 [Como Contribuir](CONTRIBUTING.md)
 - 🗺️ [Roadmap](docs/roadmap.md) - Veja o que estamos construindo
@@ -728,7 +704,7 @@ This project was originally derived from the [BMad Method](https://github.com/bm
 
 **Note:** Some contributors shown in the GitHub contributors graph are inherited from the original BMad Method git history and do not represent active participation in or endorsement of LMAS.
 
-[![Contributors](https://contrib.rocks/image?repo=LMAS/lmas-core)](https://github.com/oluanferreira/luan-multiagent-scrum/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=LMAS/lmas-core)](https://github.com/oluanferreira/the-matrix-ai/graphs/contributors)
 
 ### 🌟 Contribuidores da Comunidade
 
