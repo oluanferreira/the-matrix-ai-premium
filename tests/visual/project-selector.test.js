@@ -572,15 +572,15 @@ describe('Story 5.4: Project Selector — Escolha sua Realidade', () => {
     });
 
     test('exibe minutos atrás', () => {
-      expect(projectSelectSceneSource).toContain('min atrás');
+      expect(projectSelectSceneSource).toContain('min atras');
     });
 
     test('exibe horas atrás', () => {
-      expect(projectSelectSceneSource).toContain('h atrás');
+      expect(projectSelectSceneSource).toContain('h atras');
     });
 
     test('exibe dias atrás', () => {
-      expect(projectSelectSceneSource).toContain('d atrás');
+      expect(projectSelectSceneSource).toContain('d atras');
     });
   });
 });

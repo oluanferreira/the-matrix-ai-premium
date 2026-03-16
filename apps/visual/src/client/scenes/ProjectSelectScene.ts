@@ -26,6 +26,7 @@ type SceneState = 'loading' | 'list' | 'pills' | 'empty' | 'entering';
  * Project selection screen — lists discovered LMAS projects.
  * After selecting a project, shows red/blue pills.
  * Red pill → enter Construct. Blue pill → back to project list.
+ * Uses pixel-friendly font sizes (multiples of game resolution).
  *
  * Story 5.4: Project Selector — "Escolha sua Realidade"
  */
@@ -44,6 +45,7 @@ export class ProjectSelectScene extends Phaser.Scene {
   private projectTexts: Phaser.GameObjects.Text[] = [];
   private infoText: Phaser.GameObjects.Text | null = null;
   private emptyText: Phaser.GameObjects.Text | null = null;
+  private newProjectBtn: Phaser.GameObjects.Text | null = null;
   private redPill: Phaser.GameObjects.Container | null = null;
   private bluePill: Phaser.GameObjects.Container | null = null;
   private redLabel: Phaser.GameObjects.Text | null = null;
@@ -64,18 +66,20 @@ export class ProjectSelectScene extends Phaser.Scene {
     // Code rain background
     this.initCodeRain(width, height);
 
-    // Title
-    this.titleText = this.add.text(width / 2, 12, '> Selecione sua realidade_', {
-      fontSize: '8px',
+    // Title — large enough to be readable at pixel scale
+    this.titleText = this.add.text(width / 2, 14, '> Selecione sua realidade_', {
+      fontSize: '9px',
       color: MATRIX_GREEN,
       fontFamily: 'monospace',
+      resolution: 2,
     }).setOrigin(0.5).setDepth(10);
 
-    // Loading text
+    // Info text (footer)
     this.infoText = this.add.text(width / 2, height / 2, 'Escaneando projetos LMAS...', {
-      fontSize: '6px',
+      fontSize: '7px',
       color: MATRIX_DIM,
       fontFamily: 'monospace',
+      resolution: 2,
     }).setOrigin(0.5).setDepth(10);
 
     // Keyboard navigation
@@ -119,16 +123,17 @@ export class ProjectSelectScene extends Phaser.Scene {
     // Clear loading text
     this.infoText?.setText('');
 
-    const startY = 28;
-    const lineHeight = 12;
-    const maxVisible = Math.floor((height - 50) / lineHeight);
+    const startY = 30;
+    const lineHeight = 14;
+    const maxVisible = Math.floor((height - 60) / lineHeight);
     const visibleProjects = this.projects.slice(0, maxVisible);
 
     // Cursor
-    this.cursorGraphic = this.add.text(8, startY, '>', {
-      fontSize: '7px',
+    this.cursorGraphic = this.add.text(10, startY, '>', {
+      fontSize: '8px',
       color: MATRIX_GREEN,
       fontFamily: 'monospace',
+      resolution: 2,
     }).setDepth(10);
 
     // Project entries
@@ -136,12 +141,13 @@ export class ProjectSelectScene extends Phaser.Scene {
       const project = visibleProjects[i];
       const y = startY + i * lineHeight;
       const timeAgo = this.formatTimeAgo(project.lastActivity);
-      const label = `${project.name}  [${project.storyCount} stories, ${project.agentCount} agentes]  ${timeAgo}`;
+      const label = `${project.name}  [${project.storyCount}s ${project.agentCount}a]  ${timeAgo}`;
 
-      const text = this.add.text(16, y, label, {
-        fontSize: '6px',
+      const text = this.add.text(20, y, label, {
+        fontSize: '7px',
         color: i === 0 ? MATRIX_GREEN : MATRIX_DIM,
         fontFamily: 'monospace',
+        resolution: 2,
       }).setDepth(10).setInteractive();
 
       text.on('pointerover', () => {
@@ -158,8 +164,9 @@ export class ProjectSelectScene extends Phaser.Scene {
     }
 
     // Footer hint
-    this.infoText?.setText('↑↓ Navegar  |  ENTER Selecionar');
-    this.infoText?.setPosition(width / 2, height - 8);
+    this.infoText?.setText('Setas: Navegar  |  ENTER: Selecionar');
+    this.infoText?.setPosition(width / 2, height - 10);
+    this.infoText?.setFontSize(6);
 
     this.updateListHighlight();
   }
@@ -170,20 +177,40 @@ export class ProjectSelectScene extends Phaser.Scene {
 
     this.infoText?.setText('');
 
-    this.emptyText = this.add.text(width / 2, height * 0.4, [
+    this.emptyText = this.add.text(width / 2, height * 0.35, [
       'Nenhum projeto LMAS detectado.',
       '',
-      'Execute em um diretório:',
+      'Execute em um diretorio:',
       '  npx lmas-core install',
       '',
       'Ou defina LMAS_PROJECTS_PATH',
-      'com os caminhos dos projetos.',
     ].join('\n'), {
-      fontSize: '6px',
+      fontSize: '7px',
       color: MATRIX_DIM,
       fontFamily: 'monospace',
       align: 'center',
+      resolution: 2,
     }).setOrigin(0.5).setDepth(10);
+
+    // "Começar novo projeto" button
+    this.newProjectBtn = this.add.text(width / 2, height * 0.7, '[ Comecar novo projeto ]', {
+      fontSize: '8px',
+      color: MATRIX_GREEN,
+      fontFamily: 'monospace',
+      resolution: 2,
+    }).setOrigin(0.5).setDepth(10).setInteractive();
+
+    this.newProjectBtn.on('pointerover', () => this.newProjectBtn?.setScale(1.1));
+    this.newProjectBtn.on('pointerout', () => this.newProjectBtn?.setScale(1));
+    this.newProjectBtn.on('pointerdown', () => {
+      this.emptyText?.setText([
+        '1. Abra um terminal',
+        '2. Navegue ate o diretorio',
+        '3. npx lmas-core install',
+        '4. Recarregue esta pagina',
+      ].join('\n'));
+      this.newProjectBtn?.setText('[ Voltar ]');
+    });
   }
 
   private showPills(): void {
@@ -196,10 +223,11 @@ export class ProjectSelectScene extends Phaser.Scene {
 
     // Show selected project name
     const projectName = this.selectedProject?.name ?? 'Unknown';
-    this.selectedProjectText = this.add.text(width / 2, 28, `> ${projectName}`, {
-      fontSize: '8px',
+    this.selectedProjectText = this.add.text(width / 2, 30, `> ${projectName}`, {
+      fontSize: '9px',
       color: MATRIX_GREEN,
       fontFamily: 'monospace',
+      resolution: 2,
     }).setOrigin(0.5).setDepth(10);
 
     const pillY = height * 0.55;
@@ -226,16 +254,16 @@ export class ProjectSelectScene extends Phaser.Scene {
 
     // Labels
     this.redLabel = this.add.text(width / 2 - 40, pillY + 14, 'Entrar', {
-      fontSize: '6px', color: '#FF0000', fontFamily: 'monospace',
+      fontSize: '7px', color: '#FF0000', fontFamily: 'monospace', resolution: 2,
     }).setOrigin(0.5).setDepth(10);
 
     this.blueLabel = this.add.text(width / 2 + 40, pillY + 14, 'Voltar', {
-      fontSize: '6px', color: '#0000FF', fontFamily: 'monospace',
+      fontSize: '7px', color: '#0000FF', fontFamily: 'monospace', resolution: 2,
     }).setOrigin(0.5).setDepth(10);
 
     // Footer
-    this.infoText?.setText('Escolha sua pílula.');
-    this.infoText?.setPosition(width / 2, height - 8);
+    this.infoText?.setText('Escolha sua pilula.');
+    this.infoText?.setPosition(width / 2, height - 10);
   }
 
   private createPill(x: number, y: number, color: number): Phaser.GameObjects.Container {
@@ -281,7 +309,7 @@ export class ProjectSelectScene extends Phaser.Scene {
       return;
     }
 
-    // Glitch transition effect (same as original LoginScene)
+    // Glitch transition effect
     this.cameras.main.shake(500, 0.02);
     this.cameras.main.flash(500, 0, 255, 65);
 
@@ -340,15 +368,15 @@ export class ProjectSelectScene extends Phaser.Scene {
   }
 
   private updateListHighlight(): void {
-    const startY = 28;
-    const lineHeight = 12;
+    const startY = 30;
+    const lineHeight = 14;
 
     for (let i = 0; i < this.projectTexts.length; i++) {
       this.projectTexts[i].setColor(i === this.selectedIndex ? MATRIX_GREEN : MATRIX_DIM);
     }
 
     // Update cursor position
-    this.cursorGraphic?.setPosition(8, startY + this.selectedIndex * lineHeight);
+    this.cursorGraphic?.setPosition(10, startY + this.selectedIndex * lineHeight);
   }
 
   private clearListElements(): void {
@@ -365,9 +393,10 @@ export class ProjectSelectScene extends Phaser.Scene {
     this.infoText?.setText('');
 
     const errorText = this.add.text(width / 2, height * 0.7, message, {
-      fontSize: '5px',
+      fontSize: '6px',
       color: '#FF4444',
       fontFamily: 'monospace',
+      resolution: 2,
     }).setOrigin(0.5).setDepth(10);
 
     this.time.delayedCall(3000, () => errorText.destroy());
@@ -380,9 +409,9 @@ export class ProjectSelectScene extends Phaser.Scene {
     const days = Math.floor(diff / 86400000);
 
     if (minutes < 1) return 'agora';
-    if (minutes < 60) return `${minutes}min atrás`;
-    if (hours < 24) return `${hours}h atrás`;
-    return `${days}d atrás`;
+    if (minutes < 60) return `${minutes}min atras`;
+    if (hours < 24) return `${hours}h atras`;
+    return `${days}d atras`;
   }
 
   // Code rain (same system as LoginScene)

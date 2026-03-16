@@ -214,7 +214,20 @@ export class ProjectDiscovery {
       paths.push(defaultWorkspace);
     }
 
-    // 3. Home directory (shallow scan)
+    // 3. Current working directory (often the project root when running npm run dev)
+    const cwd = process.cwd();
+    if (cwd && cwd !== defaultWorkspace) {
+      paths.push(cwd);
+    }
+
+    // 4. Parent of cwd (if npm run dev is called from apps/visual/)
+    const cwdParent = path.dirname(cwd);
+    const cwdGrandparent = path.dirname(cwdParent);
+    if (cwdGrandparent && cwdGrandparent !== cwd) {
+      paths.push(cwdGrandparent);
+    }
+
+    // 5. Home directory (shallow scan)
     const home = process.env.HOME ?? process.env.USERPROFILE;
     if (home) {
       paths.push(home);
