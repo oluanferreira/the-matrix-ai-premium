@@ -1,0 +1,17 @@
+handoff:
+  from_agent: "sm"
+  to_agent: "dev"
+  story_context:
+    story_id: "2.1"
+    story_path: "docs/stories/active/2.1.base-character-sprite-system.md"
+    story_status: "In Progress"
+    current_task: "Implementar sistema de animações"
+    branch: "main"
+  decisions:
+    - "Usar placeholder sprites até Aseprite assets"
+    - "State machine valida transições"
+  files_modified:
+    - "apps/visual/src/client/objects/Agent.ts"
+    - "apps/visual/src/client/objects/StatusIndicator.ts"
+  blockers: []
+  next_action: "Implementar SpeechBubble"

@@ -3,6 +3,7 @@ import { Agent } from '@/client/objects/Agent';
 import type { AgentConfig } from '@/client/objects/Agent';
 import type { AgentSpawn } from '@/client/systems/LDtkParser';
 import { AGENT_IDS } from '@/shared/agent-ids';
+import { AGENT_CONFIG_MAP } from '@/client/data/agent-config';
 
 /**
  * Factory for creating Agent instances from spawn data.
@@ -20,10 +21,13 @@ export class AgentFactory {
    */
   createFromSpawns(spawns: AgentSpawn[]): Map<string, Agent> {
     for (const spawn of spawns) {
+      const displayConfig = AGENT_CONFIG_MAP[spawn.agentId];
       const config: AgentConfig = {
         agentId: spawn.agentId,
         x: spawn.x,
         y: spawn.y,
+        alwaysSeated: displayConfig?.alwaysSeated,
+        alpha: displayConfig?.alpha,
       };
       const agent = new Agent(this.scene, config);
       this.agents.set(spawn.agentId, agent);

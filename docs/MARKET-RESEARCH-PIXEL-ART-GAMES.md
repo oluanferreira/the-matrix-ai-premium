@@ -27,7 +27,7 @@ O The Matrix AI Visual deve se inspirar no estilo **Hi-Bit** (pixel art moderno 
 
 | Camada | Tecnologia | Custo |
 |--------|-----------|-------|
-| Game Engine | **Phaser 4** (TypeScript) | Grátis |
+| Game Engine | **Phaser 3** (TypeScript) — v3.90+ estável, ADR-1 decidiu por Phaser 3 (Phaser 4 em beta, não recomendado para produção) | Grátis |
 | Sprites | **Aseprite** (compilado do fonte) | Grátis |
 | Tilesets | **LDtk** (auto-tiling) | Grátis |
 | Level Design | **LDtk** | Grátis |

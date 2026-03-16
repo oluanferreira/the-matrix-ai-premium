@@ -1,0 +1,5 @@
+ad37ba2|docs: pesquisa de mercado pixel art games + progresso compilação Aseprite|Claude Opus 4.6|2026-03-16T10:30:00Z
+06a505f|feat: multi-domain routing + marketing squad agents + Agent Smith [Story 2.1]|Claude Opus 4.6|2026-03-15T22:00:00Z
+32baf5a|docs: The Matrix AI Visual — documento de ideia|Claude Opus 4.6|2026-03-15T18:00:00Z
+75ec204|feat: marketing squad + Agent Smith + Matrix personas|Claude Opus 4.6|2026-03-15T15:00:00Z
+f116f29|chore: News from README|Luan Ferreira|2026-03-14T12:00:00Z

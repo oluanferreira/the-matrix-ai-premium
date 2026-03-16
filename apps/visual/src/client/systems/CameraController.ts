@@ -8,6 +8,9 @@ export interface CameraControllerConfig {
   zoomMax?: number;
   zoomStep?: number;
   keyScrollSpeed?: number;
+  followTarget?: Phaser.GameObjects.GameObject;
+  followLerp?: number;
+  initialZoom?: number;
 }
 
 /**
@@ -22,6 +25,7 @@ export class CameraController {
   private dragStartX = 0;
   private dragStartY = 0;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys | null = null;
+  private followTarget: Phaser.GameObjects.GameObject | null = null;
 
   constructor(scene: Phaser.Scene, config: CameraControllerConfig) {
     this.scene = scene;
@@ -34,13 +38,24 @@ export class CameraController {
       zoomMax: config.zoomMax ?? 2,
       zoomStep: config.zoomStep ?? 0.1,
       keyScrollSpeed: config.keyScrollSpeed ?? 4,
+      followTarget: config.followTarget ?? null,
+      followLerp: config.followLerp ?? 0.1,
+      initialZoom: config.initialZoom ?? 0,
     };
 
     this.setupBounds();
-    this.setupDrag();
     this.setupZoom();
-    this.setupKeyboard();
-    this.fitToMap();
+
+    if (config.followTarget) {
+      this.startFollow(config.followTarget, config.followLerp);
+      if (config.initialZoom) {
+        this.camera.zoom = Phaser.Math.Clamp(config.initialZoom, this.config.zoomMin, this.config.zoomMax);
+      }
+    } else {
+      this.setupDrag();
+      this.setupKeyboard();
+      this.fitToMap();
+    }
   }
 
   private setupBounds(): void {
@@ -108,6 +123,22 @@ export class CameraController {
     if (this.cursors.right.isDown) this.camera.scrollX += speed;
     if (this.cursors.up.isDown) this.camera.scrollY -= speed;
     if (this.cursors.down.isDown) this.camera.scrollY += speed;
+  }
+
+  /**
+   * Camera follows a game object (e.g., player character).
+   */
+  startFollow(target: Phaser.GameObjects.GameObject, lerp?: number): void {
+    this.followTarget = target;
+    this.camera.startFollow(target, true, lerp ?? this.config.followLerp, lerp ?? this.config.followLerp);
+  }
+
+  /**
+   * Stop following and return to free camera.
+   */
+  stopFollow(): void {
+    this.followTarget = null;
+    this.camera.stopFollow();
   }
 
   /**

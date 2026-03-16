@@ -23,6 +23,8 @@ export interface AgentConfig {
   y: number;
   spriteKey?: string;
   displayName?: string;
+  alwaysSeated?: boolean;
+  alpha?: number;
 }
 
 /**
@@ -31,16 +33,19 @@ export interface AgentConfig {
  */
 export class Agent extends Phaser.GameObjects.Container {
   readonly agentId: string;
+  readonly alwaysSeated: boolean;
   private sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Rectangle;
   private statusIndicator: StatusIndicator;
   private floatingIcon: Phaser.GameObjects.Text;
   private speechBubble: SpeechBubble;
   private currentAnimation: AnimationState = 'idle';
   private currentTask: string | null = null;
+  private lastSpeechText: string | null = null;
 
   constructor(scene: Phaser.Scene, config: AgentConfig) {
     super(scene, config.x, config.y);
     this.agentId = config.agentId;
+    this.alwaysSeated = config.alwaysSeated ?? false;
     scene.add.existing(this);
 
     // Create sprite or placeholder rectangle
@@ -52,6 +57,11 @@ export class Agent extends Phaser.GameObjects.Container {
       this.sprite = scene.add.rectangle(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT, color);
     }
     this.add(this.sprite);
+
+    // Apply custom alpha (e.g., Ghost transparency)
+    if (config.alpha !== undefined) {
+      this.setAlpha(config.alpha);
+    }
 
     // Status indicator (glow around sprite)
     this.statusIndicator = new StatusIndicator(scene, SPRITE_WIDTH, SPRITE_HEIGHT);
@@ -70,6 +80,10 @@ export class Agent extends Phaser.GameObjects.Container {
     this.add(this.speechBubble);
 
     this.setDepth(3);
+
+    // Make container interactive for click/hover
+    this.setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
+    this.setInteractive({ useHandCursor: true });
   }
 
   // ── Animation State Machine ──
@@ -80,6 +94,9 @@ export class Agent extends Phaser.GameObjects.Container {
 
   setAnimationState(state: AnimationState): boolean {
     if (this.currentAnimation === state) return true;
+
+    // Block walking for always-seated agents (e.g., Operator)
+    if (this.alwaysSeated && state.startsWith('walk-')) return false;
 
     const validTransitions = ANIMATION_TRANSITIONS[this.currentAnimation];
     if (!validTransitions.includes(state)) return false;
@@ -121,7 +138,12 @@ export class Agent extends Phaser.GameObjects.Container {
   // ── Speech Bubble ──
 
   say(text: string, durationMs?: number): void {
+    this.lastSpeechText = text;
     this.speechBubble.show(text, durationMs);
+  }
+
+  getLastSpeech(): string | null {
+    return this.lastSpeechText;
   }
 
   silence(): void {
@@ -151,8 +173,10 @@ export class Agent extends Phaser.GameObjects.Container {
 
   // ── Position ──
 
-  moveTo(x: number, y: number): void {
+  moveTo(x: number, y: number): boolean {
+    if (this.alwaysSeated) return false;
     this.setPosition(x, y);
+    return true;
   }
 
   // ── Color by agent role ──
@@ -178,6 +202,7 @@ export class Agent extends Phaser.GameObjects.Container {
       'content-reviewer': 0xCD853F,
       smith: 0xFF0000,
       'lmas-master': 0xFFFFFF,
+      player: 0x00BFFF,
     };
     return colors[agentId] ?? 0x00FF41;
   }

@@ -1,0 +1,17 @@
+handoff:
+  from_agent: "dev"
+  to_agent: "qa"
+  story_context:
+    story_id: "3.1"
+    story_path: "docs/stories/active/3.1.lmas-filesystem-data-reader.md"
+    story_status: "In Progress"
+    current_task: "Review data reader"
+    branch: "main"
+  decisions:
+    - "js-yaml for parsing"
+  files_modified:
+    - "apps/visual/src/server/services/LMASDataReader.ts"
+  blockers:
+    - "Missing test fixtures"
+    - "Dependency issue with chokidar"
+  next_action: "Resolve blockers before review"
