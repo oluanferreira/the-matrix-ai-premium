@@ -36,7 +36,7 @@ export function createAPIRouter(
       res.json({ projects, count: projects.length });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown error';
-      console.error(`[Matrix Visual] Failed to discover projects: ${message}`);
+      console.error(`[Matrix Visual] Failed to discover projects:`, error);
       res.status(500).json({ error: `Failed to discover projects: ${message}` });
     }
   });

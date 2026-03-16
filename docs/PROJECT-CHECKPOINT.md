@@ -137,12 +137,21 @@ BootScene → LoginScene (typewriter PT-BR + code rain)
 
 ## Próximos Passos (fila de implementação)
 
-**TODAS AS 19 STORIES COMPLETAS!** v1.0 MVP implementado.
+**19/19 STORIES COMPLETAS!** v1.0 MVP implementado e no remote.
 
-Próximas ações possíveis:
-1. Ativar `@devops` para commit e push de todas as mudanças
-2. Testar visualmente o game rodando (`npm run dev` em `apps/visual/`)
-3. Planejar v2.0 (Smith body possession, auth real, terminal interativo, audio assets)
+### Bugs corrigidos durante teste visual (sessão 2026-03-16)
+- **ESM __dirname fix**: `index.ts` e `app.ts` usavam `__dirname` (não existe em ESM). Corrigido com `fileURLToPath(import.meta.url)`.
+- **ProjectDiscovery scan**: Adicionado `cwd` + parent como scan paths. Try/catch granular para child directories.
+- **BootScene timeout**: `this.time.delayedCall` não disparava. Trocado por `setTimeout` nativo.
+- **PENDENTE - Texto pixelado demais**: `resolution: 2` ajudou mas fonte ainda pouco legível. Precisa ajuste fino de font sizes.
+- **PENDENTE - Botão "Começar novo projeto"**: Deve aparecer SEMPRE na lista (abaixo dos projetos), não só no empty state.
+
+### Próximas ações (nova sessão)
+1. **Fix UX — nitidez do texto**: Aumentar font sizes ou usar bitmap font para melhor legibilidade pixel
+2. **Fix UX — botão "Começar novo projeto"**: Mover para a lista de projetos (sempre visível), não só empty state
+3. **Remover auto-select**: Com 1 projeto, ainda mostrar a lista + botão (não pular para pílulas)
+4. **Commit + push** dos fixes ESM/BootScene
+5. **Planejar v2.0**: Smith body possession, auth real, terminal interativo, audio assets
 
 ---
 

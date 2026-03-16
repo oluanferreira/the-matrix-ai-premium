@@ -48,15 +48,24 @@ export class ProjectDiscovery {
         }
 
         // Scan child directories (1 level deep)
-        const entries = fs.readdirSync(scanPath, { withFileTypes: true });
-        for (const entry of entries) {
-          if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
-          const childPath = path.resolve(scanPath, entry.name);
-          if (this.isLMASProject(childPath) && !seen.has(childPath)) {
-            seen.add(childPath);
-            const info = this.buildProjectInfo(childPath);
-            if (info) projects.push(info);
+        try {
+          const entries = fs.readdirSync(scanPath, { withFileTypes: true });
+          for (const entry of entries) {
+            try {
+              if (!entry.isDirectory() || entry.name.startsWith('.')) continue;
+              const childPath = path.resolve(scanPath, entry.name);
+              if (this.isLMASProject(childPath) && !seen.has(childPath)) {
+                seen.add(childPath);
+                const info = this.buildProjectInfo(childPath);
+                if (info) projects.push(info);
+              }
+            } catch {
+              // Skip individual inaccessible child directories
+              continue;
+            }
           }
+        } catch {
+          // Skip if readdir fails (permission denied, etc.)
         }
       } catch (error) {
         // Skip inaccessible directories silently

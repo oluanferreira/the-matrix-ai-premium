@@ -1,14 +1,16 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { createApp } from './app';
 import { createProjectContext } from './project-context';
 
-const PORT = process.env.PORT ?? 3001;
-// Resolve workspace: try __dirname (4 levels up from src/server/) or fallback to cwd
-const DEFAULT_WORKSPACE = path.resolve(__dirname, '../../../..');
-const CWD_WORKSPACE = process.cwd();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-console.log(`[Matrix Visual] DEFAULT_WORKSPACE: ${DEFAULT_WORKSPACE}`);
-console.log(`[Matrix Visual] CWD_WORKSPACE: ${CWD_WORKSPACE}`);
+const PORT = process.env.PORT ?? 3001;
+const DEFAULT_WORKSPACE = path.resolve(__dirname, '../../../..');
+
+console.log(`[Matrix Visual] Workspace: ${DEFAULT_WORKSPACE}`);
+console.log(`[Matrix Visual] CWD: ${process.cwd()}`);
 
 const projectContext = createProjectContext(DEFAULT_WORKSPACE);
 const { app, broadcaster } = createApp(projectContext);
