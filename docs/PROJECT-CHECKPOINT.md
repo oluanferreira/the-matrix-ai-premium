@@ -107,7 +107,29 @@ BootScene → LoginScene (typewriter PT-BR + code rain)
 
 ## Último Trabalho Realizado
 
-### Sessão 2026-03-16 (atual)
+### Sessão 2026-03-16 (continuação)
+
+**Bugfixes + UX + Sprites** (em andamento):
+- Smith adversarial review: 10 findings identificados, 6 corrigidos
+- try-catch em ConstructScene.create() com erro visual na tela
+- Shutdown cleanup em todas as 4 scenes (timeouts, intervals, event listeners, DOM)
+- Skip intro: qualquer tecla pula Boot/Login direto para ProjectSelect
+- Canvas pointer-events fix para cliques no DOM overlay
+- Resolução: 320x180 → 960x540 para sprites detalhados
+- Sprite size: 16x32 → 64x96
+- roundPixels: true elimina artefatos visuais ao mover
+- 4 sprites pixel art reais integrados: Neo, Architect, Trinity, Morpheus
+- Aseprite CLI pipeline: referência PNG → 64x96 game sprite + .aseprite
+- docs/SPRITE-PROMPT-GUIDE.md criado (20 prompts padronizados)
+- Arquivos: BootScene, LoginScene, ProjectSelectScene, ConstructScene, Agent, AgentFactory, PlayerController, config, main + 7 test files + sprites
+
+**Pendente para próxima sessão:**
+- Chat não funciona (input para falar com Morpheus + chat ao clicar agente)
+- Animações dos sprites (idle, walk 4 dirs, sentar) — pesquisar PixelLab ($5/mês) ou AutoSprite
+- Gerar sprites dos 16 personagens restantes
+- Tilemap placeholder precisa ser substituído por arte real
+
+### Sessão 2026-03-16 (anterior)
 
 **Story 5.4 — Project Selector** (COMPLETA):
 - Criado `ProjectDiscovery` service (backend) — descobre projetos LMAS automaticamente
@@ -148,7 +170,22 @@ BootScene → LoginScene (typewriter PT-BR + code rain)
 
 ### Próximas ações (nova sessão)
 
-**BUG CRÍTICO — Phaser scenes não executam create():**
+**CHAT NÃO FUNCIONA:**
+- Input tipo terminal para falar com Morpheus (chat geral) não envia mensagens
+- Chat ao clicar no agente (DeliveryScreen) também não funciona
+- Investigar endpoints e handlers de envio
+
+**ANIMAÇÕES DOS SPRITES:**
+- Sprites são estáticos (1 frame) — precisam walk cycle (4 dirs), idle, sentar
+- Ferramentas pesquisadas: PixelLab ($5/mês), AutoSprite ($12/mês), SD grátis
+- Workflow: PixelLab gera frames → importar no Aseprite → ajustar → exportar sprite sheet
+
+**16 SPRITES RESTANTES:**
+- Faltam: Oracle, Niobe, Link, Tank, Sati, Operator, Smith, Lock, Mouse, Sparks, Merovingian, Persephone, Ghost, Seraph, Keymaker, Player
+- Prompts padronizados em docs/SPRITE-PROMPT-GUIDE.md
+- Pipeline: ChatGPT gera referência → Aseprite CLI redimensiona → integra no Phaser
+
+**BUG RESOLVIDO — Phaser scenes create():**
 - Phaser v3.90 inicia, todos os módulos carregam (200 OK), mas `create()` das scenes nunca roda
 - BootScene com `setTimeout` funciona isoladamente, mas após LoginScene a cadeia quebra
 - Provável causa: import de módulo que falha silenciosamente (ConstructScene importa muitos assets/objetos)
