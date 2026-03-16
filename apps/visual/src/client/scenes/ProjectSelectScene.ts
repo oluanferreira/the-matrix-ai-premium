@@ -23,35 +23,26 @@ interface CodeRainColumn {
 type SceneState = 'loading' | 'list' | 'pills' | 'empty' | 'entering';
 
 /**
- * Project selection screen — lists discovered LMAS projects.
- * After selecting a project, shows red/blue pills.
- * Red pill → enter Construct. Blue pill → back to project list.
- * Uses pixel-friendly font sizes (multiples of game resolution).
+ * Project selection screen — DOM overlay for crisp text + Phaser code rain background.
+ * Always shows project list + "Começar novo projeto" button.
+ * Never auto-selects — user always sees the list first.
  *
  * Story 5.4: Project Selector — "Escolha sua Realidade"
  */
 export class ProjectSelectScene extends Phaser.Scene {
-  // Code rain
+  // Code rain (Phaser background)
   private columns: CodeRainColumn[] = [];
+
+  // DOM overlay
+  private overlay: HTMLDivElement | null = null;
+  private contentEl: HTMLDivElement | null = null;
 
   // State
   private sceneState: SceneState = 'loading';
   private projects: ProjectInfo[] = [];
   private selectedProject: ProjectInfo | null = null;
   private selectedIndex = 0;
-
-  // UI elements
-  private titleText: Phaser.GameObjects.Text | null = null;
-  private projectTexts: Phaser.GameObjects.Text[] = [];
-  private infoText: Phaser.GameObjects.Text | null = null;
-  private emptyText: Phaser.GameObjects.Text | null = null;
-  private newProjectBtn: Phaser.GameObjects.Text | null = null;
-  private redPill: Phaser.GameObjects.Container | null = null;
-  private bluePill: Phaser.GameObjects.Container | null = null;
-  private redLabel: Phaser.GameObjects.Text | null = null;
-  private blueLabel: Phaser.GameObjects.Text | null = null;
-  private selectedProjectText: Phaser.GameObjects.Text | null = null;
-  private cursorGraphic: Phaser.GameObjects.Text | null = null;
+  private keyHandler: ((e: KeyboardEvent) => void) | null = null;
 
   constructor() {
     super({ key: 'ProjectSelectScene' });
@@ -59,347 +50,274 @@ export class ProjectSelectScene extends Phaser.Scene {
 
   create(): void {
     const { width, height } = this.cameras.main;
-
     this.cameras.main.setBackgroundColor(MATRIX_BG);
-    this.cameras.main.fadeIn(500, 0, 0, 0);
 
-    // Code rain background
     this.initCodeRain(width, height);
+    this.createOverlay();
 
-    // Title — large enough to be readable at pixel scale
-    this.titleText = this.add.text(width / 2, 14, '> Selecione sua realidade_', {
-      fontSize: '9px',
-      color: MATRIX_GREEN,
-      fontFamily: 'monospace',
-      resolution: 2,
-    }).setOrigin(0.5).setDepth(10);
+    this.keyHandler = (e: KeyboardEvent) => this.handleKeyboard(e);
+    document.addEventListener('keydown', this.keyHandler);
 
-    // Info text (footer)
-    this.infoText = this.add.text(width / 2, height / 2, 'Escaneando projetos LMAS...', {
-      fontSize: '7px',
-      color: MATRIX_DIM,
-      fontFamily: 'monospace',
-      resolution: 2,
-    }).setOrigin(0.5).setDepth(10);
-
-    // Keyboard navigation
-    this.input.keyboard?.on('keydown-UP', () => this.navigateUp());
-    this.input.keyboard?.on('keydown-DOWN', () => this.navigateDown());
-    this.input.keyboard?.on('keydown-ENTER', () => this.confirmSelection());
-    this.input.keyboard?.on('keydown-ESC', () => this.handleEscape());
-
-    // Fetch projects from server
     this.fetchProjects();
+  }
+
+  private createOverlay(): void {
+    this.overlay = document.createElement('div');
+    this.overlay.id = 'project-select-overlay';
+    Object.assign(this.overlay.style, {
+      position: 'fixed', top: '0', left: '0', width: '100vw', height: '100vh',
+      backgroundColor: 'rgba(13, 2, 8, 0.85)',
+      color: MATRIX_GREEN, fontFamily: '"Courier New", monospace', fontSize: '16px',
+      zIndex: '500', display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center', pointerEvents: 'auto',
+    });
+
+    this.contentEl = document.createElement('div');
+    this.contentEl.id = 'project-select-content';
+    Object.assign(this.contentEl.style, {
+      maxWidth: '600px', width: '90%', textAlign: 'center',
+    });
+    this.overlay.appendChild(this.contentEl);
+    document.body.appendChild(this.overlay);
+
+    this.contentEl.innerHTML = `
+      <div style="font-size: 22px; letter-spacing: 3px; margin-bottom: 24px;">
+        &gt; Selecione sua realidade_
+      </div>
+      <div style="color: ${MATRIX_DIM}; font-size: 14px;">Escaneando projetos LMAS...</div>
+    `;
   }
 
   private async fetchProjects(): Promise<void> {
     try {
       const response = await fetch('/api/projects');
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json() as { projects: ProjectInfo[]; count: number };
       this.projects = data.projects;
-
-      if (this.projects.length === 0) {
-        this.showEmptyState();
-      } else if (this.projects.length === 1) {
-        // Auto-select single project (AC: 10)
-        this.selectedProject = this.projects[0];
-        this.showPills();
-      } else {
-        this.showProjectList();
-      }
+      // Always show list (never auto-select)
+      this.showProjectList();
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
+      const message = error instanceof Error ? error.message : 'Unknown';
       this.showError(`Erro ao buscar projetos: ${message}`);
     }
   }
 
   private showProjectList(): void {
     this.sceneState = 'list';
-    const { width, height } = this.cameras.main;
+    if (!this.contentEl) return;
 
-    // Clear loading text
-    this.infoText?.setText('');
-
-    const startY = 30;
-    const lineHeight = 14;
-    const maxVisible = Math.floor((height - 60) / lineHeight);
-    const visibleProjects = this.projects.slice(0, maxVisible);
-
-    // Cursor
-    this.cursorGraphic = this.add.text(10, startY, '>', {
-      fontSize: '8px',
-      color: MATRIX_GREEN,
-      fontFamily: 'monospace',
-      resolution: 2,
-    }).setDepth(10);
-
-    // Project entries
-    for (let i = 0; i < visibleProjects.length; i++) {
-      const project = visibleProjects[i];
-      const y = startY + i * lineHeight;
+    const rows = this.projects.map((project, i) => {
       const timeAgo = this.formatTimeAgo(project.lastActivity);
-      const label = `${project.name}  [${project.storyCount}s ${project.agentCount}a]  ${timeAgo}`;
+      const selected = i === this.selectedIndex;
+      return `
+        <div class="project-row" data-index="${i}" style="
+          display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+          color: ${selected ? MATRIX_GREEN : MATRIX_DIM}; cursor: pointer;
+          border: 1px solid ${selected ? MATRIX_GREEN : 'transparent'};
+          background: ${selected ? 'rgba(0,255,65,0.05)' : 'transparent'};
+          margin-bottom: 4px; transition: all 0.15s;
+        ">
+          <span style="width: 16px; font-size: 18px;">${selected ? '&gt;' : '&nbsp;'}</span>
+          <span style="flex: 1; text-align: left; font-size: 16px;">${this.esc(project.name)}</span>
+          <span style="font-size: 12px; color: ${MATRIX_DIM};">
+            ${project.storyCount} stories &middot; ${project.agentCount} agentes &middot; ${timeAgo}
+          </span>
+        </div>
+      `;
+    }).join('');
 
-      const text = this.add.text(20, y, label, {
-        fontSize: '7px',
-        color: i === 0 ? MATRIX_GREEN : MATRIX_DIM,
-        fontFamily: 'monospace',
-        resolution: 2,
-      }).setDepth(10).setInteractive();
+    const emptyMsg = this.projects.length === 0
+      ? `<div style="color: ${MATRIX_DIM}; font-size: 14px; padding: 16px;">Nenhum projeto LMAS detectado.</div>`
+      : '';
 
-      text.on('pointerover', () => {
-        this.selectedIndex = i;
-        this.updateListHighlight();
-      });
+    this.contentEl.innerHTML = `
+      <div style="font-size: 22px; letter-spacing: 3px; margin-bottom: 24px;">
+        &gt; Selecione sua realidade_
+      </div>
+      <div style="text-align: left; margin-bottom: 12px;">
+        ${rows}
+        ${emptyMsg}
+      </div>
+      <div style="margin-bottom: 20px;">
+        <button id="new-project-btn" style="
+          background: transparent; border: 1px solid ${MATRIX_GREEN}; color: ${MATRIX_GREEN};
+          font-family: 'Courier New', monospace; font-size: 15px;
+          padding: 10px 28px; cursor: pointer; letter-spacing: 1px;
+          width: 100%; max-width: 400px;
+        ">[ + Comecar novo projeto ]</button>
+      </div>
+      <div style="color: ${MATRIX_DIM}; font-size: 12px;">
+        ${this.projects.length > 0 ? 'Setas: Navegar &nbsp;|&nbsp; ENTER: Selecionar' : 'Clique no botao acima para começar'}
+      </div>
+    `;
 
-      text.on('pointerdown', () => {
-        this.selectedIndex = i;
-        this.confirmSelection();
-      });
-
-      this.projectTexts.push(text);
-    }
-
-    // Footer hint
-    this.infoText?.setText('Setas: Navegar  |  ENTER: Selecionar');
-    this.infoText?.setPosition(width / 2, height - 10);
-    this.infoText?.setFontSize(6);
-
-    this.updateListHighlight();
+    this.bindListEvents();
   }
 
-  private showEmptyState(): void {
-    this.sceneState = 'empty';
-    const { width, height } = this.cameras.main;
+  private bindListEvents(): void {
+    if (!this.contentEl) return;
 
-    this.infoText?.setText('');
-
-    this.emptyText = this.add.text(width / 2, height * 0.35, [
-      'Nenhum projeto LMAS detectado.',
-      '',
-      'Execute em um diretorio:',
-      '  npx lmas-core install',
-      '',
-      'Ou defina LMAS_PROJECTS_PATH',
-    ].join('\n'), {
-      fontSize: '7px',
-      color: MATRIX_DIM,
-      fontFamily: 'monospace',
-      align: 'center',
-      resolution: 2,
-    }).setOrigin(0.5).setDepth(10);
-
-    // "Começar novo projeto" button
-    this.newProjectBtn = this.add.text(width / 2, height * 0.7, '[ Comecar novo projeto ]', {
-      fontSize: '8px',
-      color: MATRIX_GREEN,
-      fontFamily: 'monospace',
-      resolution: 2,
-    }).setOrigin(0.5).setDepth(10).setInteractive();
-
-    this.newProjectBtn.on('pointerover', () => this.newProjectBtn?.setScale(1.1));
-    this.newProjectBtn.on('pointerout', () => this.newProjectBtn?.setScale(1));
-    this.newProjectBtn.on('pointerdown', () => {
-      this.emptyText?.setText([
-        '1. Abra um terminal',
-        '2. Navegue ate o diretorio',
-        '3. npx lmas-core install',
-        '4. Recarregue esta pagina',
-      ].join('\n'));
-      this.newProjectBtn?.setText('[ Voltar ]');
+    this.contentEl.querySelectorAll('.project-row').forEach(el => {
+      el.addEventListener('click', () => {
+        const idx = parseInt((el as HTMLElement).dataset.index ?? '0', 10);
+        this.selectedIndex = idx;
+        this.selectedProject = this.projects[idx];
+        this.showPills();
+      });
+      el.addEventListener('mouseenter', () => {
+        const idx = parseInt((el as HTMLElement).dataset.index ?? '0', 10);
+        this.selectedIndex = idx;
+        this.showProjectList();
+      });
     });
+
+    const newBtn = this.contentEl.querySelector('#new-project-btn');
+    newBtn?.addEventListener('click', () => this.showNewProjectInstructions());
+    newBtn?.addEventListener('mouseenter', () => (newBtn as HTMLElement).style.background = 'rgba(0,255,65,0.1)');
+    newBtn?.addEventListener('mouseleave', () => (newBtn as HTMLElement).style.background = 'transparent');
+  }
+
+  private showNewProjectInstructions(): void {
+    if (!this.contentEl) return;
+    this.contentEl.innerHTML = `
+      <div style="font-size: 22px; letter-spacing: 3px; margin-bottom: 24px;">
+        &gt; Novo projeto_
+      </div>
+      <div style="text-align: left; color: ${MATRIX_DIM}; font-size: 15px; line-height: 2.2; max-width: 480px; margin: 0 auto;">
+        <span style="color: ${MATRIX_GREEN};">1.</span> Abra um terminal<br>
+        <span style="color: ${MATRIX_GREEN};">2.</span> Navegue ate o diretorio desejado<br>
+        <span style="color: ${MATRIX_GREEN};">3.</span> Execute: <span style="color: ${MATRIX_GREEN};">npx lmas-core install</span><br>
+        <span style="color: ${MATRIX_GREEN};">4.</span> Volte aqui e recarregue a pagina (F5)
+      </div>
+      <div style="margin-top: 24px;">
+        <button id="back-btn" style="
+          background: transparent; border: 1px solid ${MATRIX_DIM}; color: ${MATRIX_DIM};
+          font-family: 'Courier New', monospace; font-size: 14px;
+          padding: 8px 20px; cursor: pointer;
+        ">[ Voltar ]</button>
+      </div>
+    `;
+    this.contentEl.querySelector('#back-btn')?.addEventListener('click', () => this.showProjectList());
   }
 
   private showPills(): void {
     this.sceneState = 'pills';
-    const { width, height } = this.cameras.main;
+    if (!this.contentEl || !this.selectedProject) return;
 
-    // Clear list elements
-    this.clearListElements();
-    this.infoText?.setText('');
+    this.contentEl.innerHTML = `
+      <div style="font-size: 22px; letter-spacing: 3px; margin-bottom: 8px;">
+        &gt; ${this.esc(this.selectedProject.name)}_
+      </div>
+      <div style="color: ${MATRIX_DIM}; font-size: 13px; margin-bottom: 36px;">
+        ${this.selectedProject.storyCount} stories &middot; ${this.selectedProject.agentCount} agentes
+      </div>
+      <div style="display: flex; gap: 60px; justify-content: center; align-items: center;">
+        <div style="text-align: center;">
+          <div id="red-pill" style="
+            width: 56px; height: 28px; border-radius: 14px;
+            background: linear-gradient(135deg, #FF2222, #CC0000);
+            border: 2px solid #FF4444; cursor: pointer; margin: 0 auto 10px;
+            box-shadow: 0 0 16px rgba(255,0,0,0.5); transition: transform 0.15s;
+          "></div>
+          <div style="color: #FF4444; font-size: 15px;">Entrar</div>
+        </div>
+        <div style="text-align: center;">
+          <div id="blue-pill" style="
+            width: 56px; height: 28px; border-radius: 14px;
+            background: linear-gradient(135deg, #2266FF, #0033CC);
+            border: 2px solid #4488FF; cursor: pointer; margin: 0 auto 10px;
+            box-shadow: 0 0 16px rgba(0,68,255,0.5); transition: transform 0.15s;
+          "></div>
+          <div style="color: #4488FF; font-size: 15px;">Voltar</div>
+        </div>
+      </div>
+      <div style="color: ${MATRIX_DIM}; font-size: 13px; margin-top: 28px;">
+        Escolha sua pilula.
+      </div>
+    `;
 
-    // Show selected project name
-    const projectName = this.selectedProject?.name ?? 'Unknown';
-    this.selectedProjectText = this.add.text(width / 2, 30, `> ${projectName}`, {
-      fontSize: '9px',
-      color: MATRIX_GREEN,
-      fontFamily: 'monospace',
-      resolution: 2,
-    }).setOrigin(0.5).setDepth(10);
+    const redPill = this.contentEl.querySelector('#red-pill');
+    const bluePill = this.contentEl.querySelector('#blue-pill');
 
-    const pillY = height * 0.55;
+    redPill?.addEventListener('click', () => this.enterConstruct());
+    redPill?.addEventListener('mouseenter', () => (redPill as HTMLElement).style.transform = 'scale(1.2)');
+    redPill?.addEventListener('mouseleave', () => (redPill as HTMLElement).style.transform = 'scale(1)');
 
-    // Red pill — enter Construct
-    this.redPill = this.createPill(width / 2 - 40, pillY, 0xFF0000);
-    this.redPill.setInteractive(
-      new Phaser.Geom.Rectangle(-16, -8, 32, 16),
-      Phaser.Geom.Rectangle.Contains,
-    );
-    this.redPill.on('pointerdown', () => this.enterConstruct());
-    this.redPill.on('pointerover', () => this.redPill?.setScale(1.2));
-    this.redPill.on('pointerout', () => this.redPill?.setScale(1));
-
-    // Blue pill — back to project list
-    this.bluePill = this.createPill(width / 2 + 40, pillY, 0x0000FF);
-    this.bluePill.setInteractive(
-      new Phaser.Geom.Rectangle(-16, -8, 32, 16),
-      Phaser.Geom.Rectangle.Contains,
-    );
-    this.bluePill.on('pointerdown', () => this.backToList());
-    this.bluePill.on('pointerover', () => this.bluePill?.setScale(1.2));
-    this.bluePill.on('pointerout', () => this.bluePill?.setScale(1));
-
-    // Labels
-    this.redLabel = this.add.text(width / 2 - 40, pillY + 14, 'Entrar', {
-      fontSize: '7px', color: '#FF0000', fontFamily: 'monospace', resolution: 2,
-    }).setOrigin(0.5).setDepth(10);
-
-    this.blueLabel = this.add.text(width / 2 + 40, pillY + 14, 'Voltar', {
-      fontSize: '7px', color: '#0000FF', fontFamily: 'monospace', resolution: 2,
-    }).setOrigin(0.5).setDepth(10);
-
-    // Footer
-    this.infoText?.setText('Escolha sua pilula.');
-    this.infoText?.setPosition(width / 2, height - 10);
-  }
-
-  private createPill(x: number, y: number, color: number): Phaser.GameObjects.Container {
-    const container = this.add.container(x, y).setDepth(10);
-
-    // Pill shape (capsule = rounded rectangle)
-    const pill = this.add.graphics();
-    pill.fillStyle(color, 1);
-    pill.fillRoundedRect(-12, -6, 24, 12, 6);
-    pill.lineStyle(1, 0xFFFFFF, 0.5);
-    pill.strokeRoundedRect(-12, -6, 24, 12, 6);
-    container.add(pill);
-
-    // Shine effect
-    const shine = this.add.graphics();
-    shine.fillStyle(0xFFFFFF, 0.3);
-    shine.fillEllipse(-4, -2, 6, 3);
-    container.add(shine);
-
-    return container;
+    bluePill?.addEventListener('click', () => this.backToList());
+    bluePill?.addEventListener('mouseenter', () => (bluePill as HTMLElement).style.transform = 'scale(1.2)');
+    bluePill?.addEventListener('mouseleave', () => (bluePill as HTMLElement).style.transform = 'scale(1)');
   }
 
   private async enterConstruct(): Promise<void> {
     if (this.sceneState === 'entering' || !this.selectedProject) return;
     this.sceneState = 'entering';
 
-    // Select project on server (AC: 8)
     try {
       const response = await fetch('/api/project/select', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ projectPath: this.selectedProject.path }),
       });
-
       if (!response.ok) {
-        const error = await response.json() as { error: string };
-        throw new Error(error.error ?? `HTTP ${response.status}`);
+        const err = await response.json() as { error: string };
+        throw new Error(err.error ?? `HTTP ${response.status}`);
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
+      const message = error instanceof Error ? error.message : 'Unknown';
       this.showError(`Falha ao selecionar projeto: ${message}`);
       this.sceneState = 'pills';
       return;
     }
 
-    // Glitch transition effect
+    // Glitch transition
     this.cameras.main.shake(500, 0.02);
     this.cameras.main.flash(500, 0, 255, 65);
 
-    this.time.delayedCall(600, () => {
+    setTimeout(() => {
       this.cameras.main.fadeOut(500, 0, 0, 0);
-    });
+      if (this.overlay) this.overlay.style.opacity = '0';
+    }, 600);
 
-    this.time.delayedCall(1200, () => {
+    setTimeout(() => {
+      this.destroyOverlay();
       this.scene.start('ConstructScene');
-    });
+    }, 1200);
   }
 
   private backToList(): void {
-    if (this.projects.length <= 1) return;
-
     this.selectedProject = null;
-
-    // Clear pill elements
-    this.redPill?.destroy();
-    this.bluePill?.destroy();
-    this.redLabel?.destroy();
-    this.blueLabel?.destroy();
-    this.selectedProjectText?.destroy();
-    this.redPill = null;
-    this.bluePill = null;
-    this.redLabel = null;
-    this.blueLabel = null;
-    this.selectedProjectText = null;
-
     this.showProjectList();
   }
 
-  private navigateUp(): void {
-    if (this.sceneState !== 'list' || this.projects.length === 0) return;
-    this.selectedIndex = Math.max(0, this.selectedIndex - 1);
-    this.updateListHighlight();
-  }
-
-  private navigateDown(): void {
-    if (this.sceneState !== 'list' || this.projects.length === 0) return;
-    this.selectedIndex = Math.min(this.projects.length - 1, this.selectedIndex + 1);
-    this.updateListHighlight();
-  }
-
-  private confirmSelection(): void {
-    if (this.sceneState === 'list' && this.projects[this.selectedIndex]) {
-      this.selectedProject = this.projects[this.selectedIndex];
-      this.showPills();
+  private handleKeyboard(e: KeyboardEvent): void {
+    if (this.sceneState === 'list' && this.projects.length > 0) {
+      if (e.key === 'ArrowUp') {
+        this.selectedIndex = Math.max(0, this.selectedIndex - 1);
+        this.showProjectList();
+      } else if (e.key === 'ArrowDown') {
+        this.selectedIndex = Math.min(this.projects.length - 1, this.selectedIndex + 1);
+        this.showProjectList();
+      } else if (e.key === 'Enter') {
+        this.selectedProject = this.projects[this.selectedIndex];
+        this.showPills();
+      }
+    } else if (this.sceneState === 'pills') {
+      if (e.key === 'Escape') this.backToList();
+      else if (e.key === 'Enter') this.enterConstruct();
     }
-  }
-
-  private handleEscape(): void {
-    if (this.sceneState === 'pills') {
-      this.backToList();
-    }
-  }
-
-  private updateListHighlight(): void {
-    const startY = 30;
-    const lineHeight = 14;
-
-    for (let i = 0; i < this.projectTexts.length; i++) {
-      this.projectTexts[i].setColor(i === this.selectedIndex ? MATRIX_GREEN : MATRIX_DIM);
-    }
-
-    // Update cursor position
-    this.cursorGraphic?.setPosition(10, startY + this.selectedIndex * lineHeight);
-  }
-
-  private clearListElements(): void {
-    for (const text of this.projectTexts) {
-      text.destroy();
-    }
-    this.projectTexts = [];
-    this.cursorGraphic?.destroy();
-    this.cursorGraphic = null;
   }
 
   private showError(message: string): void {
-    const { width, height } = this.cameras.main;
-    this.infoText?.setText('');
-
-    const errorText = this.add.text(width / 2, height * 0.7, message, {
-      fontSize: '6px',
-      color: '#FF4444',
-      fontFamily: 'monospace',
-      resolution: 2,
-    }).setOrigin(0.5).setDepth(10);
-
-    this.time.delayedCall(3000, () => errorText.destroy());
+    const errorEl = document.createElement('div');
+    Object.assign(errorEl.style, {
+      position: 'fixed', bottom: '32px', left: '50%', transform: 'translateX(-50%)',
+      background: MATRIX_BG, border: '1px solid #FF4444', color: '#FF4444',
+      fontFamily: '"Courier New", monospace', fontSize: '14px',
+      padding: '10px 20px', borderRadius: '4px', zIndex: '600',
+    });
+    errorEl.textContent = message;
+    document.body.appendChild(errorEl);
+    setTimeout(() => errorEl.remove(), 4000);
   }
 
   private formatTimeAgo(timestamp: number): string {
@@ -407,22 +325,35 @@ export class ProjectSelectScene extends Phaser.Scene {
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
-
     if (minutes < 1) return 'agora';
     if (minutes < 60) return `${minutes}min atras`;
     if (hours < 24) return `${hours}h atras`;
     return `${days}d atras`;
   }
 
-  // Code rain (same system as LoginScene)
+  private esc(text: string): string {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  private destroyOverlay(): void {
+    if (this.keyHandler) {
+      document.removeEventListener('keydown', this.keyHandler);
+      this.keyHandler = null;
+    }
+    this.overlay?.remove();
+    this.overlay = null;
+    this.contentEl = null;
+  }
+
+  // Code rain background (Phaser)
   private initCodeRain(width: number, height: number): void {
     const colSpacing = 8;
     const numColumns = Math.ceil(width / colSpacing);
-
     for (let i = 0; i < numColumns; i++) {
       this.columns.push({
-        x: i * colSpacing,
-        chars: [],
+        x: i * colSpacing, chars: [],
         speed: 0.3 + Math.random() * 0.7,
         nextSpawnY: -Math.random() * height,
       });
@@ -435,24 +366,13 @@ export class ProjectSelectScene extends Phaser.Scene {
 
   private updateCodeRain(): void {
     const { height } = this.cameras.main;
-
     for (const col of this.columns) {
       col.nextSpawnY += col.speed;
       if (col.nextSpawnY >= 0) {
-        const charIndex = Math.floor(Math.random() * CODE_RAIN_CHARS.length);
-        col.chars.push({
-          y: col.nextSpawnY,
-          char: CODE_RAIN_CHARS[charIndex],
-          alpha: 1,
-        });
+        col.chars.push({ y: col.nextSpawnY, char: CODE_RAIN_CHARS[Math.floor(Math.random() * CODE_RAIN_CHARS.length)], alpha: 1 });
         col.nextSpawnY = -8;
       }
-
-      for (const ch of col.chars) {
-        ch.y += col.speed;
-        ch.alpha -= 0.005;
-      }
-
+      for (const ch of col.chars) { ch.y += col.speed; ch.alpha -= 0.005; }
       col.chars = col.chars.filter(ch => ch.y < height + 16 && ch.alpha > 0);
     }
   }

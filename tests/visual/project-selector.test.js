@@ -307,14 +307,14 @@ describe('Story 5.4: Project Selector — Escolha sua Realidade', () => {
     });
 
     test('suporta navegação por teclado (UP/DOWN/ENTER)', () => {
-      expect(projectSelectSceneSource).toContain('keydown-UP');
-      expect(projectSelectSceneSource).toContain('keydown-DOWN');
-      expect(projectSelectSceneSource).toContain('keydown-ENTER');
+      expect(projectSelectSceneSource).toContain('ArrowUp');
+      expect(projectSelectSceneSource).toContain('ArrowDown');
+      expect(projectSelectSceneSource).toContain("'Enter'");
     });
 
     test('suporta clique do mouse nos itens', () => {
-      expect(projectSelectSceneSource).toContain('pointerdown');
-      expect(projectSelectSceneSource).toContain('pointerover');
+      expect(projectSelectSceneSource).toContain("addEventListener('click'");
+      expect(projectSelectSceneSource).toContain("addEventListener('mouseenter'");
     });
 
     test('tem título "Selecione sua realidade"', () => {
@@ -322,13 +322,13 @@ describe('Story 5.4: Project Selector — Escolha sua Realidade', () => {
     });
 
     test('destaca item selecionado com cor diferente', () => {
-      expect(projectSelectSceneSource).toContain('updateListHighlight');
+      expect(projectSelectSceneSource).toContain('selectedIndex');
       expect(projectSelectSceneSource).toContain('MATRIX_GREEN');
       expect(projectSelectSceneSource).toContain('MATRIX_DIM');
     });
 
     test('mostra cursor > no item selecionado', () => {
-      expect(projectSelectSceneSource).toContain('cursorGraphic');
+      expect(projectSelectSceneSource).toContain('&gt;');
     });
   });
 
@@ -340,13 +340,13 @@ describe('Story 5.4: Project Selector — Escolha sua Realidade', () => {
     });
 
     test('cria pílula vermelha', () => {
-      expect(projectSelectSceneSource).toContain('0xFF0000');
-      expect(projectSelectSceneSource).toContain('redPill');
+      expect(projectSelectSceneSource).toContain('red-pill');
+      expect(projectSelectSceneSource).toContain('#FF');
     });
 
     test('cria pílula azul', () => {
-      expect(projectSelectSceneSource).toContain('0x0000FF');
-      expect(projectSelectSceneSource).toContain('bluePill');
+      expect(projectSelectSceneSource).toContain('blue-pill');
+      expect(projectSelectSceneSource).toContain('#00');
     });
 
     test('pílula vermelha entra no Construct (AC: 6)', () => {
@@ -370,38 +370,38 @@ describe('Story 5.4: Project Selector — Escolha sua Realidade', () => {
     });
 
     test('ESC também volta para lista', () => {
-      expect(projectSelectSceneSource).toContain('keydown-ESC');
-      expect(projectSelectSceneSource).toContain('handleEscape');
+      expect(projectSelectSceneSource).toContain("'Escape'");
+      expect(projectSelectSceneSource).toContain('backToList');
     });
 
     test('hover effect nas pílulas (scale 1.2)', () => {
-      expect(projectSelectSceneSource).toContain('setScale(1.2)');
-      expect(projectSelectSceneSource).toContain('setScale(1)');
+      expect(projectSelectSceneSource).toContain('scale(1.2)');
+      expect(projectSelectSceneSource).toContain('scale(1)');
     });
 
     test('rótulos Entrar e Voltar em PT-BR', () => {
-      expect(projectSelectSceneSource).toContain("'Entrar'");
-      expect(projectSelectSceneSource).toContain("'Voltar'");
+      expect(projectSelectSceneSource).toContain('Entrar');
+      expect(projectSelectSceneSource).toContain('Voltar');
     });
 
     test('mostra nome do projeto selecionado acima das pílulas', () => {
-      expect(projectSelectSceneSource).toContain('selectedProjectText');
-      expect(projectSelectSceneSource).toContain('selectedProject?.name');
+      expect(projectSelectSceneSource).toContain('selectedProject.name');
     });
   });
 
   // ─── Frontend: Auto-Select (AC: 10) ────────────────────────────────
 
-  describe('Auto-Select Single Project (AC: 10)', () => {
-    test('auto-seleciona se apenas 1 projeto', () => {
-      expect(projectSelectSceneSource).toContain('this.projects.length === 1');
+  describe('Project List Always Shown (AC: 10 updated)', () => {
+    test('always shows project list (never auto-selects)', () => {
+      // Updated: always shows list with "Começar novo projeto" button
+      expect(projectSelectSceneSource).toContain('showProjectList');
+      // Should NOT have auto-select logic
+      expect(projectSelectSceneSource).not.toContain('this.projects.length === 1');
     });
 
-    test('vai direto para pílulas quando 1 projeto', () => {
-      // Quando 1 projeto: selectedProject = projects[0] → showPills()
-      expect(projectSelectSceneSource).toMatch(
-        /this\.projects\.length === 1[\s\S]*?this\.selectedProject = this\.projects\[0\][\s\S]*?this\.showPills/,
-      );
+    test('botão "Começar novo projeto" sempre visível', () => {
+      expect(projectSelectSceneSource).toContain('new-project-btn');
+      expect(projectSelectSceneSource).toContain('Comecar novo projeto');
     });
   });
 
@@ -412,8 +412,8 @@ describe('Story 5.4: Project Selector — Escolha sua Realidade', () => {
       expect(projectSelectSceneSource).toContain('this.projects.length === 0');
     });
 
-    test('mostra mensagem de estado vazio', () => {
-      expect(projectSelectSceneSource).toContain('showEmptyState');
+    test('mostra mensagem quando sem projetos', () => {
+      expect(projectSelectSceneSource).toContain('Nenhum projeto LMAS detectado');
     });
 
     test('mensagem em PT-BR: nenhum projeto detectado', () => {
@@ -424,8 +424,8 @@ describe('Story 5.4: Project Selector — Escolha sua Realidade', () => {
       expect(projectSelectSceneSource).toContain('npx lmas-core install');
     });
 
-    test('menciona LMAS_PROJECTS_PATH como alternativa', () => {
-      expect(projectSelectSceneSource).toContain('LMAS_PROJECTS_PATH');
+    test('mostra instruções de novo projeto', () => {
+      expect(projectSelectSceneSource).toContain('npx lmas-core install');
     });
   });
 

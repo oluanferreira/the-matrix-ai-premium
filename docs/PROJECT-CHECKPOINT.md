@@ -147,11 +147,27 @@ BootScene → LoginScene (typewriter PT-BR + code rain)
 - **PENDENTE - Botão "Começar novo projeto"**: Deve aparecer SEMPRE na lista (abaixo dos projetos), não só no empty state.
 
 ### Próximas ações (nova sessão)
-1. **Fix UX — nitidez do texto**: Aumentar font sizes ou usar bitmap font para melhor legibilidade pixel
-2. **Fix UX — botão "Começar novo projeto"**: Mover para a lista de projetos (sempre visível), não só empty state
-3. **Remover auto-select**: Com 1 projeto, ainda mostrar a lista + botão (não pular para pílulas)
-4. **Commit + push** dos fixes ESM/BootScene
-5. **Planejar v2.0**: Smith body possession, auth real, terminal interativo, audio assets
+
+**BUG CRÍTICO — Phaser scenes não executam create():**
+- Phaser v3.90 inicia, todos os módulos carregam (200 OK), mas `create()` das scenes nunca roda
+- BootScene com `setTimeout` funciona isoladamente, mas após LoginScene a cadeia quebra
+- Provável causa: import de módulo que falha silenciosamente (ConstructScene importa muitos assets/objetos)
+- **Abordagem sugerida**: Testar ConstructScene isoladamente, verificar cada import
+
+**Fixes já aplicados (não commitados):**
+- ProjectSelectScene: convertida para DOM overlay (texto nítido) + botão "Começar novo projeto" sempre visível
+- LoginScene: Phaser timers substituídos por setTimeout/setInterval
+- Auto-select removido: sempre mostra lista de projetos
+
+**UX pendente:**
+- "Começar novo projeto": ao invés de instruções manuais, implementar file picker nativo do browser + executar `npx lmas-core install` via API do server automaticamente
+- Nitidez do texto: DOM overlay resolve para ProjectSelectScene, mas LoginScene typewriter ainda usa Phaser text
+
+**Arquivos modificados (não commitados):**
+- `apps/visual/src/client/scenes/ProjectSelectScene.ts` — DOM overlay
+- `apps/visual/src/client/scenes/LoginScene.ts` — setTimeout
+- `tests/visual/project-selector.test.js` — ajustados para DOM
+- `tests/visual/login-scene.test.js` — ajustados para DOM pills
 
 ---
 

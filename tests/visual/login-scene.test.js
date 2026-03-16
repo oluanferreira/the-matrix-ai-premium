@@ -120,38 +120,33 @@ describe('Story 5.2: Login Scene — Escolha sua Pílula', () => {
       expect(loginSource).not.toContain('showPills');
     });
 
-    test('pílulas existem em ProjectSelectScene', () => {
-      expect(projectSelectSource).toContain('redPill');
-      expect(projectSelectSource).toContain('bluePill');
-      expect(projectSelectSource).toContain('0xFF0000');
-      expect(projectSelectSource).toContain('0x0000FF');
+    test('pílulas existem em ProjectSelectScene (DOM)', () => {
+      expect(projectSelectSource).toContain('red-pill');
+      expect(projectSelectSource).toContain('blue-pill');
+      expect(projectSelectSource).toContain('#FF');
     });
 
     test('rótulos em PT-BR: Entrar e Voltar', () => {
-      expect(projectSelectSource).toContain("'Entrar'");
-      expect(projectSelectSource).toContain("'Voltar'");
+      expect(projectSelectSource).toContain('Entrar');
+      expect(projectSelectSource).toContain('Voltar');
     });
 
-    test('createPill cria container com cápsula em ProjectSelectScene', () => {
-      expect(projectSelectSource).toContain('createPill');
-      expect(projectSelectSource).toContain('fillRoundedRect');
-      expect(projectSelectSource).toContain('strokeRoundedRect');
+    test('pílulas são DOM elements com gradient', () => {
+      expect(projectSelectSource).toContain('linear-gradient');
+      expect(projectSelectSource).toContain('border-radius');
+      expect(projectSelectSource).toContain('box-shadow');
     });
 
-    test('efeito de brilho na pílula', () => {
-      expect(projectSelectSource).toContain('fillEllipse');
+    test('hover scale effect (DOM)', () => {
+      expect(projectSelectSource).toContain("addEventListener('mouseenter'");
+      expect(projectSelectSource).toContain('scale(1.2)');
+      expect(projectSelectSource).toContain('scale(1)');
     });
 
-    test('hover scale effect', () => {
-      expect(projectSelectSource).toContain('pointerover');
-      expect(projectSelectSource).toContain('setScale(1.2)');
-      expect(projectSelectSource).toContain('pointerout');
-      expect(projectSelectSource).toContain('setScale(1)');
-    });
-
-    test('pílulas interativas com hit area', () => {
-      expect(projectSelectSource).toContain('setInteractive');
-      expect(projectSelectSource).toContain('Phaser.Geom.Rectangle');
+    test('pílulas clicáveis (DOM click handlers)', () => {
+      expect(projectSelectSource).toContain("addEventListener('click'");
+      expect(projectSelectSource).toContain('enterConstruct');
+      expect(projectSelectSource).toContain('backToList');
     });
   });
 
@@ -198,7 +193,7 @@ describe('Story 5.2: Login Scene — Escolha sua Pílula', () => {
 
     test('enterConstruct é o handler da pílula vermelha', () => {
       expect(projectSelectSource).toContain('enterConstruct');
-      expect(projectSelectSource).toContain("'pointerdown'");
+      expect(projectSelectSource).toContain("addEventListener('click'");
     });
   });
 });
