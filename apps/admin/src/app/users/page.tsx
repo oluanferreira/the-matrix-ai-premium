@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Users, Crown, UserPlus, Search, Trash2, X, UserMinus, Pencil, Clock, Plus, Ban } from 'lucide-react'
 
 interface User {
   id: string
@@ -10,6 +11,7 @@ interface User {
   plan: string
   created_at: string
   tokens?: { id: string; token: string; expires_at: string; revoked: boolean }[]
+  matrix_tokens?: { id: string; token: string; expires_at: string; revoked: boolean }[]
 }
 
 export default function UsersPage() {
@@ -18,6 +20,50 @@ export default function UsersPage() {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', notes: '', days: '30' })
   const [message, setMessage] = useState('')
+  const [messageType, setMessageType] = useState<'success' | 'error'>('success')
+  const [filter, setFilter] = useState<'all' | 'premium' | 'free'>('all')
+  const [search, setSearch] = useState('')
+  const [editingTokenUserId, setEditingTokenUserId] = useState<string | null>(null)
+
+  function getActiveToken(u: User) {
+    const tokens = u.matrix_tokens || u.tokens
+    if (!tokens || tokens.length === 0) return null
+    return tokens.find(t => !t.revoked && new Date(t.expires_at) > new Date()) || tokens[0]
+  }
+
+  function getTokenStatus(token: { expires_at: string; revoked: boolean }) {
+    if (token.revoked) return { label: 'Revogado', color: 'text-destructive', bg: 'bg-destructive/10' }
+    const days = Math.ceil((new Date(token.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+    if (days <= 0) return { label: 'Expirado', color: 'text-amber-400', bg: 'bg-amber-500/10' }
+    if (days <= 7) return { label: `${days}d restantes`, color: 'text-amber-400', bg: 'bg-amber-500/10' }
+    return { label: `${days}d restantes`, color: 'text-primary', bg: 'bg-primary/10' }
+  }
+
+  async function extendUserToken(tokenId: string, days: number) {
+    const res = await fetch('/api/tokens', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: tokenId, action: 'extend', days }),
+    })
+    if (res.ok) {
+      showMessage(`Token estendido +${days} dias`, 'success')
+      setEditingTokenUserId(null)
+      loadUsers()
+    }
+  }
+
+  async function revokeUserToken(tokenId: string) {
+    const res = await fetch('/api/tokens', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: tokenId, action: 'revoke' }),
+    })
+    if (res.ok) {
+      showMessage('Token revogado', 'success')
+      setEditingTokenUserId(null)
+      loadUsers()
+    }
+  }
 
   useEffect(() => { loadUsers() }, [])
 
@@ -27,6 +73,12 @@ export default function UsersPage() {
     const data = await res.json()
     setUsers(data)
     setLoading(false)
+  }
+
+  function showMessage(msg: string, type: 'success' | 'error') {
+    setMessage(msg)
+    setMessageType(type)
+    setTimeout(() => setMessage(''), 5000)
   }
 
   async function createUser(e: React.FormEvent) {
@@ -47,12 +99,12 @@ export default function UsersPage() {
     const data = await res.json()
 
     if (res.ok) {
-      setMessage(`✅ Usuário criado! Token: ${data.token} (expira em ${form.days} dias)`)
+      showMessage(`Usuário criado com sucesso! Token: ${data.token} (expira em ${form.days} dias)`, 'success')
       setForm({ name: '', email: '', notes: '', days: '30' })
       setShowForm(false)
       loadUsers()
     } else {
-      setMessage(`❌ Erro: ${data.error}`)
+      showMessage(`Erro: ${data.error}`, 'error')
     }
   }
 
@@ -61,131 +113,312 @@ export default function UsersPage() {
 
     const res = await fetch(`/api/users?id=${id}`, { method: 'DELETE' })
     if (res.ok) {
-      setMessage(`✅ Usuário ${name} excluído.`)
+      showMessage(`Usuário ${name} excluído.`, 'success')
       loadUsers()
     }
   }
 
-  const inputStyle = {
-    background: '#111',
-    border: '1px solid #1a3a1a',
-    color: '#00ff41',
-    padding: '8px 12px',
-    borderRadius: '4px',
-    fontFamily: "'Courier New', monospace",
-    width: '100%',
-  }
+  const filteredUsers = users.filter((u) => {
+    if (filter === 'premium' && u.plan !== 'premium') return false
+    if (filter === 'free' && u.plan !== 'free') return false
+    if (search) {
+      const q = search.toLowerCase()
+      return u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
+    }
+    return true
+  })
 
-  const btnStyle = {
-    background: '#00ff41',
-    color: '#000',
-    border: 'none',
-    padding: '10px 20px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontFamily: "'Courier New', monospace",
-    fontWeight: 'bold' as const,
-  }
+  const totalUsers = users.length
+  const premiumCount = users.filter((u) => u.plan === 'premium').length
+  const freeCount = users.filter((u) => u.plan === 'free').length
 
-  const btnDangerStyle = {
-    ...btnStyle,
-    background: '#ff4444',
-    color: '#fff',
-    padding: '4px 12px',
-    fontSize: '12px',
-  }
+  const filters = [
+    { key: 'all' as const, label: 'Todos' },
+    { key: 'premium' as const, label: 'Premium' },
+    { key: 'free' as const, label: 'Free' },
+  ]
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h1 style={{ fontSize: '28px' }}>Users</h1>
-        <button style={btnStyle} onClick={() => setShowForm(!showForm)}>
-          {showForm ? '✕ Cancelar' : '+ Novo Usuário Premium'}
+    <>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Usuários</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gerenciar usuários do The Matrix AI</p>
+        </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+            showForm
+              ? 'bg-accent text-foreground hover:bg-accent/80'
+              : 'bg-primary text-primary-foreground hover:bg-primary/90'
+          }`}
+        >
+          {showForm ? (
+            <>
+              <X className="w-4 h-4" /> Cancelar
+            </>
+          ) : (
+            <>
+              <UserPlus className="w-4 h-4" /> Novo Usuário Premium
+            </>
+          )}
         </button>
       </div>
 
+      {/* Message */}
       {message && (
-        <div style={{
-          background: message.startsWith('✅') ? '#0a2a0a' : '#2a0a0a',
-          border: `1px solid ${message.startsWith('✅') ? '#1a4a1a' : '#4a1a1a'}`,
-          padding: '16px',
-          borderRadius: '8px',
-          marginBottom: '24px',
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-all',
-        }}>
+        <div
+          className={`p-4 rounded-xl text-sm font-medium border ${
+            messageType === 'error'
+              ? 'bg-destructive/10 border-destructive/20 text-destructive'
+              : 'bg-primary/10 border-primary/20 text-primary'
+          }`}
+        >
           {message}
         </div>
       )}
 
+      {/* Stat Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Total */}
+        <div className="bg-card border border-border rounded-2xl shadow-xs">
+          <div className="flex flex-col gap-1.5 p-6">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-muted-foreground">Total</span>
+              <Users className="w-4 h-4 text-muted-foreground" />
+            </div>
+            <span className="text-2xl font-bold text-foreground">{totalUsers}</span>
+          </div>
+        </div>
+
+        {/* Premium — highlight */}
+        <div className="bg-primary text-primary-foreground rounded-2xl shadow-xs">
+          <div className="flex flex-col gap-1.5 p-6">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-primary-foreground/70">Premium</span>
+              <Crown className="w-4 h-4 text-primary-foreground/70" />
+            </div>
+            <span className="text-2xl font-bold">{premiumCount}</span>
+          </div>
+        </div>
+
+        {/* Free */}
+        <div className="bg-card border border-border rounded-2xl shadow-xs">
+          <div className="flex flex-col gap-1.5 p-6">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-muted-foreground">Free</span>
+              <UserMinus className="w-4 h-4 text-muted-foreground" />
+            </div>
+            <span className="text-2xl font-bold text-foreground">{freeCount}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Create Form */}
       {showForm && (
-        <form onSubmit={createUser} style={{
-          background: '#111',
-          border: '1px solid #1a3a1a',
-          borderRadius: '8px',
-          padding: '24px',
-          marginBottom: '24px',
-          display: 'grid',
-          gap: '16px',
-        }}>
-          <div>
-            <label style={{ color: '#888', fontSize: '12px' }}>Nome *</label>
-            <input style={inputStyle} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
+        <form onSubmit={createUser} className="bg-card border border-border rounded-2xl p-6 space-y-4">
+          <h3 className="text-lg font-semibold text-foreground mb-2">Novo Usuário Premium</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Nome *</label>
+              <input
+                className="w-full bg-input/30 border border-input rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-colors"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                required
+                placeholder="Nome completo"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Email *</label>
+              <input
+                className="w-full bg-input/30 border border-input rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-colors"
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+                placeholder="email@exemplo.com"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Notas</label>
+              <input
+                className="w-full bg-input/30 border border-input rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-colors"
+                value={form.notes}
+                onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                placeholder="Ex: testador beta, amigo, cliente..."
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Dias de validade</label>
+              <input
+                className="w-full bg-input/30 border border-input rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-colors"
+                type="number"
+                value={form.days}
+                onChange={(e) => setForm({ ...form, days: e.target.value })}
+                min="1"
+                max="365"
+              />
+            </div>
           </div>
-          <div>
-            <label style={{ color: '#888', fontSize: '12px' }}>Email *</label>
-            <input style={inputStyle} type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
-          </div>
-          <div>
-            <label style={{ color: '#888', fontSize: '12px' }}>Notas</label>
-            <input style={inputStyle} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Ex: testador beta, amigo, cliente..." />
-          </div>
-          <div>
-            <label style={{ color: '#888', fontSize: '12px' }}>Dias de validade do token</label>
-            <input style={inputStyle} type="number" value={form.days} onChange={e => setForm({ ...form, days: e.target.value })} min="1" max="365" />
-          </div>
-          <button type="submit" style={btnStyle}>Criar Usuário + Gerar Token</button>
+          <button
+            type="submit"
+            className="bg-primary text-primary-foreground px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            Criar Usuário + Gerar Token
+          </button>
         </form>
       )}
 
+      {/* Filters & Search */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <div className="flex bg-card border border-border rounded-xl p-1">
+          {filters.map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key)}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                filter === f.key
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+        <div className="relative flex-1 max-w-xs">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input
+            className="w-full bg-transparent border border-border rounded-xl pl-9 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 transition-colors"
+            placeholder="Buscar usuário..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Table */}
       {loading ? (
-        <p style={{ color: '#666' }}>Carregando...</p>
+        <div className="text-sm text-muted-foreground py-8 text-center">Carregando...</div>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ borderBottom: '1px solid #1a3a1a', textAlign: 'left' }}>
-              <th style={{ padding: '12px', color: '#888' }}>Nome</th>
-              <th style={{ padding: '12px', color: '#888' }}>Email</th>
-              <th style={{ padding: '12px', color: '#888' }}>Plano</th>
-              <th style={{ padding: '12px', color: '#888' }}>Criado em</th>
-              <th style={{ padding: '12px', color: '#888' }}>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map(u => (
-              <tr key={u.id} style={{ borderBottom: '1px solid #111' }}>
-                <td style={{ padding: '12px' }}>{u.name}</td>
-                <td style={{ padding: '12px', color: '#888' }}>{u.email}</td>
-                <td style={{ padding: '12px' }}>
-                  <span style={{
-                    background: u.plan === 'premium' ? '#0a2a0a' : '#1a1a1a',
-                    color: u.plan === 'premium' ? '#00ff41' : '#666',
-                    padding: '2px 8px',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                  }}>
-                    {u.plan === 'premium' ? '🔴 RED PILL' : '🔵 BLUE PILL'}
-                  </span>
-                </td>
-                <td style={{ padding: '12px', color: '#666' }}>{new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
-                <td style={{ padding: '12px' }}>
-                  <button style={btnDangerStyle} onClick={() => deleteUser(u.id, u.name)}>Excluir</button>
-                </td>
+        <div className="bg-card border border-border rounded-2xl overflow-hidden">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Usuário</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Email</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Plano</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Token / Validade</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Criado em</th>
+                <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">Ações</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredUsers.map((u) => (
+                <tr key={u.id} className="border-b border-border hover:bg-muted/50 transition-colors">
+                  <td className="px-4 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center text-primary text-xs font-bold shrink-0">
+                        {u.name.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="text-sm font-medium text-foreground">{u.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 text-sm text-muted-foreground">{u.email}</td>
+                  <td className="px-4 py-4">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        u.plan === 'premium'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-secondary text-secondary-foreground'
+                      }`}
+                    >
+                      {u.plan === 'premium' ? 'Premium' : 'Free'}
+                    </span>
+                  </td>
+                  {/* Token / Validade */}
+                  <td className="px-4 py-4">
+                    {(() => {
+                      const token = getActiveToken(u)
+                      if (!token) {
+                        return <span className="text-xs text-muted-foreground">—</span>
+                      }
+                      const status = getTokenStatus(token)
+                      const isEditing = editingTokenUserId === u.id
+                      return (
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-2">
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${status.bg} ${status.color}`}>
+                              <Clock className="w-3 h-3" />
+                              {status.label}
+                            </span>
+                            <button
+                              onClick={() => setEditingTokenUserId(isEditing ? null : u.id)}
+                              className="p-1 rounded-md hover:bg-accent transition-colors"
+                              title="Editar validade"
+                            >
+                              <Pencil className="w-3 h-3 text-muted-foreground hover:text-foreground" />
+                            </button>
+                          </div>
+                          <div className="text-xs text-muted-foreground font-mono">
+                            {new Date(token.expires_at).toLocaleDateString('pt-BR')}
+                          </div>
+                          {isEditing && (
+                            <div className="flex items-center gap-1 mt-1">
+                              <button
+                                onClick={() => extendUserToken(token.id, 30)}
+                                className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium border border-primary/30 text-primary hover:bg-primary/10 transition-colors"
+                              >
+                                <Plus className="w-3 h-3" />30d
+                              </button>
+                              <button
+                                onClick={() => extendUserToken(token.id, 7)}
+                                className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 transition-colors"
+                              >
+                                <Plus className="w-3 h-3" />7d
+                              </button>
+                              {!token.revoked && (
+                                <button
+                                  onClick={() => revokeUserToken(token.id)}
+                                  className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors"
+                                >
+                                  <Ban className="w-3 h-3" />
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })()}
+                  </td>
+                  <td className="px-4 py-4 text-sm text-muted-foreground">
+                    {new Date(u.created_at).toLocaleDateString('pt-BR')}
+                  </td>
+                  <td className="px-4 py-4">
+                    <button
+                      onClick={() => deleteUser(u.id, u.name)}
+                      className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      Excluir
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {filteredUsers.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-4 py-12 text-center">
+                    <Users className="w-8 h-8 text-muted-foreground/40 mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">Nenhum usuário encontrado.</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
-    </div>
+    </>
   )
 }
