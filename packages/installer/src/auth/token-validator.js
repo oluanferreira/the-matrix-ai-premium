@@ -9,7 +9,7 @@ const path = require('path');
 const fs = require('fs');
 
 // API config — will be set during build/deploy
-const API_BASE_URL = process.env.MATRIX_API_URL || 'https://YOUR_SUPABASE_PROJECT.supabase.co/functions/v1';
+const API_BASE_URL = process.env.MATRIX_API_URL || 'https://qaomekspdjfbdeixxjky.supabase.co/functions/v1';
 
 const TOKEN_PATTERN = /^MTX-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
 
