@@ -10,7 +10,8 @@
   },
   "preferGlobal": false,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "files": [
     "bin/",

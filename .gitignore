@@ -147,7 +147,8 @@ lmas-core/index.esm.js
 lmas-core/*.map
 
 # Applications (separate deployments, NOT part of npm package)
-apps/
+apps/*
+!apps/visual/
 
 # External projects (separate repositories)
 lmas-guide-app/

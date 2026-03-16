@@ -1,0 +1,7 @@
+export const GAME_CONFIG = {
+  WIDTH: 320,
+  HEIGHT: 180,
+  SCALE: 6,
+  TARGET_WIDTH: 1920,
+  TARGET_HEIGHT: 1080,
+} as const;
