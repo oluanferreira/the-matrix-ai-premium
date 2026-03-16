@@ -53,6 +53,16 @@ export class ConstructScene extends Phaser.Scene {
   preload(): void {
     this.load.image('tileset', '/assets/tilesets/placeholder-tileset.png');
     this.load.json('office-map', '/assets/tilesets/office.ldtk.json');
+
+    // Load character sprites (available ones)
+    const spriteAgents = ['dev', 'architect', 'pm', 'lmas-master'];
+    const spriteFiles: Record<string, string> = {
+      'dev': 'neo', 'architect': 'architect', 'pm': 'trinity', 'lmas-master': 'morpheus',
+    };
+    for (const agentId of spriteAgents) {
+      const filename = spriteFiles[agentId];
+      this.load.image(`sprite-${agentId}`, `/assets/sprites/${filename}.png`);
+    }
   }
 
   create(): void {

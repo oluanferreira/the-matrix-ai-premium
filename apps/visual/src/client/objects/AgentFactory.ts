@@ -22,10 +22,12 @@ export class AgentFactory {
   createFromSpawns(spawns: AgentSpawn[]): Map<string, Agent> {
     for (const spawn of spawns) {
       const displayConfig = AGENT_CONFIG_MAP[spawn.agentId];
+      const spriteKey = `sprite-${spawn.agentId}`;
       const config: AgentConfig = {
         agentId: spawn.agentId,
         x: spawn.x,
         y: spawn.y,
+        spriteKey: this.scene.textures.exists(spriteKey) ? spriteKey : undefined,
         alwaysSeated: displayConfig?.alwaysSeated,
         alpha: displayConfig?.alpha,
       };
@@ -42,10 +44,12 @@ export class AgentFactory {
     let index = 0;
     for (const [, agentId] of Object.entries(AGENT_IDS)) {
       if (!this.agents.has(agentId)) {
+        const spriteKey = `sprite-${agentId}`;
         const config: AgentConfig = {
           agentId,
-          x: 100 + (index % 10) * 48,
-          y: 100 + Math.floor(index / 10) * 48,
+          x: 100 + (index % 10) * 80,
+          y: 100 + Math.floor(index / 10) * 120,
+          spriteKey: this.scene.textures.exists(spriteKey) ? spriteKey : undefined,
         };
         const agent = new Agent(this.scene, config);
         this.agents.set(agentId, agent);
