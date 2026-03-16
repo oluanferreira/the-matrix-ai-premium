@@ -295,8 +295,8 @@ describe('Story 1.3: Office Tilemap & Static Scene', () => {
       );
     });
 
-    test('transitions to ConstructScene', () => {
-      expect(bootSource).toContain("scene.start('ConstructScene')");
+    test('transitions to LoginScene (Story 5.4: Boot→Login→ProjectSelect→Construct)', () => {
+      expect(bootSource).toContain("scene.start('LoginScene')");
     });
   });
 
@@ -315,7 +315,10 @@ describe('Story 1.3: Office Tilemap & Static Scene', () => {
     });
 
     test('registers ConstructScene in scene array', () => {
-      expect(mainSource).toContain('scene: [BootScene, ConstructScene]');
+      expect(mainSource).toContain('ConstructScene');
+      // Story 5.4: scene array now includes LoginScene and ProjectSelectScene
+      expect(mainSource).toContain('LoginScene');
+      expect(mainSource).toContain('ProjectSelectScene');
     });
   });
 

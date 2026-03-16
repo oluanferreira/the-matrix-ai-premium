@@ -3,10 +3,16 @@ import path from 'path';
 import { SSEBroadcaster } from './services/SSEBroadcaster';
 import { createSSERouter } from './routes/sse';
 import { createAPIRouter } from './routes/api';
+import { ProjectDiscovery } from './services/ProjectDiscovery';
+import type { ProjectContext } from './project-context';
 
-export function createApp() {
+export function createApp(projectContext: ProjectContext) {
   const app = express();
   const broadcaster = new SSEBroadcaster();
+  const projectDiscovery = new ProjectDiscovery(projectContext.defaultWorkspace);
+
+  // JSON body parsing
+  app.use(express.json());
 
   // Security headers (AC: 8 — manual, zero deps, ADR-6)
   app.use((_req, res, next) => {
@@ -23,7 +29,7 @@ export function createApp() {
 
     if (origin && allowedOrigins.includes(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin);
-      res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     }
 
@@ -36,7 +42,7 @@ export function createApp() {
   });
 
   // API routes
-  app.use('/api', createAPIRouter());
+  app.use('/api', createAPIRouter(projectContext, projectDiscovery));
   app.use('/api', createSSERouter(broadcaster));
 
   // Serve static files (production)

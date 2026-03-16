@@ -103,77 +103,102 @@ describe('Story 5.2: Login Scene — Escolha sua Pílula', () => {
     });
   });
 
-  describe('Pílulas (AC: 3)', () => {
-    test('cria pílula vermelha', () => {
-      expect(loginSource).toContain('redPill');
-      expect(loginSource).toContain('0xFF0000');
+  // Story 5.4: Pills moved to ProjectSelectScene
+  describe('Pílulas movidas para ProjectSelectScene (Story 5.4)', () => {
+    let projectSelectSource;
+
+    beforeAll(() => {
+      projectSelectSource = fs.readFileSync(
+        path.join(VISUAL_DIR, 'src/client/scenes/ProjectSelectScene.ts'),
+        'utf8',
+      );
     });
 
-    test('cria pílula azul', () => {
-      expect(loginSource).toContain('bluePill');
-      expect(loginSource).toContain('0x0000FF');
+    test('LoginScene não tem mais pílulas', () => {
+      expect(loginSource).not.toContain('redPill');
+      expect(loginSource).not.toContain('bluePill');
+      expect(loginSource).not.toContain('showPills');
     });
 
-    test('rótulos em PT-BR: Entrar e Sair', () => {
-      expect(loginSource).toContain("'Entrar'");
-      expect(loginSource).toContain("'Sair'");
+    test('pílulas existem em ProjectSelectScene', () => {
+      expect(projectSelectSource).toContain('redPill');
+      expect(projectSelectSource).toContain('bluePill');
+      expect(projectSelectSource).toContain('0xFF0000');
+      expect(projectSelectSource).toContain('0x0000FF');
     });
 
-    test('createPill cria container com cápsula', () => {
-      expect(loginSource).toContain('createPill');
-      expect(loginSource).toContain('fillRoundedRect');
-      expect(loginSource).toContain('strokeRoundedRect');
+    test('rótulos em PT-BR: Entrar e Voltar', () => {
+      expect(projectSelectSource).toContain("'Entrar'");
+      expect(projectSelectSource).toContain("'Voltar'");
+    });
+
+    test('createPill cria container com cápsula em ProjectSelectScene', () => {
+      expect(projectSelectSource).toContain('createPill');
+      expect(projectSelectSource).toContain('fillRoundedRect');
+      expect(projectSelectSource).toContain('strokeRoundedRect');
     });
 
     test('efeito de brilho na pílula', () => {
-      expect(loginSource).toContain('fillEllipse');
+      expect(projectSelectSource).toContain('fillEllipse');
     });
 
     test('hover scale effect', () => {
-      expect(loginSource).toContain('pointerover');
-      expect(loginSource).toContain('setScale(1.2)');
-      expect(loginSource).toContain('pointerout');
-      expect(loginSource).toContain('setScale(1)');
+      expect(projectSelectSource).toContain('pointerover');
+      expect(projectSelectSource).toContain('setScale(1.2)');
+      expect(projectSelectSource).toContain('pointerout');
+      expect(projectSelectSource).toContain('setScale(1)');
     });
 
     test('pílulas interativas com hit area', () => {
-      expect(loginSource).toContain('setInteractive');
-      expect(loginSource).toContain('Phaser.Geom.Rectangle');
-    });
-
-    test('showPills chamado após typewriter', () => {
-      expect(loginSource).toContain('showPills');
-      expect(loginSource).toContain('pillsVisible');
+      expect(projectSelectSource).toContain('setInteractive');
+      expect(projectSelectSource).toContain('Phaser.Geom.Rectangle');
     });
   });
 
-  describe('Transição Glitch (AC: 4)', () => {
+  describe('Transição para ProjectSelectScene (Story 5.4)', () => {
+    test('transiciona para ProjectSelectScene após typewriter', () => {
+      expect(loginSource).toContain('transitionToProjectSelect');
+      expect(loginSource).toContain("'ProjectSelectScene'");
+    });
+
+    test('fadeOut antes da transição', () => {
+      expect(loginSource).toContain('fadeOut');
+    });
+
+    test('LoginScene não vai mais direto para ConstructScene', () => {
+      expect(loginSource).not.toContain("'ConstructScene'");
+    });
+  });
+
+  describe('Transição Glitch em ProjectSelectScene (AC: 4)', () => {
+    let projectSelectSource;
+
+    beforeAll(() => {
+      projectSelectSource = fs.readFileSync(
+        path.join(VISUAL_DIR, 'src/client/scenes/ProjectSelectScene.ts'),
+        'utf8',
+      );
+    });
+
     test('efeito shake na câmera', () => {
-      expect(loginSource).toContain('shake(500');
+      expect(projectSelectSource).toContain('shake(500');
     });
 
     test('efeito flash verde', () => {
-      expect(loginSource).toContain('flash(500, 0, 255, 65)');
+      expect(projectSelectSource).toContain('flash(500');
     });
 
     test('fadeOut após shake', () => {
-      expect(loginSource).toContain('fadeOut(500');
+      expect(projectSelectSource).toContain('fadeOut(500');
     });
 
     test('transição para ConstructScene', () => {
-      expect(loginSource).toContain("this.scene.start('ConstructScene')");
+      expect(projectSelectSource).toContain("this.scene.start('ConstructScene')");
     });
 
     test('enterConstruct é o handler da pílula vermelha', () => {
-      expect(loginSource).toContain('enterConstruct');
-      expect(loginSource).toContain("'pointerdown'");
-    });
-  });
-
-  describe('Pílula azul (fechar/escurecer)', () => {
-    test('closeDarken com fadeOut', () => {
-      expect(loginSource).toContain('closeDarken');
-      expect(loginSource).toContain('fadeOut(1000');
+      expect(projectSelectSource).toContain('enterConstruct');
+      expect(projectSelectSource).toContain("'pointerdown'");
     });
   });
 });

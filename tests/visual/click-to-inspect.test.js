@@ -262,9 +262,10 @@ describe('Story 4.1: Click-to-Inspect & Agent Inspector Panel', () => {
       expect(sceneSource).toContain('setupAgentInteraction');
     });
 
-    test('binds pointerdown on agents to open inspector', () => {
+    test('binds pointerdown on agents to open interaction (Story 4.5: DeliveryScreen)', () => {
       expect(sceneSource).toContain("agent.on('pointerdown'");
-      expect(sceneSource).toContain('inspectorPanel?.open(agent)');
+      // Story 4.5: click now opens DeliveryScreen instead of InspectorPanel
+      expect(sceneSource).toContain('openDeliveryForAgent');
     });
 
     test('binds pointerover on agents to show tooltip', () => {

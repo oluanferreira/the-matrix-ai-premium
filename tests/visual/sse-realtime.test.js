@@ -149,35 +149,41 @@ describe('Story 3.3: SSE Real-Time Broadcasting', () => {
 
   describe('server-side integration (AC: 1)', () => {
     let serverSource;
+    let projectContextSource;
 
     beforeAll(() => {
       serverSource = fs.readFileSync(
         path.join(VISUAL_DIR, 'src/server/index.ts'),
         'utf8',
       );
+      // Story 5.4: broadcast logic moved to project-context.ts (dynamic project switching)
+      projectContextSource = fs.readFileSync(
+        path.join(VISUAL_DIR, 'src/server/project-context.ts'),
+        'utf8',
+      );
     });
 
     test('imports StateManager', () => {
-      expect(serverSource).toContain('StateManager');
+      expect(projectContextSource).toContain('StateManager');
     });
 
     test('imports GitPoller', () => {
-      expect(serverSource).toContain('GitPoller');
+      expect(projectContextSource).toContain('GitPoller');
     });
 
     test('StateManager emits to broadcaster', () => {
-      expect(serverSource).toContain("stateManager.on('stateUpdate'");
-      expect(serverSource).toContain('broadcaster.broadcast');
+      expect(projectContextSource).toContain("stateManager.on('stateUpdate'");
+      expect(projectContextSource).toContain('broadcaster.broadcast');
     });
 
     test('GitPoller emits to broadcaster', () => {
-      expect(serverSource).toContain("gitPoller.on('newCommit'");
-      expect(serverSource).toContain("event: 'agent-delivery'");
+      expect(projectContextSource).toContain("gitPoller.on('newCommit'");
+      expect(projectContextSource).toContain("event: 'agent-delivery'");
     });
 
     test('starts StateManager and GitPoller', () => {
-      expect(serverSource).toContain('stateManager.start()');
-      expect(serverSource).toContain('gitPoller.start()');
+      expect(projectContextSource).toContain('stateManager.start()');
+      expect(projectContextSource).toContain('gitPoller.start()');
     });
 
     test('shuts down StateManager and GitPoller on exit', () => {
@@ -186,15 +192,15 @@ describe('Story 3.3: SSE Real-Time Broadcasting', () => {
     });
 
     test('broadcasts agent-status events from state changes', () => {
-      expect(serverSource).toContain("event: 'agent-status'");
-      expect(serverSource).toContain('state.agentId');
-      expect(serverSource).toContain('state.visualState');
+      expect(projectContextSource).toContain("event: 'agent-status'");
+      expect(projectContextSource).toContain('state.agentId');
+      expect(projectContextSource).toContain('state.visualState');
     });
 
     test('broadcasts agent-delivery events from git commits', () => {
-      expect(serverSource).toContain('commit.hash');
-      expect(serverSource).toContain('commit.message');
-      expect(serverSource).toContain('commit.agentId');
+      expect(projectContextSource).toContain('commit.hash');
+      expect(projectContextSource).toContain('commit.message');
+      expect(projectContextSource).toContain('commit.agentId');
     });
   });
 

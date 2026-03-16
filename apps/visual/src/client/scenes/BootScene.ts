@@ -21,7 +21,7 @@ export class BootScene extends Phaser.Scene {
         alpha: 0,
         duration: 500,
         onComplete: () => {
-          this.scene.start('ConstructScene');
+          this.scene.start('LoginScene');
         },
       });
     });

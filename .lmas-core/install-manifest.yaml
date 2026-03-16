@@ -8,9 +8,9 @@
 # - File types for categorization
 #
 version: 4.4.6
-generated_at: "2026-03-16T04:40:03.733Z"
+generated_at: "2026-03-16T13:04:12.969Z"
 generator: scripts/generate-install-manifest.js
-file_count: 1129
+file_count: 1130
 files:
   - path: cli/commands/config/index.js
     hash: sha256:c241b04a75440d489bc8c80160bc1aa8070cac1d424e9305413d933083a6a593
@@ -1217,7 +1217,7 @@ files:
     type: data
     size: 3802
   - path: data/entity-registry.yaml
-    hash: sha256:dcd27c7b1fce0c4cbba54f3a91ed68b267f542eaecec79926c85926123b94011
+    hash: sha256:8f597cdfab4cd3dc33118946f03d63036f5566f4d93769c7e852db0216562bd7
     type: data
     size: 551582
   - path: data/learned-patterns.yaml
@@ -1336,6 +1336,10 @@ files:
     hash: sha256:4a7d2f376f7503b1328d39fe31fa3ca74305459c49a27df3051e77d4d6e90b2f
     type: agent
     size: 1390
+  - path: development/agents/checkpoint.md
+    hash: sha256:7e297c9da544f8446666445f77bf93d7d24e375d6a135db078c356a13195a0f6
+    type: agent
+    size: 5582
   - path: development/agents/content-researcher.md
     hash: sha256:f06c76fb5ed2bd86427d3debe156f0f15d982ba96f98d963d553768385836fb0
     type: agent
