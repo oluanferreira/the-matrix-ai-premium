@@ -149,12 +149,15 @@ lmas-core/*.map
 # Applications (separate deployments, NOT part of npm package)
 apps/*
 !apps/visual/
+!apps/admin/
 
 # External projects (separate repositories)
 lmas-guide-app/
 examples/
 !docs/examples/
 supabase/
+!supabase/migrations/
+!supabase/functions/
 
 # Output directories (generated artifacts)
 outputs/
