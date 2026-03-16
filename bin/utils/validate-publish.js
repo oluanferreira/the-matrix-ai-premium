@@ -30,45 +30,12 @@ const IS_CI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true'
 let passed = true;
 let fileCount = 0;
 
-// Check 1: pro/ submodule populated
+// Check 1: pro/ submodule — SKIPPED (Pro model removed, freemium via token gate)
 console.log('--- Publish Safety Gate (INS-4.10) ---\n');
+console.log('SKIP: pro/ submodule check disabled (freemium model via token gate)');
 
-if (!fs.existsSync(PRO_DIR)) {
-  if (IS_CI) {
-    console.log('SKIP: pro/ directory not available (CI — private submodule requires separate access token)');
-  } else {
-    console.error('FAIL: pro/ directory does not exist.');
-    console.error('  Fix: git submodule update --init pro');
-    passed = false;
-  }
-} else {
-  const entries = fs.readdirSync(PRO_DIR).filter(e => e !== '.git');
-  if (entries.length === 0) {
-    if (IS_CI) {
-      console.log('SKIP: pro/ submodule empty (CI — private submodule requires separate access token)');
-    } else {
-      console.error('FAIL: pro/ submodule not initialized (directory is empty).');
-      console.error('  Fix: git submodule update --init pro');
-      passed = false;
-    }
-  } else {
-    console.log(`PASS: pro/ submodule populated (${entries.length} entries)`);
-  }
-}
-
-// Check 2: Critical file exists
-if (!fs.existsSync(CRITICAL_FILE)) {
-  if (IS_CI) {
-    console.log('SKIP: pro/license/license-api.js not available (CI — private submodule)');
-  } else {
-    console.error('FAIL: pro/license/license-api.js not found.');
-    console.error('  This is a critical file required for Pro license validation.');
-    console.error('  Fix: git submodule update --init --recursive pro');
-    passed = false;
-  }
-} else {
-  console.log('PASS: pro/license/license-api.js exists');
-}
+// Check 2: Critical file — SKIPPED (Pro removed)
+console.log('SKIP: pro/license check disabled (freemium model)');
 
 // Check 3: File count threshold via npm pack --dry-run
 try {
