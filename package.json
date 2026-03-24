@@ -1,8 +1,9 @@
 {
   "name": "the-matrix-ai-premium",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The Matrix AI: Framework Universal de Agentes IA para Desenvolvimento Full Stack",
   "bin": {
+    "the-matrix-ai-premium": "bin/lmas.js",
     "matrix": "bin/lmas.js",
     "the-matrix-ai": "bin/lmas.js",
     "matrix-minimal": "bin/lmas-minimal.js",
