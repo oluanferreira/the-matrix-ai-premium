@@ -23,7 +23,7 @@ export function Sidebar() {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary" />
           </span>
-          <span className="text-primary font-bold text-lg tracking-tight">THE MATRIX AI</span>
+          <span className="text-primary font-bold text-lg tracking-tight">THE MATRIX 2.0</span>
           <span className="text-[10px] font-mono uppercase tracking-widest bg-primary/10 text-primary px-1.5 py-0.5 rounded">
             Admin
           </span>

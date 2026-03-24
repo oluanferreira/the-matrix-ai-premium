@@ -24,6 +24,13 @@ system_agents:
     can_execute_tasks: true
     cross_domain: true
 
+  checkpoint:
+    name: "Checkpoint"
+    description: "Utility agent — gerencia PROJECT-CHECKPOINT.md, rastreia estado do projeto entre sessões, atualiza progresso automaticamente."
+    agent_file: ".lmas-core/development/agents/checkpoint.md"
+    role: utility
+    can_execute_tasks: true
+
 # ─────────────────────────────────────────────
 # Domain Resolution
 # ─────────────────────────────────────────────
@@ -72,11 +79,16 @@ domains:
 
   marketing:
     name: "Marketing Digital"
-    description: "Marketing digital — copywriting, social media, tráfego pago, estratégia de conteúdo"
+    description: "Marketing digital — copywriting, social media, SEO, estratégia de conteúdo, publicação"
     aliases:
       - mkt
       - content
       - marketing-digital
+      - copy
+      - copywriting
+      - editorial
+      - social media
+      - SEO
     path: ".lmas-core/domains/marketing"
     default: false
     team_bundles:
@@ -85,27 +97,144 @@ domains:
       - marketing-chief
       - copywriter
       - social-media-manager
-      - traffic-manager
       - content-strategist
       - content-researcher
       - content-reviewer
+      - seo
 
-  # ─── Future Domains (placeholders) ───
+  business:
+    name: "Business & Advisory"
+    description: "Estratégia de negócio — ofertas, pricing, tráfego pago, growth, conselho estratégico, decisões executivas"
+    aliases:
+      - biz
+      - business
+      - strategy
+      - offers
+      - pricing
+      - traffic
+      - ads
+      - budget
+      - ROI
+      - ROAS
+      - growth
+      - scale
+      - advisory
+      - leads
+      - sales
+      - campanha paga
+      - investimento
+      - lançamento
+      - launch
+    path: ".lmas-core/domains/business"
+    default: false
+    team_bundles:
+      - team-business
+    core_agents:
+      - mifune
+      - hamann
+      - traffic-manager
 
-  # finance:
-  #   name: "Finance & Accounting"
-  #   description: "Gestão financeira, contabilidade, auditoria"
-  #   aliases: [fin, accounting, financial]
-  #   path: ".lmas-core/domains/finance"
-  #   default: false
-  #   team_bundles: []
-  #   core_agents: []
+  brand:
+    name: "Brand & Storytelling"
+    description: "Criação de marca — posicionamento, naming, identidade, narrativa, storytelling, movimentos"
+    aliases:
+      - brand
+      - branding
+      - marca
+      - positioning
+      - posicionamento
+      - naming
+      - identity
+      - identidade
+      - narrative
+      - narrativa
+      - storytelling
+      - movement
+      - movimento
+      - community
+      - comunidade
+      - archetype
+      - arquétipo
+    path: ".lmas-core/domains/brand"
+    default: false
+    team_bundles:
+      - team-brand
+    core_agents:
+      - kamala
+      - bugs
 
-  # data-ops:
-  #   name: "Data Operations"
-  #   description: "Engenharia de dados, ETL, analytics, BI"
-  #   aliases: [data, etl, analytics, bi]
-  #   path: ".lmas-core/domains/data-ops"
-  #   default: false
-  #   team_bundles: []
-  #   core_agents: []
+# ─────────────────────────────────────────────
+# Cross-Domain Agents
+# ─────────────────────────────────────────────
+
+cross_domain_agents:
+  - id: ux-design-expert
+    primary_domain: software-dev
+    available_in: [marketing, brand]
+    routing_keywords:
+      - design
+      - landing page layout
+      - banner design
+      - visual guidelines
+      - UI components
+      - design system
+      - brand visual
+      - logo brief
+      - CIP brief
+      - palette
+      - wireframe
+    rationale: "Sati's Phase 6 commands (*banner, *landing, *pitch-deck, *cip-brief, *logo-brief, *brand-audit) serve marketing and brand needs"
+
+  - id: traffic-manager
+    primary_domain: business
+    available_in: [marketing]
+    routing_keywords:
+      - campaign execution
+      - budget allocation
+      - paid media
+      - campaign plan
+      - ROI report
+    rationale: "Merovingian migrado para business domain — budget e performance são decisões de negócio. Disponível em marketing para Campaign Pipeline cross-domain."
+
+  - id: copywriter
+    primary_domain: marketing
+    available_in: [brand, business]
+    routing_keywords:
+      - brand copy
+      - tagline
+      - ad copy
+      - offer copy
+      - sales letter
+      - landing page copy
+    rationale: "Mouse escreve copy para qualquer domínio — brand copy, ad copy, offer copy."
+
+  - id: seo
+    primary_domain: marketing
+    available_in: [brand, software-dev]
+    routing_keywords:
+      - brand SEO
+      - technical SEO
+      - site audit
+      - schema markup
+    rationale: "Cypher otimiza SEO para sites de marca (brand) e audita SEO técnico (software-dev)."
+
+  - id: content-researcher
+    primary_domain: marketing
+    available_in: [brand, business]
+    routing_keywords:
+      - market research
+      - competitor analysis
+      - brand perception
+      - trend analysis
+    rationale: "Ghost pesquisa mercado para conteúdo (marketing), posicionamento (brand) e estratégia (business)."
+
+  - id: analyst
+    primary_domain: software-dev
+    available_in: [business, brand]
+    routing_keywords:
+      - market research
+      - brainstorm
+      - project brief
+      - competitive analysis
+      - growth metrics
+    rationale: "Atlas faz research e brainstorming que servem business strategy e brand positioning."

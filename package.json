@@ -1,6 +1,6 @@
 {
-  "name": "the-matrix-ai",
-  "version": "4.4.6",
+  "name": "the-matrix-ai-premium",
+  "version": "1.0.0",
   "description": "The Matrix AI: Framework Universal de Agentes IA para Desenvolvimento Full Stack",
   "bin": {
     "matrix": "bin/lmas.js",
@@ -123,15 +123,15 @@
     "scrum"
   ],
   "author": "Luan Ferreira",
-  "license": "MIT",
+  "license": "BSL-1.1",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oluanferreira/the-matrix-ai.git"
+    "url": "git+https://github.com/oluanferreira/the-matrix-ai-premium.git"
   },
   "bugs": {
-    "url": "https://github.com/oluanferreira/the-matrix-ai/issues"
+    "url": "https://github.com/oluanferreira/the-matrix-ai-premium/issues"
   },
-  "homepage": "https://github.com/oluanferreira/the-matrix-ai#readme",
+  "homepage": "https://github.com/oluanferreira/the-matrix-ai-premium#readme",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"

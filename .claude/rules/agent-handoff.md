@@ -20,9 +20,11 @@ Before loading the new agent, mentally generate a handoff artifact with:
 handoff:
   from_agent: "{current_agent_id}"
   to_agent: "{new_agent_id}"
+  project_id: "{active project ID}"  # REQUIRED in multi-project mode
+  project_path: "projects/{project_id}"
   story_context:
-    story_id: "{active story ID}"
-    story_path: "{active story path}"
+    story_id: "{project prefix}-{epic}.{story}"  # e.g. CW-3.1
+    story_path: "projects/{project_id}/stories/{story file}"
     story_status: "{current status}"
     current_task: "{last task being worked on}"
     branch: "{current git branch}"
@@ -56,7 +58,8 @@ The incoming agent receives:
 
 ### What to Preserve (ALWAYS include)
 
-- Active story ID and path
+- **Active project ID** (multi-project mode)
+- Active story ID and path (with project prefix)
 - Current task being worked on
 - Git branch name
 - Key architectural decisions made

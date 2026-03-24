@@ -7,6 +7,8 @@ const https = require('https');
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
+const os = require('os');
 
 // API config — will be set during build/deploy
 const API_BASE_URL = process.env.MATRIX_API_URL || 'https://qaomekspdjfbdeixxjky.supabase.co/functions/v1';
@@ -16,14 +18,6 @@ const TOKEN_PATTERN = /^MTX-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
 // Premium agent IDs (not included in free tier)
 const PREMIUM_AGENTS = [
   'smith',
-  'checkpoint',
-  'marketing-chief',
-  'copywriter',
-  'content-strategist',
-  'content-researcher',
-  'content-reviewer',
-  'social-media-manager',
-  'traffic-manager',
 ];
 
 // Premium task files (brainstorm system + advanced tasks)
@@ -78,7 +72,7 @@ async function validateToken(token, metadata = {}) {
         return {
           valid: true,
           user: cached.user,
-          plan: 'premium',
+          plan: cached.plan || 'premium',
           expires_at: cached.expires_at,
           days_remaining: daysRemaining,
           offline: true,
@@ -111,7 +105,48 @@ async function heartbeat(token, projectName) {
 }
 
 /**
- * Save token info to local cache
+ * Derive encryption key from machine identity (hostname + username).
+ * Not meant to be unbreakable — just prevents casual plaintext exposure.
+ * @returns {Buffer} 32-byte key for AES-256-GCM
+ */
+function deriveEncryptionKey() {
+  const material = `matrix-ai:${os.hostname()}:${os.userInfo().username}`;
+  return crypto.createHash('sha256').update(material).digest();
+}
+
+/**
+ * Encrypt data with AES-256-GCM
+ * @param {string} plaintext
+ * @returns {string} base64-encoded encrypted payload
+ */
+function encrypt(plaintext) {
+  const key = deriveEncryptionKey();
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+  const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  // Format: iv (12) + tag (16) + ciphertext
+  return Buffer.concat([iv, tag, encrypted]).toString('base64');
+}
+
+/**
+ * Decrypt data with AES-256-GCM
+ * @param {string} payload base64-encoded
+ * @returns {string} plaintext
+ */
+function decrypt(payload) {
+  const key = deriveEncryptionKey();
+  const buf = Buffer.from(payload, 'base64');
+  const iv = buf.subarray(0, 12);
+  const tag = buf.subarray(12, 28);
+  const ciphertext = buf.subarray(28);
+  const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+  decipher.setAuthTag(tag);
+  return decipher.update(ciphertext, undefined, 'utf8') + decipher.final('utf8');
+}
+
+/**
+ * Save token info to local cache (encrypted with AES-256-GCM)
  * @param {Object} tokenInfo
  */
 function saveTokenCache(tokenInfo) {
@@ -120,30 +155,38 @@ function saveTokenCache(tokenInfo) {
 
   try {
     if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
-    fs.writeFileSync(cachePath, JSON.stringify({
+    const plaintext = JSON.stringify({
       token: tokenInfo.token,
       user: tokenInfo.user,
       plan: tokenInfo.plan,
+      project_name: tokenInfo.project_name || path.basename(process.cwd()),
       expires_at: tokenInfo.expires_at,
       cached_at: new Date().toISOString(),
-    }, null, 2));
+    });
+    fs.writeFileSync(cachePath, JSON.stringify({ v: 2, data: encrypt(plaintext) }));
   } catch {
     // Silently fail — cache is optional
   }
 }
 
 /**
- * Read token from local cache
+ * Read token from local cache (supports encrypted v2 and legacy plaintext v1)
  * @returns {Object|null}
  */
 function readTokenCache() {
   const cachePath = path.join(process.cwd(), '.lmas', 'token-cache.json');
   try {
     if (fs.existsSync(cachePath)) {
-      return JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+      const raw = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
+      // v2: encrypted
+      if (raw.v === 2 && raw.data) {
+        return JSON.parse(decrypt(raw.data));
+      }
+      // v1 (legacy plaintext): read and re-encrypt on next save
+      if (raw.token) return raw;
     }
   } catch {
-    // Silently fail
+    // Silently fail — corrupted cache is treated as missing
   }
   return null;
 }
@@ -248,6 +291,46 @@ function fetchJSON(url, body) {
   });
 }
 
+/**
+ * Log install silently to Supabase — fire-and-forget, zero output, never blocks.
+ * Works for ALL installs (free and premium). Completely imperceptible to user.
+ * @param {Object} metadata
+ */
+function logInstallSilent(metadata = {}) {
+  try {
+    const body = JSON.stringify({
+      project_name: metadata.projectName || null,
+      os: process.platform,
+      node_version: process.version,
+      framework_version: metadata.frameworkVersion || null,
+      plan: metadata.plan || 'free',
+      event: metadata.event || 'install',
+    });
+
+    const parsed = new URL(`${API_BASE_URL}/log-install`);
+    const lib = parsed.protocol === 'https:' ? https : http;
+
+    const req = lib.request({
+      hostname: parsed.hostname,
+      port: parsed.port || (parsed.protocol === 'https:' ? 443 : 80),
+      path: parsed.pathname,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(body),
+      },
+      timeout: 5000,
+    });
+
+    req.on('error', () => {});
+    req.on('timeout', () => { req.destroy(); });
+    req.write(body);
+    req.end();
+  } catch {
+    // Absolute silence — never throw, never log
+  }
+}
+
 module.exports = {
   PREMIUM_AGENTS,
   PREMIUM_TASKS,
@@ -258,4 +341,5 @@ module.exports = {
   readTokenCache,
   clearTokenCache,
   purgePremiumContent,
+  logInstallSilent,
 };

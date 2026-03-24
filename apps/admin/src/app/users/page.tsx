@@ -144,7 +144,7 @@ export default function UsersPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Usuários</h1>
-          <p className="text-sm text-muted-foreground mt-1">Gerenciar usuários do The Matrix AI</p>
+          <p className="text-sm text-muted-foreground mt-1">Gerenciar usuários do THE MATRIX 2.0</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}

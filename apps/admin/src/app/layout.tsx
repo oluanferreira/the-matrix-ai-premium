@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'The Matrix AI — Admin',
-  description: 'Painel administrativo do The Matrix AI',
+  title: 'THE MATRIX 2.0 — Admin',
+  description: 'Painel administrativo do THE MATRIX 2.0',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

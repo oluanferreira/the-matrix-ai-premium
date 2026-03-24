@@ -57,7 +57,7 @@ export default async function Dashboard() {
       {/* Title */}
       <div>
         <h1 className="text-2xl font-bold text-foreground">Visão Geral</h1>
-        <p className="text-sm text-muted-foreground mt-1">Resumo do sistema The Matrix AI</p>
+        <p className="text-sm text-muted-foreground mt-1">Resumo do sistema THE MATRIX 2.0</p>
       </div>
 
       {/* Row 1: Stat Cards */}
