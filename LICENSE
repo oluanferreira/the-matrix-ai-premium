@@ -1,33 +1,56 @@
-MIT License
+Business Source License 1.1
 
-Copyright (c) 2025 BMad Code, LLC (BMad Method - original work)
-Copyright (c) 2025-2026 Luan Ferreira (LMAS Framework - derivative work)
+Licensor:  Luan Ferreira
+Licensed Work:  THE MATRIX 2.0 (the-matrix-ai-premium)
+                Copyright (c) 2025-2026 Luan Ferreira
+
+Additional Use Grant:
+
+You may use the Licensed Work for any purpose, including commercial use
+within your own projects and products, EXCEPT for the following:
+
+You may NOT use the Licensed Work, in whole or in substantial part, to
+create, offer, or operate a product or service that:
+
+  (a) is a multi-agent development framework, AI agent orchestration
+      tool, or AI-powered development workflow system;
+
+  (b) competes with or is substantially similar to The Matrix AI in
+      purpose, functionality, or market positioning;
+
+  (c) redistributes, repackages, or rebrands the Licensed Work or any
+      substantial portion thereof as a standalone product.
+
+For clarity, the following uses ARE permitted:
+
+  - Using THE MATRIX 2.0 to build and ship your own software projects
+  - Using THE MATRIX 2.0 in commercial development workflows
+  - Creating internal tools that integrate with THE MATRIX 2.0
+  - Educational use, research, and personal projects
+
+Change Date:  March 18, 2030
+Change License:  MIT License
+
+Notice:
+
+The Licensed Work is provided "as is", without warranty of any kind.
+The Licensor shall not be liable for any damages arising from the use
+of the Licensed Work.
+
+On the Change Date, the Licensed Work will be made available under the
+Change License (MIT). Until the Change Date, the Additional Use Grant
+above defines the permitted uses.
+
+---
+
+Original Attribution:
 
 This project was originally derived from the BMad Method
-(https://github.com/bmad-code-org/BMAD-METHOD), created by Brian Madison.
-LMAS is NOT affiliated with, endorsed by, or sanctioned by the
-BMad Method or BMad Code, LLC.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+(https://github.com/bmad-code-org/BMAD-METHOD), created by Brian Madison
+(BMad Code, LLC). THE MATRIX 2.0 is NOT affiliated with, endorsed by, or
+sanctioned by the BMad Method or BMad Code, LLC.
 
 TRADEMARK NOTICE:
-BMad, BMad Method, and BMad Core are trademarks of BMad Code, LLC.
-These trademarks are NOT licensed under the MIT License. See the BMad Method
-TRADEMARK.md (https://github.com/bmad-code-org/BMAD-METHOD/blob/main/TRADEMARK.md)
-for detailed guidelines on trademark usage.
+"The Matrix AI", "THE MATRIX 2.0", "LMAS", agent personas, and associated
+branding are the intellectual property of Luan Ferreira.
+"BMad", "BMad Method", and "BMad Core" are trademarks of BMad Code, LLC.

@@ -7,10 +7,10 @@
 # - SHA256 hashes for change detection
 # - File types for categorization
 #
-version: 4.4.6
-generated_at: "2026-03-16T21:36:27.432Z"
+version: 1.0.0
+generated_at: "2026-03-24T04:23:51.518Z"
 generator: scripts/generate-install-manifest.js
-file_count: 1130
+file_count: 1138
 files:
   - path: cli/commands/config/index.js
     hash: sha256:c241b04a75440d489bc8c80160bc1aa8070cac1d424e9305413d933083a6a593
@@ -1208,18 +1208,22 @@ files:
     hash: sha256:6202dfeb6a6f5df84092ddcb68cb4ad54eafa00fb76dfc14301a9f38b9ed050b
     type: data
     size: 10938
+  - path: data/agent-tiers.yaml
+    hash: sha256:512babf3b511680b2f18d27c072caa401387b687f9b2f35602810b01e9857d7a
+    type: data
+    size: 6212
   - path: data/capability-detection.js
     hash: sha256:46a8701302ff80af52a7ef5b6694ecb6f54f51ab04ce28b9bbc8a9dce41d8b14
     type: data
     size: 9575
   - path: data/domain-registry.yaml
-    hash: sha256:353d589f8416e74030e2e0a42cfa31f48c24b2539a1d21a7ba8610fd88323009
+    hash: sha256:bd763497e6ae944984f062d3cfae28ed674dca91712b96b01b0f093649229d57
     type: data
-    size: 3802
+    size: 7336
   - path: data/entity-registry.yaml
-    hash: sha256:472d674dcc6e98e8468c748194a9d47aba4ba088ff9230a4ea2fa7d02e921928
+    hash: sha256:343504bd6ce389eaacbcd489ca225fbd5be23f7730a3820e6d494f637b06e2b5
     type: data
-    size: 552080
+    size: 537449
   - path: data/learned-patterns.yaml
     hash: sha256:24ac0b160615583a0ff783d3da8af80b7f94191575d6db2054ec8e10a3f945dc
     type: data
@@ -1236,6 +1240,10 @@ files:
     hash: sha256:8ee3bbbbac938e80271ab9afea9b74fd4aaea82de000a3cdeaf9a5b5b5b8c5f4
     type: data
     size: 9266
+  - path: data/reference-store-schema.yaml
+    hash: sha256:ba96ef55d21b98b9f72d26ab303798526cb9a2857696860057aacf290ee4583b
+    type: data
+    size: 2854
   - path: data/tech-presets/_template.md
     hash: sha256:f6a933cfd3a99df7a627b92ec728904d781162bae29239386067aaf005b49f36
     type: data
@@ -1285,9 +1293,9 @@ files:
     type: data
     size: 5754
   - path: data/workflow-chains.yaml
-    hash: sha256:1fbf1625e267eedc315cf1e08e5827c250ddc6785fb2cb139e7702def9b66268
+    hash: sha256:38c19fabdabf9b914140813ea1a22dc2796ee1c6237dc049d862fe5bb8874d47
     type: data
-    size: 5055
+    size: 17816
   - path: data/workflow-patterns.yaml
     hash: sha256:05c9cf701ddf65f78e6984d53b76ec2fb77d63fbf526d355bd14e2c292f4f0fd
     type: data
@@ -1336,6 +1344,10 @@ files:
     hash: sha256:4a7d2f376f7503b1328d39fe31fa3ca74305459c49a27df3051e77d4d6e90b2f
     type: agent
     size: 1390
+  - path: development/agents/bugs.md
+    hash: sha256:a6108b2929c9001fa1dc225f16c761d9db0ad4cd5ad0ae9afa337fa6ddeb62f8
+    type: agent
+    size: 12088
   - path: development/agents/checkpoint.md
     hash: sha256:7e297c9da544f8446666445f77bf93d7d24e375d6a135db078c356a13195a0f6
     type: agent
@@ -1380,14 +1392,26 @@ files:
     hash: sha256:d9e629c4ffa309f3877da2f5de5c6a76155d71f6bb5cd1806866a9814e0209a5
     type: agent
     size: 1402
-  - path: development/agents/lmas-master.md
-    hash: sha256:26149e5416bb8366ebe8a231a8b1ff9277a0a02477f137f26f176fdb0d8901dd
+  - path: development/agents/hamann.md
+    hash: sha256:908e1047f0ad09602c526023d16011fec69dc4e58ddd67e81140a16fd8d2eadb
     type: agent
-    size: 33993
+    size: 11479
+  - path: development/agents/kamala.md
+    hash: sha256:02870cfc8ab4038e47d46aeaaffef2c803f330c7188068f73818f5a3335066fe
+    type: agent
+    size: 14771
+  - path: development/agents/lmas-master.md
+    hash: sha256:c36d3c9c3c177302f61d224a919c6d6f1fcf192b2a9d3ca246509c8e6257c75c
+    type: agent
+    size: 39505
   - path: development/agents/marketing-chief.md
     hash: sha256:03eb499db5a5e66495d383a86b9511d036a4eb43f3aec299214f9b504b179743
     type: agent
     size: 15934
+  - path: development/agents/mifune.md
+    hash: sha256:86105994dd65f08af3a9d963420f75ee36f27562f5ddb80e6598b39f922fdb02
+    type: agent
+    size: 12811
   - path: development/agents/pm.md
     hash: sha256:58c0676c251c2cee5a59c5c016cb7f0950663fdf74c767fa085dec2fe597a8be
     type: agent
@@ -1412,6 +1436,10 @@ files:
     hash: sha256:c0c54d234300db9739cd21dd7b71eab87459c7e418c2c630dd8a70a515a496dd
     type: agent
     size: 1368
+  - path: development/agents/seo.md
+    hash: sha256:60a57f57c2ac7890a4c5906b3b141e1d0e35aa9479a09f15b346525fb4d35115
+    type: agent
+    size: 23287
   - path: development/agents/sm.md
     hash: sha256:c406760bfd781f66c5f09cc75d29b547e12ce8cbabf6759f811da20e5841d37e
     type: agent
@@ -1421,9 +1449,9 @@ files:
     type: agent
     size: 1123
   - path: development/agents/smith.md
-    hash: sha256:5f4663dd2cf73148c344c11f7979d7a176e5dce1d9fee36a4f93a688015b41d2
+    hash: sha256:c41c0851768ebfeead9aca6b35004d236083d75d74b2369c3b5efcb59130183d
     type: agent
-    size: 22547
+    size: 26498
   - path: development/agents/social-media-manager.md
     hash: sha256:9820f5f14fb64ceca9a722ceb2d46c4d6cb989b267a480d12da061cdc0979f11
     type: agent
@@ -2896,6 +2924,10 @@ files:
     hash: sha256:86ebeadfc3e3f381d903f92fe3b70958913c0a1a5718b0a7ecf91cdafdaf196e
     type: workflow
     size: 10747
+  - path: development/workflows/landing-page-pipeline.yaml
+    hash: sha256:abf043c25fc907f62769821c69ac17d47f8ff843eb278bb26a6fa7e3a131194a
+    type: workflow
+    size: 13823
   - path: development/workflows/qa-loop.yaml
     hash: sha256:0e4494093b7f7b008128952a2ef3bf4ad742fe92ba7ffffe71a772ac485b2b42
     type: workflow

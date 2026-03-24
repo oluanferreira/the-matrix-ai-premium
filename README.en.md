@@ -1,15 +1,11 @@
-# The Matrix AI: Universal AI Agent Framework 🚀
+# THE MATRIX 2.0: Premium AI Agent Framework
 
-> 🌍 **[English](README.en.md)** | [Português](README.md)
+> **Premium version** of The Matrix AI with 26 agents, 4 domains, 12 squads and Supabase telemetry.
 
-[![NPM Version](https://img.shields.io/npm/v/the-matrix-ai.svg)](https://www.npmjs.com/package/the-matrix-ai)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](package.json)
+[![License: BSL-1.1](https://img.shields.io/badge/License-BSL--1.1-red.svg)](LICENSE)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
-[![CI](https://github.com/oluanferreira/the-matrix-ai/actions/workflows/ci.yml/badge.svg)](https://github.com/oluanferreira/the-matrix-ai/actions/workflows/ci.yml)
 [![Documentation](https://img.shields.io/badge/docs-available-orange.svg)](https://lmas.ai)
-[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-success.svg)](LICENSE)
-[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Code of Conduct](https://img.shields.io/badge/code%20of%20conduct-Contributor%20Covenant-blue.svg)](CODE_OF_CONDUCT.md)
 
 AI-Powered Self-Modifying Development Framework. Founded on Agent-Driven Agile Development, offering revolutionary capabilities for AI-driven development and much more. Transform any domain with specialized AI expertise: software development, entertainment, creative writing, business strategy, personal wellness, and more.
 
@@ -20,11 +16,11 @@ If this is your first time with LMAS, follow this linear path:
 1. Install in a new or existing project:
 ```bash
 # new project
-npx the-matrix-ai init my-project
+npx the-matrix-ai-premium init my-project
 
 # existing project
 cd your-project
-npx the-matrix-ai install
+npx the-matrix-ai-premium install
 ```
 2. Choose your IDE/CLI and the activation path:
 - Claude Code: `/agent-name`
@@ -133,14 +129,14 @@ This two-phase approach eliminates both **planning inconsistency** and **context
 - **[Create my own AI agents](#creating-your-own-squad)** → Build agents for your domain
 - **[Browse ready-made Squads](docs/guides/squads-overview.md)** → See how to create and use AI agent teams
 - **[Understand the architecture](docs/architecture/ARCHITECTURE-INDEX.md)** → Deep technical dive
-- **[Report issues](https://github.com/oluanferreira/the-matrix-ai/issues)** → Bug reports and feature requests
+- **[Report issues](https://github.com/oluanferreira/the-matrix-ai-premium/issues)** → Bug reports and feature requests
 
 ## Important: Keep Your LMAS Installation Updated
 
 **Stay up to date effortlessly!** To update your existing LMAS installation:
 
 ```bash
-npx the-matrix-ai@latest install
+npx the-matrix-ai-premium@latest install
 ```
 
 This will:
@@ -160,14 +156,14 @@ This makes it easy to benefit from the latest improvements, bug fixes, and new a
 
 ```bash
 # Create a new project with modern interactive wizard
-npx the-matrix-ai init my-project
+npx the-matrix-ai-premium init my-project
 
 # Or install in an existing project
 cd your-project
-npx the-matrix-ai install
+npx the-matrix-ai-premium install
 
 # Or use a specific version
-npx the-matrix-ai@latest init my-project
+npx the-matrix-ai-premium@latest init my-project
 ```
 
 ### ✨ Modern Installation Wizard
@@ -205,7 +201,7 @@ LMAS now includes a cutting-edge interactive installation experience, inspired b
 If you already have LMAS installed:
 
 ```bash
-npx the-matrix-ai@latest install
+npx the-matrix-ai-premium@latest install
 # The installer will detect your existing installation and update it
 ```
 
@@ -255,7 +251,7 @@ These rules provide:
 
 ### Fastest Start with Web Interface (2 minutes)
 
-1. **Install LMAS**: Run `npx the-matrix-ai init my-project`
+1. **Install LMAS**: Run `npx the-matrix-ai-premium init my-project`
 2. **Configure your IDE**: Follow the setup instructions for Codex CLI, Cursor, or Claude Code
 3. **Start Planning**: Activate an agent like `@analyst` to begin creating your briefing
 4. **Use LMAS commands**: Type `*help` to see available commands
@@ -267,27 +263,27 @@ LMAS offers a modern, cross-platform CLI with intuitive commands:
 
 ```bash
 # Project Management (with interactive wizard)
-npx the-matrix-ai init <project-name> [options]
+npx the-matrix-ai-premium init <project-name> [options]
   --force              Force creation in non-empty directory
   --skip-install       Skip npm dependency installation
   --template <name>    Use specific template (default, minimal, enterprise)
 
 # Installation and Configuration (with modern prompts)
-npx the-matrix-ai install [options]
+npx the-matrix-ai-premium install [options]
   --force              Overwrite existing configuration
   --quiet              Minimal output during installation
   --dry-run            Simulate installation without modifying files
 
 # System Commands
-npx the-matrix-ai --version   Display installed version
-npx the-matrix-ai --help      Display detailed help
-npx the-matrix-ai info        Display system information
-npx the-matrix-ai doctor      Run system diagnostics
-npx the-matrix-ai doctor --fix Automatically fix detected issues
+npx the-matrix-ai-premium --version   Display installed version
+npx the-matrix-ai-premium --help      Display detailed help
+npx the-matrix-ai-premium info        Display system information
+npx the-matrix-ai-premium doctor      Run system diagnostics
+npx the-matrix-ai-premium doctor --fix Automatically fix detected issues
 
 # Maintenance
-npx the-matrix-ai update      Update to latest version
-npx the-matrix-ai uninstall   Remove LMAS
+npx the-matrix-ai-premium update      Update to latest version
+npx the-matrix-ai-premium uninstall   Remove LMAS
 ```
 
 **CLI Features:**
@@ -303,7 +299,7 @@ npx the-matrix-ai uninstall   Remove LMAS
 #### Full Interactive Installation
 
 ```bash
-$ npx the-matrix-ai install
+$ npx the-matrix-ai-premium install
 
 🚀 LMAS Installation
 
@@ -349,7 +345,7 @@ Next steps:
 
 ```bash
 # Automated installation without prompts
-$ npx the-matrix-ai install --quiet --force
+$ npx the-matrix-ai-premium install --quiet --force
 ✔ LMAS installed successfully
 ```
 
@@ -357,7 +353,7 @@ $ npx the-matrix-ai install --quiet --force
 
 ```bash
 # Test installation without modifying files
-$ npx the-matrix-ai install --dry-run
+$ npx the-matrix-ai-premium install --dry-run
 
 [DRY RUN] Would create: ./my-project/
 [DRY RUN] Would copy: .lmas-core/ (45 files)
@@ -369,7 +365,7 @@ $ npx the-matrix-ai install --dry-run
 #### System Diagnostics
 
 ```bash
-$ npx the-matrix-ai doctor
+$ npx the-matrix-ai-premium doctor
 
 🏥 LMAS System Diagnostics
 
@@ -398,7 +394,7 @@ Dependencies:
 #### Get Help
 
 ```bash
-$ npx the-matrix-ai --help
+$ npx the-matrix-ai-premium --help
 
 Usage: lmas-core [options] [command]
 
@@ -424,7 +420,7 @@ For contributors or advanced users who want to modify the source code:
 
 ```bash
 # Clone the repository
-git clone https://github.com/oluanferreira/the-matrix-ai.git
+git clone https://github.com/oluanferreira/the-matrix-ai-premium.git
 cd lmas-core
 
 # Install dependencies
@@ -440,7 +436,7 @@ For team members joining the project:
 
 ```bash
 # Install LMAS in the project
-npx the-matrix-ai@latest install
+npx the-matrix-ai-premium@latest install
 
 # This will:
 # 1. Detect existing installation (if any)
@@ -607,11 +603,11 @@ Squads are modular AI agent teams. See the [Squads Overview](docs/guides/squads-
 
 ### External Squads
 
-- **[hybrid-ops](https://github.com/oluanferreira/the-matrix-ai)** - Human-agent hybrid operations (separate repository)
+- **[hybrid-ops](https://github.com/oluanferreira/the-matrix-ai-premium)** - Human-agent hybrid operations (separate repository)
 
 ## Support
 
-- 🐛 [Issue Tracker](https://github.com/oluanferreira/the-matrix-ai/issues) - Bug reports and feature requests
+- 🐛 [Issue Tracker](https://github.com/oluanferreira/the-matrix-ai-premium/issues) - Bug reports and feature requests
 - 💡 [Feature Process](docs/FEATURE_PROCESS.md) - How to propose new features
 - 📋 [How to Contribute](CONTRIBUTING.md)
 - 🗺️ [Roadmap](docs/roadmap.md) - See what we're building
@@ -714,7 +710,7 @@ This project was originally derived from the [BMad Method](https://github.com/bm
 
 **Note:** Some contributors shown in the GitHub contributors graph are inherited from the original BMad Method git history and do not represent active participation in or endorsement of LMAS.
 
-[![Contributors](https://contrib.rocks/image?repo=LMAS/lmas-core)](https://github.com/oluanferreira/the-matrix-ai/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=LMAS/lmas-core)](https://github.com/oluanferreira/the-matrix-ai-premium/graphs/contributors)
 
 <sub>Built with ❤️ for the AI-assisted development community</sub>
 
