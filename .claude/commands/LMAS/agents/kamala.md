@@ -290,3 +290,5 @@ Type `*help` to see all commands, or `*guide` for comprehensive instructions.
 ---
 ---
 *LMAS Agent - Brand Domain Chief*
+---
+*LMAS Agent - Synced from .lmas-core/development/agents/kamala.md*

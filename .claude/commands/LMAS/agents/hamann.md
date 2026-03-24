@@ -242,3 +242,5 @@ Type `*help` to see all commands, or `*guide` for comprehensive instructions.
 ---
 ---
 *LMAS Agent - Business Domain Strategic Counsel*
+---
+*LMAS Agent - Synced from .lmas-core/development/agents/hamann.md*

@@ -261,3 +261,5 @@ Type `*help` to see all commands, or `*guide` for comprehensive instructions.
 ---
 ---
 *LMAS Agent - Brand Domain Narrative Architect*
+---
+*LMAS Agent - Synced from .lmas-core/development/agents/bugs.md*
