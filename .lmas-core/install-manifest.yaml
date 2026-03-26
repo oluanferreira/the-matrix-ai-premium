@@ -7,10 +7,10 @@
 # - SHA256 hashes for change detection
 # - File types for categorization
 #
-version: 1.1.0
-generated_at: "2026-03-24T17:24:28.566Z"
+version: 1.2.0
+generated_at: "2026-03-26T03:35:30.478Z"
 generator: scripts/generate-install-manifest.js
-file_count: 1185
+file_count: 1190
 files:
   - path: cli/commands/config/index.js
     hash: sha256:c241b04a75440d489bc8c80160bc1aa8070cac1d424e9305413d933083a6a593
@@ -1221,9 +1221,9 @@ files:
     type: data
     size: 7336
   - path: data/entity-registry.yaml
-    hash: sha256:343504bd6ce389eaacbcd489ca225fbd5be23f7730a3820e6d494f637b06e2b5
+    hash: sha256:bd92e2297cc0d1c758a8d39cf5f66c09d9e45313a998ef72b67020ec9d2265b2
     type: data
-    size: 537449
+    size: 543834
   - path: data/learned-patterns.yaml
     hash: sha256:24ac0b160615583a0ff783d3da8af80b7f94191575d6db2054ec8e10a3f945dc
     type: data
@@ -1872,6 +1872,10 @@ files:
     hash: sha256:1d63f64dafe6e41a36d77547e44816e22a5f03b6c0700194d7eeac5866ad0af4
     type: task
     size: 9170
+  - path: development/tasks/analyst-retro.md
+    hash: sha256:3db5812149462bb4c7f8e9a899b2f0470d3e6ffdebf5183a4fe37f4a499fca31
+    type: task
+    size: 5358
   - path: development/tasks/analyze-brownfield.md
     hash: sha256:af5a3a8c2ef74a030cad2d786c2e98b9de8a05ac3b05d47fafd0a9b903e334a8
     type: task
@@ -2176,6 +2180,10 @@ files:
     hash: sha256:a6c9c4955b333a2d72c8af04aa5dfa1296c835fcba49b80b02f64f6c39ed5b84
     type: task
     size: 24720
+  - path: development/tasks/dev-investigate.md
+    hash: sha256:f4b42ee2ebc9190db83aa4647b1cf45262c882129523100924d61f4f3e53dd2f
+    type: task
+    size: 6695
   - path: development/tasks/dev-optimize-performance.md
     hash: sha256:dbb9c65931da58ec35c07123d8e6d2eeabdd66d89e122f2d29b5ee1e0ca8372c
     type: task
@@ -2188,6 +2196,14 @@ files:
     hash: sha256:a43a488dc347738844da90afdf8c092771d8cf4d1fed52d96264fa620df6158a
     type: task
     size: 11364
+  - path: development/tasks/devops-canary.md
+    hash: sha256:200dbaf81c68e8ae39bbc9d2efdac64bc02d6aba7b67b1f5feb9f300698928e4
+    type: task
+    size: 4518
+  - path: development/tasks/devops-document-release.md
+    hash: sha256:359a44abfac2b4ad0095ee42fb32f0d2442e691ff1429568e03b30a3886f0a19
+    type: task
+    size: 4615
   - path: development/tasks/document-gotchas.md
     hash: sha256:9046aa7fa8592c86a2525d69ba93850d53540e3086652cd9d176eacc43f7ded6
     type: task
@@ -2592,6 +2608,10 @@ files:
     hash: sha256:8779ed78343c361e302f569f798b6a8049523968770faadf4ac1870f99dd433c
     type: task
     size: 4291
+  - path: development/tasks/seo-benchmark.md
+    hash: sha256:eae0573a32a6b6f7eaf38287357032983d4867a3d24ae12332a9fe228cee5a56
+    type: task
+    size: 4581
   - path: development/tasks/seo-content.md
     hash: sha256:3771d5aec3f37447f47f8b229e8515769b103edf82aac83c273065bd0f622e95
     type: task

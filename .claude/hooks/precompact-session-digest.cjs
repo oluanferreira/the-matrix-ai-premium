@@ -49,9 +49,98 @@ function readStdin() {
   });
 }
 
+/**
+ * Save checkpoint state before context compaction.
+ * Ensures agent work is not lost when Claude Code compresses the conversation.
+ *
+ * MULTI-PROJECT MODE: Backs up ALL project checkpoints and reminds the agent
+ * to preserve the active project identity in the compacted context.
+ */
+function saveCheckpointBeforeCompact(projectDir) {
+  try {
+    const fs = require('fs');
+    const backupDir = path.join(projectDir, '.lmas');
+    if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
+
+    const date = new Date().toISOString().split('T')[0];
+    const time = new Date().toTimeString().split(' ')[0].slice(0, 5);
+
+    // Detect multi-project mode
+    const projectsDir = path.join(projectDir, 'projects');
+    const isMultiProject = fs.existsSync(projectsDir);
+
+    if (isMultiProject) {
+      // Backup all project checkpoints
+      const projectNames = [];
+      try {
+        for (const entry of fs.readdirSync(projectsDir)) {
+          if (entry.startsWith('_') || entry.startsWith('.')) continue;
+          const projDir = path.join(projectsDir, entry);
+          if (!fs.statSync(projDir).isDirectory()) continue;
+          const cpPath = path.join(projDir, 'PROJECT-CHECKPOINT.md');
+          if (!fs.existsSync(cpPath)) continue;
+
+          // Backup
+          fs.copyFileSync(cpPath, path.join(backupDir, `.checkpoint-backup-${entry}`));
+
+          // Update timestamp
+          const content = fs.readFileSync(cpPath, 'utf8');
+          const updated = content.replace(
+            /^> Ultima atualizacao:.*$/m,
+            `> Ultima atualizacao: ${date} ${time} (pre-compact save)`
+          );
+          if (updated !== content) fs.writeFileSync(cpPath, updated);
+
+          projectNames.push(entry);
+        }
+      } catch { /* skip */ }
+
+      // Output reminder with multi-project awareness
+      process.stdout.write(
+        '\n<pre-compact-checkpoint>\n' +
+        'IMPORTANTE: O contexto esta sendo compactado.\n' +
+        'MODO MULTI-PROJETO: Projetos disponiveis: ' + projectNames.join(', ') + '\n' +
+        'PRESERVAR: O projeto ativo desta sessao. NAO mudar de projeto apos compaction.\n' +
+        'Antes de continuar, atualize projects/{PROJETO-ATIVO}/PROJECT-CHECKPOINT.md com:\n' +
+        '- Contexto Ativo (o que estava sendo feito)\n' +
+        '- Decisoes Tomadas (escolhas feitas nesta sessao)\n' +
+        '- Proximos Passos (o que falta fazer)\n' +
+        '</pre-compact-checkpoint>\n'
+      );
+    } else {
+      // Legacy: single checkpoint
+      const checkpointPath = path.join(projectDir, 'docs', 'PROJECT-CHECKPOINT.md');
+      if (!fs.existsSync(checkpointPath)) return;
+
+      fs.copyFileSync(checkpointPath, path.join(backupDir, '.checkpoint-backup'));
+
+      const content = fs.readFileSync(checkpointPath, 'utf8');
+      const updated = content.replace(
+        /^> Ultima atualizacao:.*$/m,
+        `> Ultima atualizacao: ${date} ${time} (pre-compact save)`
+      );
+      if (updated !== content) fs.writeFileSync(checkpointPath, updated);
+
+      process.stdout.write(
+        '\n<pre-compact-checkpoint>\n' +
+        'IMPORTANTE: O contexto esta sendo compactado. ' +
+        'Antes de continuar, atualize docs/PROJECT-CHECKPOINT.md com:\n' +
+        '- Contexto Ativo (o que estava sendo feito)\n' +
+        '- Decisoes Tomadas (escolhas feitas nesta sessao)\n' +
+        '- Proximos Passos (o que falta fazer)\n' +
+        '</pre-compact-checkpoint>\n'
+      );
+    }
+  } catch { /* silent */ }
+}
+
 /** Main hook execution pipeline. */
 async function main() {
   const input = await readStdin();
+  const projectDir = input.cwd || PROJECT_ROOT;
+
+  // Save checkpoint before compaction (Gap 4)
+  saveCheckpointBeforeCompact(projectDir);
 
   // Resolve path to the unified hook runner via __dirname (not input.cwd)
   // Same pattern as synapse-engine.cjs — robust against incorrect cwd
@@ -67,7 +156,7 @@ async function main() {
   // Build context object expected by onPreCompact
   const context = {
     sessionId: input.session_id,
-    projectDir: input.cwd || PROJECT_ROOT,
+    projectDir,
     transcriptPath: input.transcript_path,
     trigger: input.trigger || 'auto',
     hookEventName: input.hook_event_name || 'PreCompact',
@@ -76,8 +165,10 @@ async function main() {
     provider: 'claude',
   };
 
-  const { onPreCompact } = require(runnerPath);
-  await onPreCompact(context);
+  try {
+    const { onPreCompact } = require(runnerPath);
+    await onPreCompact(context);
+  } catch { /* runner may not exist in all installations */ }
 }
 
 /** Entry point runner — sets safety timeout and executes main(). */
