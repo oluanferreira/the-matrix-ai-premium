@@ -836,36 +836,39 @@ async function runWizard(options = {}) {
       answers.llmRoutingInstalled = false;
     }
 
-    // Premium Token Gate — free vs premium content
+    // Token Gate — required for THE MATRIX 2.0
     if (!options.quiet) {
       const {
         isValidTokenFormat,
         validateToken,
         saveTokenCache,
-        purgePremiumContent,
-        PREMIUM_AGENTS,
       } = require('../auth/token-validator');
 
       console.log('\n' + colors.dim('━'.repeat(60)));
-      console.log(colors.primary('\n🔓 Premium Access'));
-      console.log(colors.secondary('   Para desbloquear todos os 21 agentes, insira seu token.'));
-      console.log(colors.dim('   (deixe vazio para continuar com a edição gratuita — 12 agentes)\n'));
+      console.log(colors.primary('\n🔑 Ativação — THE MATRIX 2.0'));
+      console.log(colors.secondary('   Insira seu token para ativar o framework (26 agentes + 12 squads).'));
+      console.log(colors.dim('   Formato: MTX-XXXX-XXXX-XXXX-XXXX\n'));
 
-      const { premiumToken } = await inquirer.prompt([
-        {
-          type: 'input',
-          name: 'premiumToken',
-          message: colors.primary('Token:'),
-          default: '',
-          validate: (input) => {
-            if (!input || input.trim() === '') return true; // Empty = free
-            if (isValidTokenFormat(input.trim())) return true;
-            return 'Formato inválido. Esperado: MTX-XXXX-XXXX-XXXX-XXXX';
+      let tokenValid = false;
+      let tokenAttempts = 0;
+      const maxAttempts = 3;
+
+      while (!tokenValid && tokenAttempts < maxAttempts) {
+        tokenAttempts++;
+
+        const { premiumToken } = await inquirer.prompt([
+          {
+            type: 'input',
+            name: 'premiumToken',
+            message: colors.primary('Token:'),
+            validate: (input) => {
+              if (!input || input.trim() === '') return 'Token obrigatório para THE MATRIX 2.0.';
+              if (isValidTokenFormat(input.trim())) return true;
+              return 'Formato inválido. Esperado: MTX-XXXX-XXXX-XXXX-XXXX';
+            },
           },
-        },
-      ]);
+        ]);
 
-      if (premiumToken && premiumToken.trim()) {
         console.log('\n🔑 Validando token...');
 
         try {
@@ -879,9 +882,10 @@ async function runWizard(options = {}) {
           });
 
           if (result.valid) {
-            console.log(colors.success(`\n✅ Token válido! Bem vindo, ${result.user.name}.`));
+            tokenValid = true;
+            console.log(colors.success(`\n✅ Token válido! Bem-vindo, ${result.user.name}.`));
             console.log(colors.dim(`   Expira em: ${new Date(result.expires_at).toLocaleDateString('pt-BR')} (${result.days_remaining} dias)`));
-            console.log(colors.success('\n📦 Instalando todos os agentes premium...\n'));
+            console.log(colors.success('\n📦 Ativando THE MATRIX 2.0 — todos os agentes e squads...\n'));
 
             saveTokenCache({
               token: premiumToken.trim(),
@@ -895,26 +899,24 @@ async function runWizard(options = {}) {
             answers.premiumUser = result.user;
           } else {
             console.error(colors.warning(`\n⚠️  ${result.error}`));
-            if (result.purge) {
-              console.error(colors.dim('   Token expirado ou revogado.'));
+            if (tokenAttempts < maxAttempts) {
+              console.log(colors.info(`\n   Tentativa ${tokenAttempts}/${maxAttempts}. Tente novamente.\n`));
             }
-            console.log(colors.info('\n📦 Continuando com edição gratuita (12 agentes)...\n'));
             answers.premiumInstalled = false;
           }
         } catch (error) {
           console.error(colors.warning(`\n⚠️  Erro na validação: ${error.message}`));
-          console.log(colors.info('\n📦 Continuando com edição gratuita...\n'));
+          if (tokenAttempts < maxAttempts) {
+            console.log(colors.info(`\n   Tentativa ${tokenAttempts}/${maxAttempts}. Tente novamente.\n`));
+          }
           answers.premiumInstalled = false;
         }
-      } else {
-        console.log(colors.info('\n📦 Instalando edição gratuita (12 agentes)...\n'));
-        answers.premiumInstalled = false;
       }
 
-      // If free tier, remove premium agents after installation
-      if (!answers.premiumInstalled) {
-        // Schedule premium purge for after core install completes
-        answers._purgePremiumAfterInstall = true;
+      if (!tokenValid) {
+        console.error(colors.warning('\n❌ Token inválido após 3 tentativas. Instalação cancelada.'));
+        console.log(colors.dim('   Adquira seu token em: https://thematrixai.dev\n'));
+        throw new Error('Token de ativação obrigatório para THE MATRIX 2.0');
       }
     } else {
       // Quiet mode: check for MATRIX_TOKEN env var
@@ -923,15 +925,18 @@ async function runWizard(options = {}) {
         const { validateToken, saveTokenCache } = require('../auth/token-validator');
         try {
           const result = await validateToken(envToken, { event: 'install' });
-          answers.premiumInstalled = result.valid;
-          if (result.valid) saveTokenCache({ token: envToken, user: result.user, plan: 'premium', expires_at: result.expires_at });
-        } catch {
-          answers.premiumInstalled = false;
+          if (result.valid) {
+            saveTokenCache({ token: envToken, user: result.user, plan: 'premium', expires_at: result.expires_at });
+            answers.premiumInstalled = true;
+          } else {
+            throw new Error('Token inválido: ' + (result.error || 'verificação falhou'));
+          }
+        } catch (error) {
+          throw new Error('Token de ativação obrigatório para THE MATRIX 2.0: ' + error.message);
         }
       } else {
-        answers.premiumInstalled = false;
+        throw new Error('Token obrigatório. Use: MATRIX_TOKEN=MTX-... npx the-matrix-ai-premium');
       }
-      answers._purgePremiumAfterInstall = !answers.premiumInstalled;
     }
 
     // Story 1.8: Installation Validation
@@ -972,20 +977,6 @@ async function runWizard(options = {}) {
     } catch (error) {
       console.error('\n⚠️  Validation failed:', error.message);
       console.log('Installation may be incomplete. Check logs in .lmas/ directory.');
-    }
-
-    // Purge premium content if free tier
-    if (answers._purgePremiumAfterInstall) {
-      try {
-        const { purgePremiumContent } = require('../auth/token-validator');
-        const purgeResult = purgePremiumContent(process.cwd());
-        if (purgeResult.purged > 0) {
-          console.log(`\n🔒 Free tier: ${purgeResult.purged} premium items removed.`);
-          console.log('   12 agentes gratuitos disponíveis. Para premium: use um token válido.\n');
-        }
-      } catch {
-        // Silently continue — purge is best-effort
-      }
     }
 
     // Show completion

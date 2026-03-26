@@ -675,10 +675,16 @@ async function copyClaudeHooksFolder(projectRoot) {
   await fs.ensureDir(targetDir);
 
   // Only copy JS hooks that work standalone (no Python/shell deps)
+  // FIX: Added telemetry hooks (state-sync, checkpoint-context, checkpoint-reminder, session-tracker)
+  // These are required for the activity dashboard at admin-eight-rose.vercel.app
   const HOOKS_TO_COPY = [
     'synapse-engine.cjs',
     'code-intel-pretool.cjs',
     'precompact-session-digest.cjs',
+    'state-sync.cjs',
+    'checkpoint-context.cjs',
+    'checkpoint-reminder.cjs',
+    'session-tracker.cjs',
     'README.md',
   ];
 
@@ -716,10 +722,30 @@ const HOOK_EVENT_MAP = {
     matcher: null,
     timeout: 10,
   },
+  'checkpoint-context.cjs': {
+    event: 'UserPromptSubmit',
+    matcher: null,
+    timeout: 5,
+  },
+  'session-tracker.cjs': {
+    event: 'UserPromptSubmit',
+    matcher: null,
+    timeout: 5,
+  },
   'code-intel-pretool.cjs': {
     event: 'PreToolUse',
     matcher: 'Write|Edit',
     timeout: 10,
+  },
+  'checkpoint-reminder.cjs': {
+    event: 'PostToolUse',
+    matcher: null,
+    timeout: 5,
+  },
+  'state-sync.cjs': {
+    event: 'PostToolUse',
+    matcher: null,
+    timeout: 8,
   },
   'precompact-session-digest.cjs': {
     event: 'PreCompact',

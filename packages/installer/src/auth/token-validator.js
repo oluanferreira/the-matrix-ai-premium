@@ -15,19 +15,8 @@ const API_BASE_URL = process.env.MATRIX_API_URL || 'https://qaomekspdjfbdeixxjky
 
 const TOKEN_PATTERN = /^MTX-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
 
-// Premium agent IDs (not included in free tier)
-const PREMIUM_AGENTS = [
-  'smith',
-];
-
-// Premium task files (brainstorm system + advanced tasks)
-const PREMIUM_TASKS = [
-  'brainstorm.md',
-  'facilitate-brainstorming-session.md',
-  'analyst-facilitate-brainstorming.md',
-  'advanced-elicitation.md',
-  'create-deep-research-prompt.md',
-];
+// Premium 2.0: All agents included — token required for activation
+// No free tier in the-matrix-ai-premium package
 
 /**
  * Validate token format
@@ -204,47 +193,19 @@ function clearTokenCache() {
 }
 
 /**
- * Purge premium content from project
- * Removes premium agents, tasks, and squads while preserving user work
+ * Purge all installed content from project (token revoked/expired)
+ * Only called when token validation fails on an existing installation.
  * @param {string} projectDir
  */
-function purgePremiumContent(projectDir) {
-  const agentsDir = path.join(projectDir, '.lmas-core', 'development', 'agents');
-  const tasksDir = path.join(projectDir, '.lmas-core', 'development', 'tasks');
+function purgeInstalledContent(projectDir) {
+  const lmasCoreDir = path.join(projectDir, '.lmas-core');
   const squadsDir = path.join(projectDir, 'squads');
 
   let purged = 0;
 
-  // Remove premium agents
-  for (const agentId of PREMIUM_AGENTS) {
-    const agentFile = path.join(agentsDir, `${agentId}.md`);
-    const agentMemDir = path.join(agentsDir, agentId);
-    try {
-      if (fs.existsSync(agentFile)) { fs.unlinkSync(agentFile); purged++; }
-      if (fs.existsSync(agentMemDir)) { fs.rmSync(agentMemDir, { recursive: true }); }
-    } catch { /* skip */ }
-  }
-
-  // Remove premium tasks
-  for (const taskFile of PREMIUM_TASKS) {
-    const taskPath = path.join(tasksDir, taskFile);
-    try {
-      if (fs.existsSync(taskPath)) { fs.unlinkSync(taskPath); purged++; }
-    } catch { /* skip */ }
-  }
-
-  // Remove premium squads (claude-code-mastery etc)
   try {
-    if (fs.existsSync(squadsDir)) {
-      const entries = fs.readdirSync(squadsDir);
-      for (const entry of entries) {
-        const fullPath = path.join(squadsDir, entry);
-        if (fs.statSync(fullPath).isDirectory()) {
-          fs.rmSync(fullPath, { recursive: true });
-          purged++;
-        }
-      }
-    }
+    if (fs.existsSync(lmasCoreDir)) { fs.rmSync(lmasCoreDir, { recursive: true }); purged++; }
+    if (fs.existsSync(squadsDir)) { fs.rmSync(squadsDir, { recursive: true }); purged++; }
   } catch { /* skip */ }
 
   clearTokenCache();
@@ -332,14 +293,12 @@ function logInstallSilent(metadata = {}) {
 }
 
 module.exports = {
-  PREMIUM_AGENTS,
-  PREMIUM_TASKS,
   isValidTokenFormat,
   validateToken,
   heartbeat,
   saveTokenCache,
   readTokenCache,
   clearTokenCache,
-  purgePremiumContent,
+  purgeInstalledContent,
   logInstallSilent,
 };

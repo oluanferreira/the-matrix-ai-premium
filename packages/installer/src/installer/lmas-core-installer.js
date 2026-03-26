@@ -23,6 +23,14 @@ function getLmasCoreSourcePath() {
 }
 
 /**
+ * Get the path to the source squads directory in the package
+ * @returns {string} Absolute path to squads source
+ */
+function getSquadsSourcePath() {
+  return path.join(__dirname, '..', '..', '..', '..', 'squads');
+}
+
+/**
  * Folders to copy from .lmas-core
  * Includes both v4 modular structure and v2.0 legacy flat structure for compatibility
  * @constant {string[]}
@@ -321,6 +329,48 @@ async function installLmasCore(options = {}) {
     });
     result.versionInfo = versionInfo;
 
+    // Copy squads directory (bundled in the package since 2.0)
+    const squadsSource = getSquadsSourcePath();
+    const squadsTarget = path.join(targetDir, 'squads');
+
+    if (await fs.pathExists(squadsSource)) {
+      spinner.text = 'Installing squads...';
+
+      // Only copy if target doesn't exist yet (don't overwrite user customizations)
+      const squadsExist = await fs.pathExists(squadsTarget);
+
+      const squadItems = await fs.readdir(squadsSource, { withFileTypes: true });
+      let squadsInstalled = 0;
+
+      for (const item of squadItems) {
+        if (!item.isDirectory()) continue;
+
+        const squadSource = path.join(squadsSource, item.name);
+        const squadDest = path.join(squadsTarget, item.name);
+
+        // Skip if this specific squad already exists (preserve customizations)
+        if (squadsExist && await fs.pathExists(squadDest)) {
+          continue;
+        }
+
+        const copiedFiles = await copyDirectoryWithRootReplacement(
+          squadSource,
+          squadDest,
+          onProgress,
+        );
+
+        if (copiedFiles.length > 0) {
+          result.installedFiles.push(...copiedFiles.map(f => path.join('squads', item.name, f)));
+          squadsInstalled++;
+        }
+      }
+
+      if (squadsInstalled > 0) {
+        spinner.succeed(`Installed ${squadsInstalled} squads`);
+        spinner.start('Finishing installation...');
+      }
+    }
+
     // BUG-2 fix (INS-1): Install .lmas-core dependencies after copy
     // The copied .lmas-core/package.json has dependencies (js-yaml, execa, etc.)
     // that must be installed for the activation pipeline to work
@@ -420,6 +470,7 @@ module.exports = {
   hasPackageJson,
   createBasicPackageJson,
   getLmasCoreSourcePath,
+  getSquadsSourcePath,
   copyFileWithRootReplacement,
   copyDirectoryWithRootReplacement,
   generateVersionJson,
