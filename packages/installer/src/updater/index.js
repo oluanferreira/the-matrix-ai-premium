@@ -97,7 +97,6 @@ const HOOK_EVENT_MAP = {
   'synapse-engine.cjs':             { event: 'UserPromptSubmit', matcher: null, timeout: 10 },
   'checkpoint-context.cjs':         { event: 'UserPromptSubmit', matcher: null, timeout: 5 },
   'session-tracker.cjs':            { event: 'UserPromptSubmit', matcher: null, timeout: 5 },
-  'code-intel-pretool.cjs':         { event: 'PreToolUse', matcher: 'Write|Edit', timeout: 10 },
   'checkpoint-reminder.cjs':        { event: 'PostToolUse', matcher: null, timeout: 5 },
   'state-sync.cjs':                 { event: 'PostToolUse', matcher: null, timeout: 8 },
   'precompact-session-digest.cjs':  { event: 'PreCompact', matcher: null, timeout: 10 },
@@ -320,8 +319,9 @@ class LMASUpdater {
       result.filesSkipped = applied.skipped;
       result.fileDetails = plan;
 
-      // 6. Register hooks
+      // 6. Clean stale hooks + register new ones
       onProgress('hooks', 'Registering hooks...');
+      await this.cleanStaleHooks();
       result.hooksRegistered = await this.registerHooks();
 
       // 7. Update version
@@ -554,6 +554,48 @@ class LMASUpdater {
     // For YAML configs, overwrite but this could be enhanced later
     // to preserve user-added keys
     await fs.copy(srcPath, dstPath, { overwrite: true });
+  }
+
+  // ─── Hook Cleanup ───
+
+  /**
+   * Remove stale hook entries from settings.local.json where the
+   * referenced .cjs file no longer exists on disk.
+   * Prevents validation failures from phantom hooks.
+   */
+  async cleanStaleHooks() {
+    const hooksDir = path.join(this.projectRoot, '.claude', 'hooks');
+    const settingsPath = path.join(this.projectRoot, '.claude', 'settings.local.json');
+
+    if (!await fs.pathExists(settingsPath)) return;
+
+    let settings;
+    try { settings = await fs.readJson(settingsPath); } catch { return; }
+    if (!settings.hooks) return;
+
+    let cleaned = 0;
+    for (const [event, entries] of Object.entries(settings.hooks)) {
+      if (!Array.isArray(entries)) continue;
+      settings.hooks[event] = entries.filter(entry => {
+        if (!Array.isArray(entry.hooks)) return true;
+        const valid = entry.hooks.every(h => {
+          if (!h.command) return true;
+          const match = h.command.match(/[\\/]([^\\/]+\.cjs)/);
+          if (!match) return true;
+          const hookFile = path.join(hooksDir, match[1]);
+          if (fs.existsSync(hookFile)) return true;
+          this.log(`Cleaned stale hook: ${match[1]} (${event})`);
+          cleaned++;
+          return false;
+        });
+        return valid;
+      });
+    }
+
+    if (cleaned > 0) {
+      await fs.writeJson(settingsPath, settings, { spaces: 2 });
+      this.log(`Removed ${cleaned} stale hook(s) from settings.local.json`);
+    }
   }
 
   // ─── Hook Registration ───

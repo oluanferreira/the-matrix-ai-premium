@@ -679,7 +679,6 @@ async function copyClaudeHooksFolder(projectRoot) {
   // These are required for the activity dashboard at admin-eight-rose.vercel.app
   const HOOKS_TO_COPY = [
     'synapse-engine.cjs',
-    'code-intel-pretool.cjs',
     'precompact-session-digest.cjs',
     'state-sync.cjs',
     'checkpoint-context.cjs',
@@ -731,11 +730,6 @@ const HOOK_EVENT_MAP = {
     event: 'UserPromptSubmit',
     matcher: null,
     timeout: 5,
-  },
-  'code-intel-pretool.cjs': {
-    event: 'PreToolUse',
-    matcher: 'Write|Edit',
-    timeout: 10,
   },
   'checkpoint-reminder.cjs': {
     event: 'PostToolUse',
