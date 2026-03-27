@@ -57,6 +57,10 @@ CREATE POLICY "Admin full access project_state"
   ON matrix_project_state FOR ALL
   USING (auth.role() = 'service_role');
 
-CREATE POLICY "Anon upsert project_state"
-  ON matrix_project_state FOR ALL
+CREATE POLICY "Anon insert project_state"
+  ON matrix_project_state FOR INSERT
+  WITH CHECK (auth.role() = 'anon');
+
+CREATE POLICY "Anon update project_state"
+  ON matrix_project_state FOR UPDATE
   USING (auth.role() = 'anon');

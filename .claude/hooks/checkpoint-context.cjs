@@ -7,44 +7,52 @@
  * MULTI-PROJECT MODE (v2):
  * If projects/ directory exists, lists all available projects with brief
  * checkpoint summaries. The agent then asks the user which project to work on.
- * Project binding lives in the CONVERSATION CONTEXT (isolated per session),
- * NOT in the filesystem (shared). This prevents race conditions between
- * concurrent sessions working on different projects.
  *
- * LEGACY MODE:
- * If projects/ does not exist, reads docs/PROJECT-CHECKPOINT.md as before.
+ * TELEMETRY:
+ * - Generates unified session_id (written to .lmas/.session-id) for all hooks
+ * - Fire-and-forget session_start ping to Supabase
+ * - Tamper detection: checks if other telemetry hooks exist
  *
- * Output goes to stdout — Claude Code includes it in the conversation context.
+ * RULES:
+ * - ZERO console.log
+ * - NEVER block
+ * - NEVER fail visibly — all errors exit 0
  */
 
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const https = require('https');
-const os = require('os');
 
 const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
 const API_BASE_URL = process.env.MATRIX_API_URL || 'https://qaomekspdjfbdeixxjky.supabase.co/functions/v1';
 
+// Use shared token reader (F-7)
+const { readTokenCache } = require('./lib/token-reader.cjs');
+
 function main() {
   try {
     const projectDir = PROJECT_ROOT;
-    const sessionMarker = path.join(projectDir, '.lmas', '.ctx-session');
+    const lmasDir = path.join(projectDir, '.lmas');
+    const sessionMarker = path.join(lmasDir, '.ctx-session');
 
     // Only inject once per session (check by PID-based marker)
-    const sessionId = `${process.ppid}`;
+    const ppid = `${process.ppid}`;
     try {
       if (fs.existsSync(sessionMarker)) {
         const existing = fs.readFileSync(sessionMarker, 'utf8').trim();
-        if (existing === sessionId) return;
+        if (existing === ppid) return;
       }
     } catch { /* proceed */ }
 
-    // Mark session as injected
+    // Mark session as injected + generate unified session_id (F-8)
     try {
-      const lmasDir = path.join(projectDir, '.lmas');
       if (!fs.existsSync(lmasDir)) fs.mkdirSync(lmasDir, { recursive: true });
-      fs.writeFileSync(sessionMarker, sessionId);
+      fs.writeFileSync(sessionMarker, ppid);
+
+      // Generate and persist unified session_id for all hooks
+      const sessionId = `${ppid}-${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`;
+      fs.writeFileSync(path.join(lmasDir, '.session-id'), sessionId);
     } catch { /* proceed anyway */ }
 
     // Fire-and-forget session_start telemetry
@@ -70,9 +78,6 @@ function main() {
   } catch { /* silent */ }
 }
 
-/**
- * Check if projects/ has at least one subdirectory with a checkpoint or .project.yaml
- */
 function hasSubProjects(projectsDir) {
   try {
     const entries = fs.readdirSync(projectsDir);
@@ -86,9 +91,6 @@ function hasSubProjects(projectsDir) {
   } catch { return false; }
 }
 
-/**
- * Multi-project mode: list all projects with brief checkpoint excerpts
- */
 function generateMultiProjectContext(projectsDir) {
   const lines = [];
   lines.push('<multi-project-context>');
@@ -105,7 +107,6 @@ function generateMultiProjectContext(projectsDir) {
       const projDir = path.join(projectsDir, entry);
       if (!fs.statSync(projDir).isDirectory()) continue;
 
-      // Read .project.yaml for name and code_path
       let name = entry;
       let codePath = '';
       let description = '';
@@ -122,17 +123,14 @@ function generateMultiProjectContext(projectsDir) {
         }
       } catch { /* skip */ }
 
-      // Read checkpoint for active context (brief)
       let activeCtx = '';
       let storyCount = 0;
       try {
         const cpPath = path.join(projDir, 'PROJECT-CHECKPOINT.md');
         if (fs.existsSync(cpPath)) {
           const cp = fs.readFileSync(cpPath, 'utf8');
-          // Count stories
           const storyMatches = cp.match(/\| .+? \| (Draft|Ready|InProgress|InReview|Done) \|/g);
           storyCount = storyMatches ? storyMatches.length : 0;
-          // Get active context (first non-placeholder line)
           const ctxMatch = cp.match(/## Contexto Ativo\n+((?:(?!##).)+)/s);
           if (ctxMatch) {
             const ctx = ctxMatch[1].trim();
@@ -143,7 +141,6 @@ function generateMultiProjectContext(projectsDir) {
         }
       } catch { /* skip */ }
 
-      // Format project line
       let line = `- **${entry}**: ${name}`;
       if (storyCount > 0) line += ` (${storyCount} stories)`;
       if (codePath && codePath !== '.') line += ` [code: ${codePath}]`;
@@ -170,9 +167,6 @@ function generateMultiProjectContext(projectsDir) {
   } catch { return null; }
 }
 
-/**
- * Legacy: single-project summary from docs/PROJECT-CHECKPOINT.md
- */
 function generateSummary(content) {
   const lines = [];
   lines.push('<checkpoint-context>');
@@ -230,36 +224,15 @@ function generateSummary(content) {
 
 /**
  * Fire-and-forget session_start ping to Supabase.
- * Sends minimal metadata: token hash, project, OS, framework version.
- * NEVER blocks, NEVER fails visibly.
+ * Also performs tamper detection (G-5): checks if sibling hooks exist.
  */
 function pingSessionStart(projectDir) {
   try {
     const tokenPath = path.join(projectDir, '.lmas', 'token-cache.json');
-    if (!fs.existsSync(tokenPath)) return;
+    const cached = readTokenCache(tokenPath);
+    if (!cached) return;
 
-    let cached;
-    try {
-      const raw = JSON.parse(fs.readFileSync(tokenPath, 'utf8'));
-      if (raw.v === 2 && raw.data) {
-        const key = crypto.createHash('sha256')
-          .update(`matrix-ai:${os.hostname()}:${os.userInfo().username}`)
-          .digest();
-        const buf = Buffer.from(raw.data, 'base64');
-        const iv = buf.subarray(0, 12);
-        const tag = buf.subarray(12, 28);
-        const ciphertext = buf.subarray(28);
-        const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
-        decipher.setAuthTag(tag);
-        cached = JSON.parse(decipher.update(ciphertext, undefined, 'utf8') + decipher.final('utf8'));
-      } else {
-        cached = raw;
-      }
-    } catch { return; }
-
-    if (!cached || !cached.token) return;
-
-    // Collect minimal metadata
+    // Collect metadata
     let version = 'unknown';
     try {
       const vp = path.join(projectDir, '.lmas-core', 'version.json');
@@ -271,6 +244,23 @@ function pingSessionStart(projectDir) {
       const agentsDir = path.join(projectDir, '.lmas-core', 'development', 'agents');
       if (fs.existsSync(agentsDir)) agentCount = fs.readdirSync(agentsDir).filter(f => f.endsWith('.md')).length;
     } catch { /* skip */ }
+
+    // G-5: Tamper detection — check if sibling hooks exist
+    const expectedHooks = ['session-tracker.cjs', 'state-sync.cjs', 'precompact-session-digest.cjs'];
+    const hooksDir = path.join(projectDir, '.claude', 'hooks');
+    const missingHooks = [];
+    for (const hook of expectedHooks) {
+      if (!fs.existsSync(path.join(hooksDir, hook))) {
+        missingHooks.push(hook);
+      }
+    }
+
+    // Read unified session_id
+    let sessionId = crypto.randomUUID();
+    try {
+      const sidPath = path.join(projectDir, '.lmas', '.session-id');
+      if (fs.existsSync(sidPath)) sessionId = fs.readFileSync(sidPath, 'utf8').trim();
+    } catch { /* use random */ }
 
     const body = JSON.stringify({
       token: cached.token,
@@ -286,8 +276,9 @@ function pingSessionStart(projectDir) {
           os: process.platform,
           framework_version: version,
           agents_available: agentCount,
-          session_id: crypto.randomUUID(),
+          session_id: sessionId,
           timestamp: new Date().toISOString(),
+          tamper_detected: missingHooks.length > 0 ? missingHooks : undefined,
         },
       }],
     });

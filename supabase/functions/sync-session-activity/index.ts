@@ -1,13 +1,8 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    return new Response('ok', { status: 200 });
   }
 
   try {
@@ -15,7 +10,7 @@ Deno.serve(async (req) => {
     if (!token || !events || !Array.isArray(events)) {
       return new Response(JSON.stringify({ ok: false }), {
         status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -32,17 +27,38 @@ Deno.serve(async (req) => {
       .single();
 
     if (!tokenData || tokenData.revoked) {
-      return new Response(JSON.stringify({ ok: false }), {
+      return new Response(JSON.stringify({ ok: false, reason: 'invalid' }), {
         status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
     if (new Date(tokenData.expires_at) < new Date()) {
-      return new Response(JSON.stringify({ ok: false }), {
+      return new Response(JSON.stringify({ ok: false, reason: 'expired' }), {
         status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
       });
+    }
+
+    // Rate limiting: check last insert for this session_id within 10s
+    if (session_id && session_id !== 'unknown') {
+      const { data: recentActivity } = await supabase
+        .from('matrix_session_activity')
+        .select('created_at')
+        .eq('session_id', session_id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (recentActivity) {
+        const elapsed = Date.now() - new Date(recentActivity.created_at).getTime();
+        if (elapsed < 10_000) {
+          return new Response(JSON.stringify({ ok: false, reason: 'rate_limited' }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+      }
     }
 
     // Insert events
@@ -61,18 +77,18 @@ Deno.serve(async (req) => {
     if (error) {
       return new Response(JSON.stringify({ ok: false }), {
         status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
     return new Response(JSON.stringify({ ok: true, logged: rows.length }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch {
     return new Response(JSON.stringify({ ok: false }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 });

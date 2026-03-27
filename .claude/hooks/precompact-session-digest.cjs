@@ -6,36 +6,30 @@
  * Reads JSON from stdin (Claude Code hook protocol), delegates to
  * the unified hook runner in lmas-core.
  *
- * Stdin format (PreCompact):
- * {
- *   "session_id": "abc123",
- *   "transcript_path": "/path/to/session.jsonl",
- *   "cwd": "/path/to/project",
- *   "hook_event_name": "PreCompact",
- *   "trigger": "auto" | "manual"
- * }
+ * TELEMETRY (G-4):
+ * - Fires pingSessionEnd() with session summary
+ * - Flushes remaining activity buffer from session-tracker
+ * - Uses unified session_id from .lmas/.session-id
  *
  * @see .lmas-core/hooks/unified/runners/precompact-runner.js
- * @see Story MIS-3 - Session Digest (PreCompact Hook)
- * @see Story MIS-3.1 - Fix Session-Digest Hook Registration
  */
 
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
+const https = require('https');
+const crypto = require('crypto');
 
-// Resolve project root via __dirname (same pattern as synapse-engine.cjs)
-// More robust than input.cwd — doesn't depend on external input
+// Use shared token reader (F-7)
+const { readTokenCache, getSessionId } = require('./lib/token-reader.cjs');
+
 const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
+const API_BASE_URL = process.env.MATRIX_API_URL || 'https://qaomekspdjfbdeixxjky.supabase.co/functions/v1';
 
-/** Safety timeout (ms) — defense-in-depth; Claude Code also manages hook timeout. */
+/** Safety timeout (ms) */
 const HOOK_TIMEOUT_MS = 9000;
 
-/**
- * Read all data from stdin as a JSON object.
- * Same pattern as synapse-engine.cjs.
- * @returns {Promise<object>} Parsed JSON input
- */
 function readStdin() {
   return new Promise((resolve, reject) => {
     let data = '';
@@ -51,26 +45,19 @@ function readStdin() {
 
 /**
  * Save checkpoint state before context compaction.
- * Ensures agent work is not lost when Claude Code compresses the conversation.
- *
- * MULTI-PROJECT MODE: Backs up ALL project checkpoints and reminds the agent
- * to preserve the active project identity in the compacted context.
  */
 function saveCheckpointBeforeCompact(projectDir) {
   try {
-    const fs = require('fs');
     const backupDir = path.join(projectDir, '.lmas');
     if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
 
     const date = new Date().toISOString().split('T')[0];
     const time = new Date().toTimeString().split(' ')[0].slice(0, 5);
 
-    // Detect multi-project mode
     const projectsDir = path.join(projectDir, 'projects');
     const isMultiProject = fs.existsSync(projectsDir);
 
     if (isMultiProject) {
-      // Backup all project checkpoints
       const projectNames = [];
       try {
         for (const entry of fs.readdirSync(projectsDir)) {
@@ -80,10 +67,8 @@ function saveCheckpointBeforeCompact(projectDir) {
           const cpPath = path.join(projDir, 'PROJECT-CHECKPOINT.md');
           if (!fs.existsSync(cpPath)) continue;
 
-          // Backup
           fs.copyFileSync(cpPath, path.join(backupDir, `.checkpoint-backup-${entry}`));
 
-          // Update timestamp
           const content = fs.readFileSync(cpPath, 'utf8');
           const updated = content.replace(
             /^> Ultima atualizacao:.*$/m,
@@ -95,7 +80,6 @@ function saveCheckpointBeforeCompact(projectDir) {
         }
       } catch { /* skip */ }
 
-      // Output reminder with multi-project awareness
       process.stdout.write(
         '\n<pre-compact-checkpoint>\n' +
         'IMPORTANTE: O contexto esta sendo compactado.\n' +
@@ -108,7 +92,6 @@ function saveCheckpointBeforeCompact(projectDir) {
         '</pre-compact-checkpoint>\n'
       );
     } else {
-      // Legacy: single checkpoint
       const checkpointPath = path.join(projectDir, 'docs', 'PROJECT-CHECKPOINT.md');
       if (!fs.existsSync(checkpointPath)) return;
 
@@ -134,16 +117,117 @@ function saveCheckpointBeforeCompact(projectDir) {
   } catch { /* silent */ }
 }
 
+/**
+ * G-4: Fire session_end telemetry + flush remaining activity buffer.
+ */
+function pingSessionEnd(projectDir) {
+  try {
+    const lmasDir = path.join(projectDir, '.lmas');
+    const tokenPath = path.join(lmasDir, 'token-cache.json');
+    const cached = readTokenCache(tokenPath);
+    if (!cached) return;
+
+    const sessionId = getSessionId(lmasDir);
+
+    // Collect session summary
+    const sessionIdPath = path.join(lmasDir, '.session-id');
+    let sessionDuration = 0;
+    try {
+      if (fs.existsSync(sessionIdPath)) {
+        const stat = fs.statSync(sessionIdPath);
+        sessionDuration = Math.round((Date.now() - stat.mtimeMs) / 60000);
+      }
+    } catch { /* skip */ }
+
+    // Count sessions dir for total prompts approximation
+    let totalPrompts = 0;
+    const sessionsDir = path.join(lmasDir, 'sessions');
+    try {
+      if (fs.existsSync(sessionsDir)) totalPrompts = fs.readdirSync(sessionsDir).length;
+    } catch { /* skip */ }
+
+    // Flush remaining activity buffer (G-3 complement)
+    let bufferEvents = [];
+    const bufferPath = path.join(lmasDir, '.activity-buffer.json');
+    try {
+      if (fs.existsSync(bufferPath)) {
+        const buffer = JSON.parse(fs.readFileSync(bufferPath, 'utf8'));
+        if (buffer.events && buffer.events.length > 0) {
+          bufferEvents = buffer.events;
+        }
+        // Clear the buffer
+        fs.writeFileSync(bufferPath, JSON.stringify({ events: [], session_id: sessionId, count: 0, created_at: null }));
+      }
+    } catch { /* skip */ }
+
+    // Collect agents used from usage log
+    const agentsUsed = new Set();
+    const toolsUsed = new Set();
+    try {
+      const usageLog = path.join(lmasDir, 'analytics', 'skill-usage.jsonl');
+      if (fs.existsSync(usageLog)) {
+        const lines = fs.readFileSync(usageLog, 'utf8').split('\n').filter(l => l.trim());
+        for (const line of lines.slice(-100)) { // last 100 entries
+          try {
+            const entry = JSON.parse(line);
+            if (entry.skill && entry.skill.startsWith('@')) agentsUsed.add(entry.skill);
+            if (entry.skill && entry.skill.startsWith('*')) toolsUsed.add(entry.skill);
+          } catch { /* skip */ }
+        }
+      }
+    } catch { /* skip */ }
+
+    // Build events: session_end + remaining buffer events
+    const events = [
+      ...bufferEvents,
+      {
+        event_type: 'session_end',
+        data: {
+          session_id: sessionId,
+          duration_minutes: sessionDuration,
+          total_prompts: totalPrompts,
+          agents_used: [...agentsUsed],
+          tools_used: [...toolsUsed],
+          ts: new Date().toISOString(),
+        },
+      },
+    ];
+
+    const body = JSON.stringify({
+      token: cached.token,
+      session_id: sessionId,
+      project_name: cached.project_name || path.basename(projectDir),
+      events,
+    });
+
+    const parsed = new URL(`${API_BASE_URL}/sync-session-activity`);
+    const req = https.request({
+      hostname: parsed.hostname,
+      port: 443,
+      path: parsed.pathname,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+      timeout: 5000,
+    }, () => {});
+    req.on('error', () => {});
+    req.on('timeout', () => req.destroy());
+    req.write(body);
+    req.end();
+  } catch { /* silent */ }
+}
+
 /** Main hook execution pipeline. */
 async function main() {
   const input = await readStdin();
   const projectDir = input.cwd || PROJECT_ROOT;
 
-  // Save checkpoint before compaction (Gap 4)
+  // Save checkpoint before compaction
   saveCheckpointBeforeCompact(projectDir);
 
-  // Resolve path to the unified hook runner via __dirname (not input.cwd)
-  // Same pattern as synapse-engine.cjs — robust against incorrect cwd
+  // G-4: Fire session_end telemetry + flush buffer
+  pingSessionEnd(projectDir);
+
+  // Resolve path to the unified hook runner
   const runnerPath = path.join(
     PROJECT_ROOT,
     '.lmas-core',
@@ -153,7 +237,6 @@ async function main() {
     'precompact-runner.js',
   );
 
-  // Build context object expected by onPreCompact
   const context = {
     sessionId: input.session_id,
     projectDir,
@@ -171,9 +254,7 @@ async function main() {
   } catch { /* runner may not exist in all installations */ }
 }
 
-/** Entry point runner — sets safety timeout and executes main(). */
 function run() {
-  // Safety timeout — force exit only as last resort (no stdout to flush at this point).
   const timer = setTimeout(() => {
     process.exit(0);
   }, HOOK_TIMEOUT_MS);
@@ -182,12 +263,10 @@ function run() {
   main()
     .then(() => {
       clearTimeout(timer);
-      // Let event loop drain naturally — process.exitCode allows stdout flush
       process.exitCode = 0;
     })
     .catch(() => {
       clearTimeout(timer);
-      // Silent exit — never write to stderr (triggers "hook error" in Claude Code)
       process.exitCode = 0;
     });
 }

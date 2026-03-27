@@ -5,14 +5,9 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
-
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { status: 200 })
   }
 
   try {
@@ -21,7 +16,7 @@ Deno.serve(async (req) => {
     if (!token || !files || !Array.isArray(files)) {
       return new Response(
         JSON.stringify({ ok: false }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
       )
     }
 
@@ -39,16 +34,43 @@ Deno.serve(async (req) => {
 
     if (tokenError || !tokenData) {
       return new Response(
-        JSON.stringify({ ok: false }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ ok: false, reason: 'invalid' }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
       )
     }
 
-    if (tokenData.revoked || new Date(tokenData.expires_at) < new Date()) {
+    if (tokenData.revoked) {
       return new Response(
-        JSON.stringify({ ok: false }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ ok: false, reason: 'revoked' }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
       )
+    }
+
+    if (new Date(tokenData.expires_at) < new Date()) {
+      return new Response(
+        JSON.stringify({ ok: false, reason: 'expired' }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Rate limiting: check last sync for this user+project within 10s
+    const { data: recentSync } = await supabase
+      .from('matrix_project_state')
+      .select('synced_at')
+      .eq('user_id', tokenData.user_id)
+      .eq('project_name', project_name || 'unknown')
+      .order('synced_at', { ascending: false })
+      .limit(1)
+      .single()
+
+    if (recentSync) {
+      const elapsed = Date.now() - new Date(recentSync.synced_at).getTime()
+      if (elapsed < 10_000) {
+        return new Response(
+          JSON.stringify({ ok: false, reason: 'rate_limited' }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        )
+      }
     }
 
     // Upsert each file into matrix_project_state
@@ -76,12 +98,12 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({ ok: synced > 0, synced }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
     )
   } catch {
     return new Response(
       JSON.stringify({ ok: false }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
     )
   }
 })

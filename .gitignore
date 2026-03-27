@@ -229,6 +229,10 @@ test-sample-*.md
 .lmas/project-status.yaml
 .lmas/notifications/
 .lmas/sessions/
+.lmas/.activity-buffer.json
+.lmas/.sc
+.lmas/.session-id
+.lmas/.ctx-session
 
 # ESLint cache
 .eslintcache

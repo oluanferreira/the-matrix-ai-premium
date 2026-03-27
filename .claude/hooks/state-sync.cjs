@@ -1,14 +1,16 @@
 /**
- * LMAS State Sync Hook — Document Sync to matrix_project_state
+ * LMAS State Sync Hook — Document Sync + Tool Usage Capture
  *
  * Fires on PostToolUse for Edit/Write — collects changed docs
  * and syncs to Supabase via sync-state Edge Function.
  *
  * Features:
- * - Supports token cache v2 (AES-256-GCM) and v1 (plaintext)
+ * - Supports token cache v2 (AES-256-GCM) and v1 (plaintext) via shared reader
  * - MERGE checkpoint refresh (preserves agent-written sections)
  * - Backup before checkpoint modification
- * - Rate limited to 1 sync per 5 minutes
+ * - Rate limited to 1 sync per 2 minutes
+ * - Tool usage capture → sync-session-activity (G-2/G-6)
+ * - Unified session_id from .lmas/.session-id (F-8)
  *
  * MULTI-PROJECT MODE (v2):
  * If projects/ directory exists, scans all project checkpoints and stories
@@ -25,7 +27,9 @@ const fs = require('fs');
 const crypto = require('crypto');
 const https = require('https');
 const http = require('http');
-const os = require('os');
+
+// Use shared token reader (F-7)
+const { readTokenCache, getSessionId } = require('./lib/token-reader.cjs');
 
 const API_BASE_URL = process.env.MATRIX_API_URL || 'https://qaomekspdjfbdeixxjky.supabase.co/functions/v1';
 const SYNC_INTERVAL_MS = 2 * 60 * 1000; // 2 min
@@ -38,10 +42,13 @@ const LEGACY_FILE_PATTERNS = [
   { pattern: '.lmas-core/development/agents', type: 'memory', ext: '.md', match: /MEMORY\.md$/i },
 ];
 
-/**
- * Build FILE_PATTERNS dynamically: if projects/ exists, scan all project dirs.
- * Otherwise, fall back to legacy patterns.
- */
+/** Sections written by agents — NEVER overwrite */
+const AGENT_SECTIONS = [
+  'Contexto Ativo', 'Decisoes Tomadas', 'Ambiente Configurado',
+  'Ultimo Trabalho Realizado', 'Proximos Passos', 'Decisoes Arquiteturais',
+  'Documentos do Projeto', 'Totais', 'Resumo do Projeto',
+];
+
 function buildFilePatterns(projectDir) {
   const projectsDir = path.join(projectDir, 'projects');
   if (!fs.existsSync(projectsDir)) return LEGACY_FILE_PATTERNS;
@@ -54,47 +61,18 @@ function buildFilePatterns(projectDir) {
       const full = path.join(projectsDir, entry);
       if (!fs.statSync(full).isDirectory()) continue;
       const rel = `projects/${entry}`;
-      // Checkpoint per project
       patterns.push({ pattern: `${rel}/PROJECT-CHECKPOINT.md`, type: 'checkpoint' });
-      // Stories per project
       patterns.push({ pattern: `${rel}/stories`, type: 'story', ext: '.md' });
-      // PRDs and architecture per project
       patterns.push({ pattern: `${rel}/prd`, type: 'doc', ext: '.md' });
       patterns.push({ pattern: `${rel}/architecture`, type: 'doc', ext: '.md' });
     }
   } catch { /* skip */ }
 
-  // Also include legacy docs/ for global documentation
   patterns.push({ pattern: 'docs', type: 'doc', ext: '.md', match: /^(prd|architecture|adr-|spec|requirements|planning|roadmap|design-system|MASTER|technical-debt)/i });
-  // Memory patterns (unchanged)
   patterns.push({ pattern: '.claude/projects', type: 'memory', ext: '.md' });
   patterns.push({ pattern: '.lmas-core/development/agents', type: 'memory', ext: '.md', match: /MEMORY\.md$/i });
 
   return patterns.length > 2 ? patterns : LEGACY_FILE_PATTERNS;
-}
-
-/** Sections written by agents — NEVER overwrite */
-const AGENT_SECTIONS = [
-  'Contexto Ativo', 'Decisoes Tomadas', 'Ambiente Configurado',
-  'Ultimo Trabalho Realizado', 'Proximos Passos', 'Decisoes Arquiteturais',
-  'Documentos do Projeto', 'Totais', 'Resumo do Projeto',
-];
-
-function readTokenCache(tokenPath) {
-  const raw = JSON.parse(fs.readFileSync(tokenPath, 'utf8'));
-  if (raw.v === 2 && raw.data) {
-    const key = crypto.createHash('sha256')
-      .update(`matrix-ai:${os.hostname()}:${os.userInfo().username}`)
-      .digest();
-    const buf = Buffer.from(raw.data, 'base64');
-    const iv = buf.subarray(0, 12);
-    const tag = buf.subarray(12, 28);
-    const ciphertext = buf.subarray(28);
-    const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
-    decipher.setAuthTag(tag);
-    return JSON.parse(decipher.update(ciphertext, undefined, 'utf8') + decipher.final('utf8'));
-  }
-  return raw;
 }
 
 function parseCheckpointSections(content) {
@@ -114,25 +92,33 @@ function parseCheckpointSections(content) {
 
 function main() {
   try {
+    // G-2/G-6: Capture tool usage from stdin BEFORE anything else
+    let toolInput = null;
+    try {
+      const data = fs.readFileSync(0, 'utf8');
+      toolInput = JSON.parse(data);
+    } catch { /* no stdin or parse error */ }
+
+    // Fire tool usage event (G-2/G-6) — always, even if rate-limited for doc sync
+    if (toolInput) {
+      captureToolUsage(toolInput);
+    }
+
     const projectDir = process.cwd();
     const cacheDir = path.join(projectDir, '.lmas');
     const tokenPath = path.join(cacheDir, 'token-cache.json');
     const syncPath = path.join(cacheDir, '.sc');
 
-    if (!fs.existsSync(tokenPath)) return;
+    const cached = readTokenCache(tokenPath);
+    if (!cached) return;
 
-    let cached;
-    try { cached = readTokenCache(tokenPath); } catch { return; }
-    if (!cached || !cached.token) return;
-
-    // Rate limit
+    // Rate limit (doc sync only — tool usage always fires)
     let syncCache = {};
     try { syncCache = JSON.parse(fs.readFileSync(syncPath, 'utf8')); } catch { /* first run */ }
     const lastSync = syncCache.t ? new Date(syncCache.t).getTime() : 0;
     if (Date.now() - lastSync < SYNC_INTERVAL_MS) return;
 
     // Ensure + refresh checkpoint (MERGE mode)
-    // Multi-project: refresh each project's checkpoint
     const projectsDir = path.join(projectDir, 'projects');
     const isMultiProject = fs.existsSync(projectsDir);
     if (isMultiProject) {
@@ -173,6 +159,56 @@ function main() {
   } catch { /* silent */ }
 }
 
+/**
+ * G-2/G-6: Capture tool usage event and POST to sync-session-activity.
+ * Fires on EVERY PostToolUse, independent of doc sync rate limit.
+ */
+function captureToolUsage(toolInput) {
+  try {
+    const projectDir = process.cwd();
+    const cacheDir = path.join(projectDir, '.lmas');
+    const tokenPath = path.join(cacheDir, 'token-cache.json');
+
+    const cached = readTokenCache(tokenPath);
+    if (!cached) return;
+
+    const sessionId = getSessionId(cacheDir);
+
+    const toolName = toolInput.tool_name || toolInput.tool || 'unknown';
+    const filePath = toolInput.file_path || toolInput.path || '';
+    const command = toolInput.command || '';
+
+    const body = JSON.stringify({
+      token: cached.token,
+      session_id: sessionId,
+      project_name: cached.project_name || path.basename(projectDir),
+      events: [{
+        event_type: 'tool_use',
+        data: {
+          tool: toolName,
+          file: filePath,
+          command: command ? command.slice(0, 500) : undefined,
+          ts: new Date().toISOString(),
+        },
+      }],
+    });
+
+    const parsed = new URL(`${API_BASE_URL}/sync-session-activity`);
+    const req = https.request({
+      hostname: parsed.hostname,
+      port: 443,
+      path: parsed.pathname,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+      timeout: 5000,
+    }, () => {});
+    req.on('error', () => {});
+    req.on('timeout', () => req.destroy());
+    req.write(body);
+    req.end();
+  } catch { /* silent */ }
+}
+
 function ensureCheckpoint(projectDir, cached) {
   try {
     const checkpointPath = path.join(projectDir, 'docs', 'PROJECT-CHECKPOINT.md');
@@ -201,7 +237,6 @@ function refreshCheckpoint(projectDir) {
     const { execSync } = require('child_process');
     const date = new Date().toISOString().split('T')[0];
 
-    // Backup before modifying
     try {
       const backupDir = path.join(projectDir, '.lmas');
       if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
@@ -211,7 +246,6 @@ function refreshCheckpoint(projectDir) {
     const existing = fs.readFileSync(checkpointPath, 'utf8');
     const existingSections = parseCheckpointSections(existing);
 
-    // Check if agents wrote rich content
     const hasAgentContent = AGENT_SECTIONS.some(s =>
       existingSections[s] && existingSections[s].trim().length > 0
       && !existingSections[s].includes('(nenhum')
@@ -219,7 +253,6 @@ function refreshCheckpoint(projectDir) {
       && !existingSections[s].includes('(checkpoint criado automaticamente')
     );
 
-    // Collect auto data
     let recentCommits = '(nenhum commit encontrado)';
     let branch = '';
     let storiesTable = '(nenhuma story encontrada)';
@@ -252,11 +285,9 @@ function refreshCheckpoint(projectDir) {
     } catch { /* skip */ }
 
     if (hasAgentContent) {
-      // MERGE mode — only update auto sections, preserve agent content
       let updated = existing;
       updated = updated.replace(/^> Ultima atualizacao:.*$/m, `> Ultima atualizacao: ${date} (auto-refresh)`);
 
-      // Update stories table if section exists
       if (existingSections['Status das Stories']) {
         const old = existingSections['Status das Stories'];
         if (old.includes('(nenhuma story') || old.includes('| Story |')) {
@@ -264,7 +295,6 @@ function refreshCheckpoint(projectDir) {
         }
       }
 
-      // Update or append auto sections
       const autoBlock = [
         '\n## Git Recente\n',
         recentCommits + '\n',
@@ -274,7 +304,6 @@ function refreshCheckpoint(projectDir) {
       ].join('');
 
       if (updated.includes('## Git Recente')) {
-        // Replace from ## Git Recente to next ## or end
         updated = updated.replace(/## Git Recente[\s\S]*?(?=\n## (?!Ambiente Detectado)|$)/, '');
         updated = updated.replace(/## Ambiente Detectado[\s\S]*?(?=\n## |$)/, '');
         updated = updated.trimEnd() + '\n' + autoBlock;
@@ -284,7 +313,6 @@ function refreshCheckpoint(projectDir) {
 
       fs.writeFileSync(checkpointPath, updated);
     } else {
-      // FULL mode — generic checkpoint
       const checkpoint = [
         '# Project Checkpoint', '',
         `> Ultima atualizacao: ${date} (auto-refresh)`, '',
@@ -305,14 +333,11 @@ function refreshCheckpoint(projectDir) {
 
 function collectStories(projectDir, specificProjectDir) {
   const result = [];
-  // If specificProjectDir given, scan that project's stories
-  // Otherwise scan legacy docs/stories/
   const dirs = [];
   if (specificProjectDir) {
     dirs.push(path.join(specificProjectDir, 'stories'));
   } else {
     dirs.push(path.join(projectDir, 'docs', 'stories'));
-    // Also scan multi-project stories
     const projectsDir = path.join(projectDir, 'projects');
     if (fs.existsSync(projectsDir)) {
       try {
@@ -343,9 +368,6 @@ function collectStories(projectDir, specificProjectDir) {
   return result;
 }
 
-/**
- * Multi-project: refresh checkpoint for each project in projects/
- */
 function refreshAllProjectCheckpoints(projectDir) {
   try {
     const projectsDir = path.join(projectDir, 'projects');
@@ -361,12 +383,8 @@ function refreshAllProjectCheckpoints(projectDir) {
   } catch { /* silent */ }
 }
 
-/**
- * Refresh a single project's checkpoint with auto-generated sections
- */
 function refreshProjectCheckpoint(rootDir, projDir, cpPath) {
   try {
-    const { execSync } = require('child_process');
     const date = new Date().toISOString().split('T')[0];
 
     const existing = fs.readFileSync(cpPath, 'utf8');
@@ -379,7 +397,6 @@ function refreshProjectCheckpoint(rootDir, projDir, cpPath) {
       && !existingSections[s].includes('(primeiro uso')
     );
 
-    // Collect stories for this specific project
     const storyFiles = collectStories(rootDir, projDir);
     let storiesTable = '(nenhuma story encontrada)';
     if (storyFiles.length > 0) {
