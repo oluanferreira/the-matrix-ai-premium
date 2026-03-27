@@ -28,7 +28,7 @@ const http = require('http');
 const os = require('os');
 
 const API_BASE_URL = process.env.MATRIX_API_URL || 'https://qaomekspdjfbdeixxjky.supabase.co/functions/v1';
-const SYNC_INTERVAL_MS = 5 * 60 * 1000; // 5 min
+const SYNC_INTERVAL_MS = 2 * 60 * 1000; // 2 min
 
 const LEGACY_FILE_PATTERNS = [
   { pattern: 'docs/PROJECT-CHECKPOINT.md', type: 'checkpoint' },
