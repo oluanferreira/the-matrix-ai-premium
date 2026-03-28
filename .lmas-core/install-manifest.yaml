@@ -7,8 +7,8 @@
 # - SHA256 hashes for change detection
 # - File types for categorization
 #
-version: 1.2.4
-generated_at: "2026-03-28T18:56:09.195Z"
+version: 1.3.0
+generated_at: "2026-03-28T23:16:00.544Z"
 generator: scripts/generate-install-manifest.js
 file_count: 1205
 files:
@@ -1265,9 +1265,9 @@ files:
     type: data
     size: 2310
   - path: data/artifact-system/sector-stages.yaml
-    hash: sha256:80eee33b290fd8a322f0e7b610c0870401a377d6b30eb27cb6b32bc260a4fd74
+    hash: sha256:8adeeaf637d132d2722bb4599273a84309e1b050c5d9e44bd3e237c079acacce
     type: data
-    size: 14460
+    size: 16915
   - path: data/artifact-system/squad-schema.yaml
     hash: sha256:bd674e0343f8f36be98416bcbfd132c556a987bf1e5c88920b8b751a4461ba5d
     type: data
@@ -1277,13 +1277,13 @@ files:
     type: data
     size: 9575
   - path: data/domain-registry.yaml
-    hash: sha256:20ebb65e182dfecc77e7f9b38065de9b09901ff772825dcb24f13ab5d99ad793
+    hash: sha256:cb0d1dc156d452a3016a978ccc20c0eb48bc3df78e6d263986fd2483fdfc0a62
     type: data
-    size: 11170
+    size: 11423
   - path: data/entity-registry.yaml
-    hash: sha256:5e97b17446a947d5c280aa11699c77541163552fa9e0497fa2ce5176921d8ebc
+    hash: sha256:69e2a56b57875eec3383bd5194e15aa11e5a245e8d19367ccc527f15c72bf82b
     type: data
-    size: 546486
+    size: 556271
   - path: data/learned-patterns.yaml
     hash: sha256:24ac0b160615583a0ff783d3da8af80b7f94191575d6db2054ec8e10a3f945dc
     type: data
@@ -1353,9 +1353,9 @@ files:
     type: data
     size: 5754
   - path: data/workflow-chains.yaml
-    hash: sha256:38c19fabdabf9b914140813ea1a22dc2796ee1c6237dc049d862fe5bb8874d47
+    hash: sha256:19154cdd53297a4b777eb4ae8da944256b2994c5ebae85c58778821854aeed8f
     type: data
-    size: 17816
+    size: 20673
   - path: data/workflow-patterns.yaml
     hash: sha256:05c9cf701ddf65f78e6984d53b76ec2fb77d63fbf526d355bd14e2c292f4f0fd
     type: data
@@ -1481,9 +1481,9 @@ files:
     type: agent
     size: 160
   - path: development/agents/lmas-master.md
-    hash: sha256:1562250a7cc66f91a3e3657d5dfffafd1e1eda25672fa49e1baeee278e15dcc5
+    hash: sha256:3d3c889d418ad222bc56a00169b628fb16184f95df4fc4c3e7ee9f6ce76b7d6e
     type: agent
-    size: 46838
+    size: 47184
   - path: development/agents/marketing-chief.md
     hash: sha256:a42f338698b445a333cff4bf750305923255e963a711c50e756ecd9b3d2149e3
     type: agent

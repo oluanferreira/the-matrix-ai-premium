@@ -1,0 +1,10 @@
+# Domain: sector-video (L3 — loaded by recall keywords)
+# Regras especificas quando trabalhando no setor VIDEO
+
+SECTOR_VIDEO_RULE_0=Ler brand-dna.yaml para: visual_expression, colors, typography antes de produzir video.
+SECTOR_VIDEO_RULE_1=Todo video DEVE ter script aprovado pelo @copywriter antes de produzir.
+SECTOR_VIDEO_RULE_2=Formato de saida DEVE ser especificado no brief (9:16 reel, 16:9 youtube, 1:1 feed, 9:16 story).
+SECTOR_VIDEO_RULE_3=Audio: NUNCA usar musica sem licenca. Preferir royalty-free ou AI-generated.
+SECTOR_VIDEO_RULE_4=Acessibilidade: legendas obrigatorias em todo video. Contrast ratio em texto overlay >= 4.5:1.
+SECTOR_VIDEO_RULE_5=Anti-AI-slop: NUNCA templates genericos. Cada video DEVE refletir brand identity do projeto.
+SECTOR_VIDEO_RULE_6=Duracao: reels 15-60s, stories 15s, YouTube 2-10min. Respeitar limites da plataforma.

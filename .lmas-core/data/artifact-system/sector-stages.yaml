@@ -308,6 +308,61 @@ sectors:
           artifact: "artifacts/business/5-analytics.md"
         description: "Metricas reais vs projetadas, otimizacoes, next steps"
 
+  # ═══════════════════════════════════════════════════════════
+  # VIDEO SECTOR — Studio Director lidera
+  # ═══════════════════════════════════════════════════════════
+  video:
+    chief: studio-director
+    total_stages: 5
+    stages:
+      - id: video/1-brief
+        name: "Brief de Video"
+        agent: copywriter
+        input:
+          required: ["project-context.yaml"]
+          optional: ["brand/4-identity artifact", "brand-dna.yaml"]
+          bridges_from: ["brand/4-identity"]
+        output:
+          artifact: "artifacts/video/1-brief.md"
+        description: "Script + direcao visual + formato + duracao"
+
+      - id: video/2-storyboard
+        name: "Storyboard"
+        agent: studio-director
+        input:
+          required: ["video/1-brief artifact"]
+        output:
+          artifact: "artifacts/video/2-storyboard.md"
+        description: "Shot list, timing por frame, referencias visuais"
+
+      - id: video/3-production
+        name: "Producao"
+        agent: studio-director
+        input:
+          required: ["video/2-storyboard artifact"]
+        output:
+          artifact: "artifacts/video/3-production/"
+        description: "Template Remotion OU avatar AI OU 3D render"
+
+      - id: video/4-editing
+        name: "Edicao"
+        agent: studio-director
+        input:
+          required: ["video/3-production artifacts"]
+        output:
+          artifact: "artifacts/video/4-edit.md"
+        description: "Assembly, transicoes, audio sync, legendas"
+
+      - id: video/5-export
+        name: "Export & Render"
+        agent: studio-director
+        input:
+          required: ["video/4-editing artifact"]
+        output:
+          artifact: "artifacts/video/5-export/"
+        bridges_to: ["marketing/6-publish", "business/4-campaign-plan"]
+        description: "Render por formato (9:16, 16:9, 1:1)"
+
 # ═══════════════════════════════════════════════════════════
 # CROSS-SECTOR BRIDGES (default)
 # ═══════════════════════════════════════════════════════════
@@ -332,6 +387,18 @@ default_bridges:
     to: marketing/6-publish
     critical: false    # Marketing pode preparar antes do deploy
 
+  - from: brand/4-identity
+    to: video/1-brief
+    critical: true
+
+  - from: video/5-export
+    to: marketing/6-publish
+    critical: false    # Marketing pode publicar video quando pronto
+
+  - from: video/5-export
+    to: business/4-campaign-plan
+    critical: false    # Ad creatives para campanhas
+
 # ═══════════════════════════════════════════════════════════
 # SECTOR INDEPENDENCE RULES
 # ═══════════════════════════════════════════════════════════
@@ -343,3 +410,4 @@ independence:
   must_wait:
     - design      # Precisa de brand/4-identity
     - marketing   # Precisa de brand/6-brandbook OU business/2-offer
+    - video       # Precisa de brand/4-identity para visual direction

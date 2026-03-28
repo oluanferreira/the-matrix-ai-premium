@@ -524,3 +524,84 @@ workflows:
         command: "*scale-campaign"
         output: "Scale plan"
         condition: "Campaign running with initial data"
+
+# ─────────────────────────────────────────
+# DEPLOY PIPELINE (absorbed from gstack patterns)
+# ─────────────────────────────────────────
+deploy-pipeline:
+  id: deploy-pipeline
+  description: "Pipeline completo pos-deploy: push -> canary -> document-release -> benchmark"
+  domain: software-dev
+  trigger: "After @devops *push or *create-pr merge"
+  steps:
+    - step: 1
+      agent: "@devops"
+      command: "*push"
+      output: "PR created or code pushed"
+    - step: 2
+      agent: "@devops"
+      command: "*canary"
+      output: "Post-deploy monitoring verdict (CLEAR or ALERT)"
+      optional: true
+      condition: "URL de producao disponivel"
+    - step: 3
+      agent: "@devops"
+      command: "*document-release"
+      output: "Lista de docs atualizados"
+      optional: true
+      condition: "Canary CLEAR ou skip canary"
+    - step: 4
+      agent: "@seo"
+      command: "*benchmark"
+      output: "CWV baseline + comparacao"
+      optional: true
+      condition: "App web com URL publica"
+
+  # 6. Data Analytics Sprint — Squad-Enhanced Chain Example
+  - id: data-analytics-sprint
+    name: Data Analytics Sprint
+    description: "Data-driven strategy sprint using data-squad (dormant squad)"
+    squad_required: data-squad
+    chain:
+      - step: 1
+        agent: "@analyst"
+        command: "*research"
+        output: "Market/product research baseline"
+      - step: 2
+        agent: "@data-squad:data-chief"
+        command: "*analyze"
+        output: "Data-driven insights (CLV, retention, growth metrics)"
+        condition: "squads/data-squad/ exists"
+        fallback: "@analyst handles data analysis directly"
+      - step: 3
+        agent: "@mifune"
+        command: "*create-offer"
+        output: "Offer based on data insights"
+        optional: true
+
+  # Reel Pipeline — Video Production
+  - id: reel-pipeline
+    name: Reel Pipeline
+    description: Video production from brief to publish (reels, ad creatives, institutional)
+    chain:
+      - step: 1
+        agent: "@content-strategist"
+        command: "*plan-content"
+        output: "Content brief with video format and direction"
+      - step: 2
+        agent: "@copywriter"
+        command: "*write-reel-script"
+        output: "Reel script (hook 3s + body + CTA)"
+      - step: 3
+        agent: "@video-studio:studio-director"
+        command: "*produce"
+        output: "Video produced (Remotion template OR avatar OR 3D)"
+      - step: 4
+        agent: "@content-reviewer"
+        command: "*review"
+        output: "Quality gate on video content"
+        optional: true
+      - step: 5
+        agent: "@social-media-manager"
+        command: "*publish"
+        output: "Video published to platform"

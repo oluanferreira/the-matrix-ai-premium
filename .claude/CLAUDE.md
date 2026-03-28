@@ -96,6 +96,7 @@ Use `@agent-name` ou `/LMAS:agents:agent-name`:
 | `@mifune` | Mifune | business | Ofertas, pricing, estratégia de negócio |
 | `@hamann` | Hamann | business | Conselho estratégico, advisory board |
 | `@traffic-manager` | Merovingian | business | Tráfego pago, budget, ROAS (EXCLUSIVO) |
+| `@video-studio` | Studio Director | video (cross-domain) | Produção de vídeo: reels, criativos, avatars, 3D, motion graphics |
 
 ### Comandos de Agentes
 Use prefixo `*` para comandos:

@@ -354,3 +354,11 @@ squads:
     agents: 7
     skill: "movement:agents:movement-chief"
     description: "Movement building — phenomenology, identity, manifestos, growth cycles, impact"
+
+  - id: video-studio
+    path: squads/video-studio
+    type: standalone
+    chief: studio-director
+    agents: 5
+    skill: "video-studio:agents:studio-director"
+    description: "Video production — reels, ad creatives, avatars, 3D, motion graphics"

@@ -462,6 +462,12 @@ routing_logic:
         agents: 7
         trigger_keywords: [movimento, movement building, fenomenologia, phenomenology, manifesto, identity building, growth cycles, impact measurement, community movement]
         skill: "/movement:agents:movement-chief"
+      video-studio:
+        chief: studio-director
+        persona: The Projectionist
+        agents: 5
+        trigger_keywords: [video, reel, reels, motion graphics, remotion, avatar, clone video, 3d video, vfx, storyboard, render video, ad creative video, institucional, video production]
+        skill: "/video-studio:agents:studio-director"
 
 # All commands require * prefix when used (e.g., *help)
 commands:

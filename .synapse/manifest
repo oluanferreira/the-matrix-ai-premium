@@ -64,6 +64,9 @@ SECTOR_MARKETING_RECALL=marketing,copy,seo,conteudo,campanha,publicar,editorial,
 SECTOR_BUSINESS_STATE=active
 SECTOR_BUSINESS_RECALL=oferta,pricing,negocio,lancamento,leads,roi,budget,campanha paga
 
+SECTOR_VIDEO_STATE=active
+SECTOR_VIDEO_RECALL=video,reel,motion,animacao,avatar,clone,remotion,3d,vfx,storyboard,render,reels,video production
+
 # ═══════════════════════════════════════════════════
 # Layer 7: Star-commands
 # ═══════════════════════════════════════════════════

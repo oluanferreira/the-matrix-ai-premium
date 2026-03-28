@@ -1,7 +1,7 @@
 metadata:
   version: 1.0.0
-  lastUpdated: '2026-03-26T03:35:41.801Z'
-  entityCount: 803
+  lastUpdated: '2026-03-28T18:56:27.182Z'
+  entityCount: 818
   checksumAlgorithm: sha256
   resolutionRate: 100
 entities:
@@ -9329,7 +9329,6 @@ entities:
         - check
       usedBy:
         - check-registry
-        - engine
         - console
         - markdown
         - build-config
@@ -9404,12 +9403,16 @@ entities:
       path: .lmas-core/core/health-check/engine.js
       layer: L1
       type: module
-      purpose: Entity at .lmas-core\core\health-check\engine.js
+      purpose: Entity at .lmas-core\core\synapse\engine.js
       keywords:
         - engine
       usedBy: []
       dependencies:
-        - base-check
+        - context-tracker
+        - context-builder
+        - formatter
+        - memory-bridge
+        - domain-loader
       externalDeps: []
       plannedDeps: []
       lifecycle: experimental
@@ -9417,8 +9420,8 @@ entities:
         score: 0.4
         constraints: []
         extensionPoints: []
-      checksum: sha256:c684c026d916376eee1f2348afe5588299e802fe9c865c050ddfee9c3595e4fb
-      lastVerified: '2026-03-19T11:22:23.888Z'
+      checksum: sha256:00bc13917550c2cf989fa1c7cdef0e9748cf4ad7d619ac5c916b054b11bebc68
+      lastVerified: '2026-03-28T18:56:27.129Z'
     ideation-engine:
       path: .lmas-core/core/ideation/ideation-engine.js
       layer: L1
@@ -11859,7 +11862,8 @@ entities:
       keywords:
         - context
         - builder
-      usedBy: []
+      usedBy:
+        - engine
       dependencies: []
       externalDeps: []
       plannedDeps: []
@@ -11879,6 +11883,7 @@ entities:
         - context
         - tracker
       usedBy:
+        - engine
         - pipeline-collector
       dependencies: []
       externalDeps: []
@@ -11945,6 +11950,7 @@ entities:
         - domain
         - loader
       usedBy:
+        - engine
         - synapse-diagnostics
         - l0-constitution
         - l1-global
@@ -12004,8 +12010,8 @@ entities:
         score: 0.4
         constraints: []
         extensionPoints: []
-      checksum: sha256:21f6969e6d64e9a85c876be6799db4ca7d090f0009057f4a06ead8da12392d45
-      lastVerified: '2026-03-19T11:22:24.104Z'
+      checksum: sha256:d324e28ad32b75f6d927d7aec6178d60d46b82df64c1cd92fa998ec42c234d5b
+      lastVerified: '2026-03-28T18:56:27.132Z'
     l2-agent:
       path: .lmas-core/core/synapse/layers/l2-agent.js
       layer: L1
@@ -12025,8 +12031,8 @@ entities:
         score: 0.4
         constraints: []
         extensionPoints: []
-      checksum: sha256:a8677dc58ae7927c5292a4b52883bbc905c8112573b8b8631f0b8bc01ea2b6e6
-      lastVerified: '2026-03-19T11:22:24.105Z'
+      checksum: sha256:627410c8d45f5c93c8abdf5f113459510ba2dcd76b077b6c3042144ca4aa672c
+      lastVerified: '2026-03-28T18:56:27.133Z'
     l3-workflow:
       path: .lmas-core/core/synapse/layers/l3-workflow.js
       layer: L1
@@ -12108,8 +12114,8 @@ entities:
         score: 0.4
         constraints: []
         extensionPoints: []
-      checksum: sha256:8e5405999a2ce2f3ca4e62e863cf702ba27448914241f5eb8f02760bc7477523
-      lastVerified: '2026-03-19T11:22:24.107Z'
+      checksum: sha256:96ffd60533c3c70e6dd45f2c8594346d5a3f7f818480b59bfd57ebe66a6f1690
+      lastVerified: '2026-03-28T18:56:27.135Z'
     l7-star-command:
       path: .lmas-core/core/synapse/layers/l7-star-command.js
       layer: L1
@@ -12167,7 +12173,8 @@ entities:
       keywords:
         - memory
         - bridge
-      usedBy: []
+      usedBy:
+        - engine
       dependencies:
         - tokens
         - synapse-memory-provider
@@ -12210,7 +12217,8 @@ entities:
       purpose: Entity at .lmas-core\core\synapse\output\formatter.js
       keywords:
         - formatter
-      usedBy: []
+      usedBy:
+        - engine
       dependencies:
         - tokens
       externalDeps: []
@@ -13463,8 +13471,8 @@ entities:
         score: 0.3
         constraints: []
         extensionPoints: []
-      checksum: sha256:d839e543906215df3ba913f334b66f986763a4f7a9f1612614ac0affe7ba2459
-      lastVerified: '2026-03-19T11:22:24.227Z'
+      checksum: sha256:1562250a7cc66f91a3e3657d5dfffafd1e1eda25672fa49e1baeee278e15dcc5
+      lastVerified: '2026-03-28T18:56:27.173Z'
     pm:
       path: .lmas-core/development/agents/pm.md
       layer: L2
@@ -13711,13 +13719,8 @@ entities:
       path: .lmas-core/development/agents/kamala.md
       layer: L2
       type: agent
-      purpose: Brand Architect — positioning, naming, identity, archetype mapping
+      purpose: '''Mostrar todos os comandos disponíveis'''
       keywords:
-        - brand
-        - positioning
-        - naming
-        - identity
-        - archetype
         - kamala
       usedBy: []
       dependencies: []
@@ -13729,19 +13732,14 @@ entities:
         constraints: []
         extensionPoints:
           - brand-squad
-      checksum: sha256:pending
-      lastVerified: '2026-03-20T19:00:00.000Z'
+      checksum: sha256:ef02828562e69ee2c54da8581c5eb5370505c4ace3a8a806ebe1c034922e5330
+      lastVerified: '2026-03-28T18:56:27.171Z'
     mifune:
       path: .lmas-core/development/agents/mifune.md
       layer: L2
       type: agent
-      purpose: Business Strategist — offers, pricing, business model, launch planning
+      purpose: '''Mostrar todos os comandos disponíveis'''
       keywords:
-        - business
-        - offer
-        - pricing
-        - strategy
-        - launch
         - mifune
       usedBy: []
       dependencies: []
@@ -13753,19 +13751,14 @@ entities:
         constraints: []
         extensionPoints:
           - hormozi-squad
-      checksum: sha256:pending
-      lastVerified: '2026-03-20T19:00:00.000Z'
+      checksum: sha256:ccc432067cc79f68315c4ab4fbc00b132de7dc2f723e2740c127591565ed5c3d
+      lastVerified: '2026-03-28T18:56:27.175Z'
     hamann:
       path: .lmas-core/development/agents/hamann.md
       layer: L2
       type: agent
-      purpose: Strategic Counsel Chair — advisory board, scaling evaluation, crisis resolution
+      purpose: '''Mostrar todos os comandos disponíveis'''
       keywords:
-        - advisory
-        - counsel
-        - strategy
-        - board
-        - scaling
         - hamann
       usedBy: []
       dependencies: []
@@ -13777,19 +13770,14 @@ entities:
         constraints: []
         extensionPoints:
           - advisory-board
-      checksum: sha256:pending
-      lastVerified: '2026-03-20T19:00:00.000Z'
+      checksum: sha256:a27f7f4fa84c2b82731f6984d1b158bcc4c9eae7a3967d4c2f8fd41577ad6a1c
+      lastVerified: '2026-03-28T18:56:27.168Z'
     bugs:
       path: .lmas-core/development/agents/bugs.md
       layer: L2
       type: agent
-      purpose: Narrative Architect — brand narrative, storytelling, pitches, manifestos
+      purpose: '''Mostrar todos os comandos disponíveis'''
       keywords:
-        - storytelling
-        - narrative
-        - pitch
-        - manifesto
-        - brand-story
         - bugs
       usedBy: []
       dependencies: []
@@ -13801,8 +13789,8 @@ entities:
         constraints: []
         extensionPoints:
           - storytelling
-      checksum: sha256:pending
-      lastVerified: '2026-03-20T19:00:00.000Z'
+      checksum: sha256:b9633b3379737f0881334d58a8162610c2135fa3fc642c737cc5915dab7c1344
+      lastVerified: '2026-03-28T18:56:27.166Z'
     MEMORY:
       path: .lmas-core/development/agents/mifune/MEMORY.md
       layer: L3
@@ -13883,8 +13871,8 @@ entities:
         score: 0.3
         constraints: []
         extensionPoints: []
-      checksum: sha256:ccb2c84bb7e086524a2e114f7e09c2dee1ddab33ac273b08de7fcd77481aaa63
-      lastVerified: '2026-03-24T17:25:32.761Z'
+      checksum: sha256:5e8a1d0ecbb64cc3f3c3b3da9120db5886d4490bb618560090dbce050d4d6fa7
+      lastVerified: '2026-03-28T18:56:27.167Z'
     marketing-chief:
       path: .lmas-core/development/agents/marketing-chief.md
       layer: L2
@@ -13935,8 +13923,8 @@ entities:
         score: 0.3
         constraints: []
         extensionPoints: []
-      checksum: sha256:b4645300d02791f0cb90d40bde91e8c794cad230b883320445a371c0842a302a
-      lastVerified: '2026-03-24T17:25:32.777Z'
+      checksum: sha256:cabdb3a1f2d062c6fb570a7e0e91f7a41afa747d67b0cde5189800c0ec711d84
+      lastVerified: '2026-03-28T18:56:27.177Z'
   checklists:
     accessibility-wcag-checklist:
       path: .lmas-core/development/checklists/accessibility-wcag-checklist.md
@@ -14284,8 +14272,8 @@ entities:
         score: 0.5
         constraints: []
         extensionPoints: []
-      checksum: sha256:bd3bc2abefe4e29034608a4bf76631c7ed08ada20e45fbbe00867215d31cdaf6
-      lastVerified: '2026-03-19T11:22:24.297Z'
+      checksum: sha256:20ebb65e182dfecc77e7f9b38065de9b09901ff772825dcb24f13ab5d99ad793
+      lastVerified: '2026-03-28T18:56:27.164Z'
     entity-registry:
       path: .lmas-core/data/entity-registry.yaml
       layer: L3
@@ -14642,6 +14630,287 @@ entities:
         extensionPoints: []
       checksum: sha256:f6a933cfd3a99df7a627b92ec728904d781162bae29239386067aaf005b49f36
       lastVerified: '2026-03-19T11:22:24.365Z'
+    artifact-validation:
+      path: .lmas-core/data/artifact-system/artifact-validation.yaml
+      layer: L3
+      type: data
+      purpose: ══════════════════════════════════════════════════════════════
+      keywords:
+        - artifact
+        - validation
+        - ══════════════════════════════════════════════════════════════
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:a75f66a8da993327f29c8dc02219fc798a81071a47e01ac91282ff8e9c6ab645
+      lastVerified: '2026-03-28T18:56:27.138Z'
+    brand-dna-tmpl:
+      path: .lmas-core/data/artifact-system/brand-dna-tmpl.yaml
+      layer: L3
+      type: data
+      purpose: '""           # REQUIRED — Por que esta marca existe alem de lucrar?'
+      keywords:
+        - brand
+        - dna
+        - tmpl
+        - kamala
+        - (brand
+        - chief)
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:2c7031c78b305cf12eb78781e835d88eb9fa1c0dadb06442f0f1419669f48147
+      lastVerified: '2026-03-28T18:56:27.141Z'
+    bridge-contract-tmpl:
+      path: .lmas-core/data/artifact-system/bridge-contract-tmpl.yaml
+      layer: L3
+      type: data
+      purpose: '"Emocoes mapeadas para cores (nao cores especificas)"'
+      keywords:
+        - bridge
+        - contract
+        - tmpl
+        - ══════════════════════════════════════════════════════════════
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:4bc523268ddaaafdb76cb0ab3fbe4f8861b505589aeb1065f7d7b19944c8c24e
+      lastVerified: '2026-03-28T18:56:27.143Z'
+    business-model-tmpl:
+      path: .lmas-core/data/artifact-system/business-model-tmpl.yaml
+      layer: L3
+      type: data
+      purpose: '""'
+      keywords:
+        - business
+        - model
+        - tmpl
+        - mifune
+        - (business
+        - chief)
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:363ceb2f8bbb6eeb7072ae69ed9ac7d980e4096e78fce410f01baf39bbf272f6
+      lastVerified: '2026-03-28T18:56:27.144Z'
+    competitive-landscape-tmpl:
+      path: .lmas-core/data/artifact-system/competitive-landscape-tmpl.yaml
+      layer: L3
+      type: data
+      purpose: Competitive Landscape — Lock (marketing chief) + Analyst
+      keywords:
+        - competitive
+        - landscape
+        - tmpl
+        - lock
+        - (marketing
+        - chief)
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:c81d64eaad7e055083e2455b7abe7c287f1af2013df459b060b05bafafeec8ec
+      lastVerified: '2026-03-28T18:56:27.146Z'
+    content-quality-gate-tmpl:
+      path: .lmas-core/data/artifact-system/content-quality-gate-tmpl.yaml
+      layer: L3
+      type: data
+      purpose: '"Tom, voz, visual seguem guidelines"'
+      keywords:
+        - content
+        - quality
+        - gate
+        - tmpl
+        - lock
+        - (marketing
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:ee383745ff582a16a35dd14cdb7b63096f9ca35ec1be31e07daa834cab774089
+      lastVerified: '2026-03-28T18:56:27.148Z'
+    icp-tmpl:
+      path: .lmas-core/data/artifact-system/icp-tmpl.yaml
+      layer: L3
+      type: data
+      purpose: ICP (Ideal Customer Profile) — Lock (marketing chief)
+      keywords:
+        - icp
+        - tmpl
+        - (ideal
+        - customer
+        - profile)
+        - lock
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:6e226f49fd586711d8d4d509f2bb57395db80bb3df991d7e2335a808ac24b500
+      lastVerified: '2026-03-28T18:56:27.149Z'
+    nfrs-tmpl:
+      path: .lmas-core/data/artifact-system/nfrs-tmpl.yaml
+      layer: L3
+      type: data
+      purpose: Non-Functional Requirements — Aria (architect)
+      keywords:
+        - nfrs
+        - tmpl
+        - non-functional
+        - requirements
+        - aria
+        - (architect)
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:62d26bb08918f6c2288d37303727ec746d4ea71014171e69c6afc5ba1a592c17
+      lastVerified: '2026-03-28T18:56:27.150Z'
+    phase-artifact-tmpl:
+      path: .lmas-core/data/artifact-system/phase-artifact-tmpl.md
+      layer: L3
+      type: data
+      purpose: Autoria
+      keywords:
+        - phase
+        - artifact
+        - tmpl
+        - autoria
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:51b7e665d7c9d2747d9733dee1c5246aee2729dea720e92097db52822bbd5467
+      lastVerified: '2026-03-28T18:56:27.152Z'
+    pipeline-status-tmpl:
+      path: .lmas-core/data/artifact-system/pipeline-status-tmpl.yaml
+      layer: L3
+      type: data
+      purpose: ══════════════════════════════════════════════════════════════
+      keywords:
+        - pipeline
+        - status
+        - tmpl
+        - ══════════════════════════════════════════════════════════════
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:6467e31ae9034103b7fe627035241c31728b59b50af498fd4b32cbe0cfbcb4d2
+      lastVerified: '2026-03-28T18:56:27.155Z'
+    project-context-tmpl:
+      path: .lmas-core/data/artifact-system/project-context-tmpl.yaml
+      layer: L3
+      type: data
+      purpose: ─── IDENTIDADE ──────────────────────────────────────────────
+      keywords:
+        - project
+        - context
+        - tmpl
+        - ───
+        - identidade
+        - ──────────────────────────────────────────────
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:83ebdbca2891d22cefc2aced2b607445573472a9747d58f732fdf7e2785176d7
+      lastVerified: '2026-03-28T18:56:27.157Z'
+    reference-format:
+      path: .lmas-core/data/artifact-system/reference-format.md
+      layer: L3
+      type: data
+      purpose: Reference Format Standard — Smith F8
+      keywords:
+        - reference
+        - format
+        - standard
+        - smith
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:b6779895407ce4996478e4fc69edfbed34ba793db21f4fd7ae89660b9cbb6c2a
+      lastVerified: '2026-03-28T18:56:27.158Z'
+    risk-register-tmpl:
+      path: .lmas-core/data/artifact-system/risk-register-tmpl.yaml
+      layer: L3
+      type: data
+      purpose: '"AbacatePay webhook pode falhar silenciosamente"'
+      keywords:
+        - risk
+        - register
+        - tmpl
+        - ══════════════════════════════════════════════════════════════
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:ba7235bd12c57aa02d97a9c4f6300a6cd8891e0dab9ecdda5ba1468d6e24c22a
+      lastVerified: '2026-03-28T18:56:27.160Z'
+    sector-stages:
+      path: .lmas-core/data/artifact-system/sector-stages.yaml
+      layer: L3
+      type: data
+      purpose: '"Pesquisa de mercado, concorrentes, publico-alvo, oportunidades"'
+      keywords:
+        - sector
+        - stages
+        - ══════════════════════════════════════════════════════════════
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:80eee33b290fd8a322f0e7b610c0870401a377d6b30eb27cb6b32bc260a4fd74
+      lastVerified: '2026-03-28T18:56:27.161Z'
+    squad-schema:
+      path: .lmas-core/data/artifact-system/squad-schema.yaml
+      layer: L3
+      type: data
+      purpose: '"Squad validation schema — defines the contract every squad MUST fulfill to be recognized by the framework."'
+      keywords:
+        - squad
+        - schema
+        - ══════════════════════════════════════════════════════════════
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.5
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:bd674e0343f8f36be98416bcbfd132c556a987bf1e5c88920b8b751a4461ba5d
+      lastVerified: '2026-03-28T18:56:27.162Z'
   workflows:
     auto-worktree:
       path: .lmas-core/development/workflows/auto-worktree.yaml
