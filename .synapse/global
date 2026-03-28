@@ -9,4 +9,4 @@ GLOBAL_RULE_4=Calcular completeness.score antes de finalizar artefato. Se < 100%
 GLOBAL_RULE_5=Sugerir proximo step com comando copiavel: /LMAS:agents:{agent}. Consultar sector-stages.yaml.
 GLOBAL_RULE_6=Em handoff cross-setor, validar bridge contract antes de sugerir proximo agente.
 GLOBAL_RULE_7=Referenciar context files com formato padrao: ref:{tipo}:{path}#{ancora}
-GLOBAL_RULE_8=Self-Review: Antes de marcar artifact como complete, verificar placeholders (TBD, TODO, ...), contradicoes entre secoes, ambiguidades. Corrigir inline antes de declarar complete.
+GLOBAL_RULE_8=Self-Review: Antes de marcar artifact como complete, verificar placeholders (TBD, TODO, ...), contradicoes entre secoes, ambiguidades. Corrigir inline antes de declarar complete. (complementa RULE_4 — score valida campos, self-review valida conteudo)
