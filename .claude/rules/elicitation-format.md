@@ -19,6 +19,7 @@ Recontextualizar onde estamos: projeto, branch, task atual.
 |-----------|---------------|
 | YOLO | SKIP — sem re-ground (0 prompts) |
 | Interactive | Curto — projeto + task em 1 frase |
+| Proposital | Agente PROPOE o que faria e por que, pede apenas correcoes |
 | Pre-Flight | Completo — projeto + branch + story + task + contexto |
 | Safety | Completo + alerta de modo seguro |
 
@@ -103,6 +104,29 @@ A) Auth completo com OAuth + email (humano: ~3 dias / AI: ~30 min) — Completud
 | Pricing strategy | 3 dias | 30 min | ~15x |
 | Campaign plan | 2 dias | 30 min | ~15x |
 | Business model canvas | 1 dia | 30 min | ~10x |
+
+## Modo Proposital (`*exec proposital`)
+
+No modo Proposital, o agente NAO pergunta — ele PROPOE:
+
+1. Analisa o contexto (codebase, PRD, stories, brand-dna, etc.)
+2. Propoe o que faria e POR QUE (com justificativa)
+3. Pede apenas CORRECOES do usuario ("corrija se discordar")
+4. Executa apos aprovacao ou silencio
+
+**Formato:**
+
+```
+PROPOSTA: [o que vou fazer]
+RAZAO: [por que esta e a melhor abordagem]
+ALTERNATIVA: [o que descartei e por que]
+
+Corrija se discordar, ou confirme para prosseguir.
+```
+
+**Quando usar:** Projetos onde o usuario confia no julgamento do agente e prefere velocidade a controle granular. Ideal para trabalho iterativo com contexto ja estabelecido.
+
+**Diferenca de YOLO:** YOLO nao comunica nada. Proposital COMUNICA a intencao e DA CHANCE de corrigir antes de executar.
 
 ## Quando NAO Aplicar
 
