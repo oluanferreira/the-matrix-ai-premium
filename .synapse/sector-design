@@ -7,3 +7,6 @@ SECTOR_DESIGN_RULE_2=Todo token de design DEVE ter integration_point mapeado (ar
 SECTOR_DESIGN_RULE_3=Ao completar design/4-asset-handoff, VALIDAR bridge BRIDGE-design-to-dev.
 SECTOR_DESIGN_RULE_4=Tokens devem seguir naming convention consistente. Valores hardcoded sao findings de Smith.
 SECTOR_DESIGN_RULE_5=Acessibilidade WCAG 2.1 AA e obrigatoria. Contrast ratio minimo 4.5:1 para texto.
+SECTOR_DESIGN_RULE_6=Anti-AI-slop: NUNCA usar Inter, Roboto, Arial como tipografia principal. NUNCA gradientes roxos em fundo branco. NUNCA layouts previsíveis e cookie-cutter. Cada design DEVE ter ponto de vista estetico distintivo.
+SECTOR_DESIGN_RULE_7=Design Thinking: ANTES de implementar UI, definir direcao estetica (brutalist, maximalist, luxury, editorial, playful, etc), tipografia display+body, paleta com cor dominante+acentos. Executar com intencionalidade.
+SECTOR_DESIGN_RULE_8=Tipografia: escolher fontes distintivas e contextuais. Par display+body obrigatorio. CSS variables para consistencia de cor. Motion intencional (scroll-trigger, hover states, staggered reveals).
