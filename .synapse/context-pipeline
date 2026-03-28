@@ -1,0 +1,7 @@
+# Domain: context-pipeline (L1 — pipeline awareness)
+# Injecao automatica de contexto de pipeline no inicio da sessao
+
+CONTEXT_PIPELINE_RULE_0=Se projects/{projeto}/pipeline-status.yaml existe, ler e reportar: setor atual, stage, bridges pendentes.
+CONTEXT_PIPELINE_RULE_1=Se pipeline-status mostra bridge BLOCKED, informar o usuario ANTES de qualquer acao.
+CONTEXT_PIPELINE_RULE_2=Se session_log tem next_action da sessao anterior, sugerir retomar esse ponto.
+CONTEXT_PIPELINE_RULE_3=Formato de report: "Pipeline: brand [status] | design [status] | dev [status] | marketing [status] | business [status]"

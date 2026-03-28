@@ -204,6 +204,61 @@ dependencies:
   tasks:
     - execute-checklist.md
 
+squad_chief:
+  squad: advisory-board
+  squad_path: "squads/advisory-board"
+  role: "Chief — Hamann é o entry point e router interno do advisory-board"
+
+  roster:
+    - agent: ray-dalio
+      file: "squads/advisory-board/agents/ray-dalio.md"
+      focus: "Systematic frameworks, principles, economic cycles, radical truth"
+      triggers: ["principles", "economic cycles", "systems thinking", "risk assessment"]
+    - agent: charlie-munger
+      file: "squads/advisory-board/agents/charlie-munger.md"
+      focus: "Mental models, cognitive bias detection, inversion thinking"
+      triggers: ["mental models", "inversion", "cognitive bias", "rationality"]
+    - agent: naval-ravikant
+      file: "squads/advisory-board/agents/naval-ravikant.md"
+      focus: "Wealth creation, leverage, specific knowledge, first principles"
+      triggers: ["leverage", "specific knowledge", "wealth creation", "founder-market fit"]
+    - agent: peter-thiel
+      file: "squads/advisory-board/agents/peter-thiel.md"
+      focus: "Contrarian venture philosophy, monopoly thinking, zero-to-one"
+      triggers: ["monopoly", "contrarian", "zero-to-one", "secrets", "power law"]
+    - agent: reid-hoffman
+      file: "squads/advisory-board/agents/reid-hoffman.md"
+      focus: "Scaling strategy, network effects, blitzscaling, ABZ planning"
+      triggers: ["network effects", "scaling", "blitzscaling", "distribution"]
+    - agent: simon-sinek
+      file: "squads/advisory-board/agents/simon-sinek.md"
+      focus: "Purpose-driven leadership, Golden Circle, WHY clarification"
+      triggers: ["purpose", "WHY", "golden circle", "inspiration", "trust"]
+    - agent: brene-brown
+      file: "squads/advisory-board/agents/brene-brown.md"
+      focus: "Vulnerability, courage, empathic leadership, belonging"
+      triggers: ["vulnerability", "courage", "shame", "psychological safety"]
+    - agent: derek-sivers
+      file: "squads/advisory-board/agents/derek-sivers.md"
+      focus: "Minimalist founder philosophy, 'Hell Yeah or No' filter"
+      triggers: ["simplicity", "hell yeah", "anti-scale", "enough"]
+    - agent: yvon-chouinard
+      file: "squads/advisory-board/agents/yvon-chouinard.md"
+      focus: "Purpose over profit, sustainability, craftsmanship"
+      triggers: ["sustainability", "purpose over profit", "quality", "mission"]
+    - agent: patrick-lencioni
+      file: "squads/advisory-board/agents/patrick-lencioni.md"
+      focus: "Team dynamics, Five Dysfunctions, organizational health"
+      triggers: ["team health", "dysfunction", "trust", "accountability", "culture"]
+
+  connections:
+    - squad: hormozi-squad
+      chief: mifune
+      when: "Conselho precisa de frameworks práticos de business ($100M)"
+      skill: "/LMAS:agents:mifune"
+
+  fallback: "Sem squad, Hamann opera com competência base de conselho estratégico."
+
 autoClaude:
   version: '3.0'
   migratedAt: '2026-03-20T18:00:00.000Z'
@@ -242,5 +297,3 @@ Type `*help` to see all commands, or `*guide` for comprehensive instructions.
 ---
 ---
 *LMAS Agent - Business Domain Strategic Counsel*
----
-*LMAS Agent - Synced from .lmas-core/development/agents/hamann.md*

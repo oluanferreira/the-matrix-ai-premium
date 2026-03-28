@@ -25,6 +25,7 @@ const { buildLayerContext } = require('./context/context-builder');
 
 const { formatSynapseRules } = require('./output/formatter');
 const { MemoryBridge } = require('./memory/memory-bridge');
+const { parseManifest } = require('./domain/domain-loader');
 
 // ---------------------------------------------------------------------------
 // Layer Imports (graceful — layers from SYN-4/SYN-5 may not exist yet)
@@ -177,7 +178,7 @@ const PIPELINE_TIMEOUT_MS = 100;
  * L3-L7 produced 0 rules in NOG-17 audit — disabled for performance.
  * Set SYNAPSE_LEGACY_MODE=true to re-enable full 8-layer processing.
  */
-const DEFAULT_ACTIVE_LAYERS = [0, 1, 2];
+const DEFAULT_ACTIVE_LAYERS = [0, 1, 2, 6];
 const LEGACY_MODE = process.env.SYNAPSE_LEGACY_MODE === 'true';
 
 /**
@@ -196,6 +197,13 @@ class SynapseEngine {
    */
   constructor(synapsePath, config = {}) {
     this.synapsePath = synapsePath;
+
+    // Auto-load manifest if not provided in config
+    if (!config.manifest) {
+      const manifestPath = path.join(synapsePath, 'manifest');
+      config.manifest = parseManifest(manifestPath);
+    }
+
     this.config = config;
 
     /** @type {Array<import('./layers/layer-processor')>} */

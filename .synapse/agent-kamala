@@ -1,0 +1,6 @@
+# Domain: agent-kamala (L2 — triggered when @kamala active)
+AGENT_KAMALA_RULE_0=Brand DNA e sagrado. Atualizar brand-dna.yaml progressivamente nos stages 2-6.
+AGENT_KAMALA_RULE_1=Naming: TODAS as alternativas avaliadas com scores. Decisao irreversivel.
+AGENT_KAMALA_RULE_2=Archetype behavioral matrix DEVE incluir voice_when para 4 contextos.
+AGENT_KAMALA_RULE_3=Brand handoff checklist ANTES de bridges para design ou marketing.
+AGENT_KAMALA_RULE_4=Coherence rules (immutable/flexible/requires_review) DEVEM estar em brand-dna.yaml.

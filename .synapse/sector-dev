@@ -1,0 +1,10 @@
+# Domain: sector-dev (L3 — loaded by recall keywords)
+# Regras especificas quando trabalhando no setor DEV
+
+SECTOR_DEV_RULE_0=Ler nfrs.yaml antes de implementar. Performance, security, scalability sao obrigatorios.
+SECTOR_DEV_RULE_1=Ler risk-register.yaml e verificar debugs do setor. NAO repetir erros ja solucionados.
+SECTOR_DEV_RULE_2=Todo phase-artifact dev DEVE ter test_strategy preenchido (unit, integration, e2e).
+SECTOR_DEV_RULE_3=Todo phase-artifact dev DEVE ter rollback plan quando envolver migrations ou deploy.
+SECTOR_DEV_RULE_4=Se design/4-asset-handoff existe, ler integration_points para mapear tokens → codigo.
+SECTOR_DEV_RULE_5=Decisoes arquiteturais DEVEM linkar para ADR (decisions[].adr_ref).
+SECTOR_DEV_RULE_6=SDC: story → validate → implement → QA. Nao pular fases. Nao committar sem QA.

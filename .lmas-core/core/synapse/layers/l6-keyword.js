@@ -108,6 +108,7 @@ class L6KeywordProcessor extends LayerProcessor {
       rules: allRules,
       metadata: {
         layer: 6,
+        source: 'keyword:' + matchedDomains.map(d => d.replace('SECTOR_', '').toLowerCase()).join('+'),
         matchedDomains,
         skippedDuplicates,
       },

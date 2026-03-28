@@ -1,3 +1,8 @@
+---
+paths:
+  - "daily-notes/**"
+  - "framework/daily-notes/**"
+---
 # Daily Notes Protocol — Obsidian Integration
 
 ## Rule (SHOULD — All Agents)

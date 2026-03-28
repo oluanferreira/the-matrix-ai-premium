@@ -175,8 +175,32 @@ routing_logic:
         - domain
         - componente
         - validar
+        - hook
+        - hooks
+        - mcp
+        - claude.md
+        - settings.json
+        - permission
+        - context engineering
+        - subagent
+        - worktree
+        - custom skill
+        - claude code
       handler: self
       action: "Execute directly — Morpheus owns framework operations"
+      # Enhanced by claude-code-mastery squad (C-1 pattern: standalone-capable)
+      # When intent matches Claude Code internals, suggest CCM specialist for deeper expertise.
+      squad_enhancement:
+        squad: claude-code-mastery
+        chief: claude-mastery-chief
+        specialist_routing:
+          hooks: { agent: hooks-architect, persona: Latch, focus: "Hook lifecycle, PreToolUse/PostToolUse, guardrails" }
+          mcp: { agent: mcp-integrator, persona: Piper, focus: "MCP servers, Docker MCP, tool configuration" }
+          swarm: { agent: swarm-orchestrator, persona: Nexus, focus: "Multi-agent orchestration, subagents, worktrees" }
+          config: { agent: config-engineer, persona: Sigil, focus: "CLAUDE.md, settings.json, permissions, context" }
+          skills: { agent: skill-craftsman, persona: Anvil, focus: "Custom slash commands, skill creation" }
+          integration: { agent: project-integrator, persona: Conduit, focus: "Project onboarding, migration, CI integration" }
+          roadmap: { agent: roadmap-sentinel, persona: Vigil, focus: "Claude Code changelog, new features, migration" }
 
     software_dev:
       description: "Desenvolvimento de software — code, stories, architecture, testing"
@@ -347,6 +371,98 @@ routing_logic:
          → Primário: software-dev (@dev para implementação)
          → Secundário: marketing (@copywriter para o conteúdo)
 
+  # ─────────────────────────────────────────────
+  # Squad System — Chief-First Architecture
+  # ─────────────────────────────────────────────
+  # ALL 12 squads are active. Morpheus routes to chiefs via skills.
+  # Enhanced squads: chief = core agent (squad_chief in their YAML).
+  # Standalone squads: chief = squad agent (skill redirect).
+  # Graceful degradation: if squad dir absent, skip silently.
+
+  squad_system:
+    description: |
+      Todos os squads estao ativos. Morpheus roteia para o chief do squad
+      quando o intent do usuario match keywords especializados que vao
+      alem da competencia base do core agent. O chief decide internamente
+      qual especialista do squad atende. Squads enhanced sao ativados
+      pela skill do core agent. Squads standalone pela skill do chief.
+
+    # Enhanced squads — chief IS the core agent
+    # Routing: Morpheus → core agent (already knows squad roster)
+    enhanced_squads:
+      copy-squad:
+        chief: copywriter
+        persona: Mouse
+        agents: 23
+        trigger_keywords: [sales letter, direct response, Halbert, Schwartz, Ogilvy, VSL, email sequence, fascination bullets, RMBC, funnel copy]
+        skill: "/LMAS:agents:copywriter"
+      traffic-masters:
+        chief: traffic-manager
+        persona: Merovingian
+        agents: 16
+        trigger_keywords: [meta ads, google ads, youtube ads, facebook scaling, BPM, ADUCATE, pixel, CAPI, campaign scaling, media buyer]
+        skill: "/LMAS:agents:traffic-manager"
+      advisory-board:
+        chief: hamann
+        persona: Hamann
+        agents: 11
+        trigger_keywords: [advisory board, Ray Dalio, Munger, Naval, Peter Thiel, mental models, principles, blitzscaling]
+        skill: "/LMAS:agents:hamann"
+      brand-squad:
+        chief: kamala
+        persona: Kamala
+        agents: 15
+        trigger_keywords: [brand equity, identity prism, onlyness, CBBE, StoryBrand, naming strategist, archetype, Aaker, Kapferer]
+        skill: "/LMAS:agents:kamala"
+      storytelling:
+        chief: bugs
+        persona: Bugs
+        agents: 12
+        trigger_keywords: [hero's journey, story circle, beat sheet, frame control, pitch, Sparkline, Story Grid, ABT, public narrative]
+        skill: "/LMAS:agents:bugs"
+      hormozi-squad:
+        chief: mifune
+        persona: Mifune
+        agents: 16
+        trigger_keywords: [grand slam offer, value equation, $100M, Core 4, CLOSER, hormozi, lead magnets, scale, churn, LTV]
+        skill: "/LMAS:agents:mifune"
+
+    # Standalone squads — chief is a squad-only agent
+    # Routing: Morpheus → squad chief skill → specialist
+    standalone_squads:
+      claude-code-mastery:
+        chief: claude-mastery-chief
+        persona: Orion
+        agents: 8
+        trigger_keywords: [hook, hooks, mcp, subagent, worktree, custom skill, claude code, context engineering, settings.json, claude.md, permission]
+        skill: "/claude-code-mastery:agents:claude-mastery-chief"
+      cybersecurity:
+        chief: cyber-chief
+        agents: 15
+        trigger_keywords: [pentest, security audit, red team, blue team, appsec, vulnerability, exploit, recon, incident response, OWASP, hardening, threat model]
+        skill: "/cybersecurity:agents:cyber-chief"
+      c-level-squad:
+        chief: vision-chief
+        agents: 6
+        trigger_keywords: [CEO, COO, CMO, CTO, CIO, CAIO, c-suite, executive, board, strategy session, vision, operations]
+        skill: "/c-level-squad:agents:vision-chief"
+      data-squad:
+        chief: data-chief
+        agents: 7
+        trigger_keywords: [analytics, CLV, customer lifetime value, growth hacking, community building, customer success, audience, data-driven, retention, churn analysis]
+        skill: "/data-squad:agents:data-chief"
+      design-squad:
+        chief: design-chief
+        agents: 4
+        trigger_keywords: [design ops, design system leadership, visual generation, design tokens, design handoff, atomic design, DesignOps]
+        skill: "/design-squad:agents:design-chief"
+        complements: ux-design-expert
+      movement:
+        chief: movement-chief
+        agents: 7
+        trigger_keywords: [movimento, movement building, fenomenologia, phenomenology, manifesto, identity building, growth cycles, impact measurement, community movement]
+        skill: "/movement:agents:movement-chief"
+
 # All commands require * prefix when used (e.g., *help)
 commands:
   - name: help
@@ -488,6 +604,14 @@ commands:
   - name: switch-domain
     args: '{domain-id}'
     description: 'Switch active domain context for current session'
+
+  # Squad System — Chief-First Architecture
+  - name: squad-status
+    description: 'Show squad dashboard — all 12 squads, chiefs, agent counts, health'
+  - name: squad-search
+    args: '{query}'
+    description: 'Search squads by keyword — shows matching squad and skill to activate'
+    visibility: [full, quick]
 
   # Code Intelligence — Registry Enrichment (Story NOG-2)
   - name: sync-registry-intel
@@ -683,6 +807,10 @@ autoClaude:
 - `*flows [domain-id]` - Show workflow flows for a domain
 - `*switch-domain {domain-id}` - Switch active domain context
 
+**Squad Discovery:**
+
+- `*discover {query}` - Search dormant squads by keyword, suggest activation
+
 **Collaboration:**
 
 - `*brainstorm {topic}` - Multi-agent brainstorming (pause flow, discuss, resume)
@@ -726,6 +854,18 @@ Type `*help` to see all commands, or `*kb` to enable KB mode.
 | "Contar a história da marca" | brand | @bugs |
 | "Criar pitch para investidor" | brand | @bugs |
 | "Verificar entrega" / "Smith verify" | universal | @smith (adversarial review) |
+
+**Squad-Enhanced Routing (dormant squads — suggested via `*discover`, not auto-loaded):**
+
+| User Intent | Squad | Suggested Activation |
+|-------------|-------|---------------------|
+| "Como criar um hook no Claude Code?" | claude-code-mastery | @claude-code-mastery:hooks-architect (Latch) |
+| "Configurar MCP server" | claude-code-mastery | @claude-code-mastery:mcp-integrator (Piper) |
+| "Fazer pentest na aplicacao" | cybersecurity | @cybersecurity:cyber-chief |
+| "Simular board de C-level" | c-level-squad | @c-level-squad:vision-chief |
+| "Analisar CLV e metricas" | data-squad | @data-squad:data-chief |
+| "Design ops / design system governance" | design-squad | @design-squad:dan-mall |
+| "Construir um movimento" | movement | @movement:movement-chief |
 
 **Reference Store — Cross-Agent Knowledge:**
 
@@ -898,6 +1038,9 @@ Type `*help` to see all commands, or `*kb` to enable KB mode.
 | "Preciso de conselho antes de investir" | business → @hamann *seek-counsel |
 | "Criar pitch pra investidor" | brand → @bugs *create-pitch |
 | "Escalar campanha de Google" | business → @traffic-manager *google-strategy |
+| "Como criar um hook?" | framework → @claude-code-mastery:hooks-architect (via *discover) |
+| "Pentest na aplicacao" | squad → @cybersecurity:cyber-chief (via *discover) |
+| "Simular board executivo" | squad → @c-level-squad:vision-chief (via *discover) |
 
 ### Common Pitfalls
 
@@ -913,5 +1056,3 @@ Type `*help` to see all commands, or `*kb` to enable KB mode.
 Use specialized agents for specific tasks. Morpheus is the conductor — he routes, orchestrates, and handles framework operations.
 
 ---
----
-*LMAS Agent - Synced from .lmas-core/development/agents/lmas-master.md*

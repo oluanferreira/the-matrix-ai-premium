@@ -1,0 +1,10 @@
+# Domain: sector-business (L3 — loaded by recall keywords)
+# Regras especificas quando trabalhando no setor BUSINESS
+
+SECTOR_BUSINESS_RULE_0=Ler business-model.yaml como primeira acao. Se nao existe, criar usando template.
+SECTOR_BUSINESS_RULE_1=Unit economics DEVEM fechar ANTES de escalar. LTV/CAC >= 3:1 e meta minima.
+SECTOR_BUSINESS_RULE_2=Toda decisao de investimento REQUER investment_decision no artifact (budget, ROI, risk).
+SECTOR_BUSINESS_RULE_3=Offer stack DEVE ter escada de valor (lead magnet → entry → core → premium).
+SECTOR_BUSINESS_RULE_4=KPIs com targets E deadlines obrigatorios. Meta sem deadline nao e meta.
+SECTOR_BUSINESS_RULE_5=Ao completar business/2-offer, VALIDAR bridge BRIDGE-business-to-marketing.
+SECTOR_BUSINESS_RULE_6=Budget > R$1.000 requer aprovacao do @mifune. Campanha requer ROI projetado >= 3x.

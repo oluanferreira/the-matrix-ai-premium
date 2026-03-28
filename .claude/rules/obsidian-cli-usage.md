@@ -1,3 +1,11 @@
+---
+paths:
+  - "daily-notes/**"
+  - "docs/**"
+  - "framework/**"
+  - "inbox/**"
+  - "projects/**/stories/**"
+---
 # Obsidian CLI Usage — Intelligence Layer
 
 ## Rule (SHOULD — All Agents)

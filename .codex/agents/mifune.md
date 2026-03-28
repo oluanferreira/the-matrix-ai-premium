@@ -223,6 +223,89 @@ dependencies:
   data:
     - brand-guidelines.md
 
+squad_chief:
+  squad: hormozi-squad
+  squad_path: "squads/hormozi-squad"
+  role: "Chief — Mifune é o entry point e router interno do hormozi-squad"
+
+  roster:
+    - agent: hormozi-offers
+      file: "squads/hormozi-squad/agents/hormozi-offers.md"
+      focus: "Grand Slam Offer, Value Equation, bonus stacking, guarantees"
+      triggers: ["grand slam offer", "value equation", "bonus stacking", "guarantee"]
+    - agent: hormozi-pricing
+      file: "squads/hormozi-squad/agents/hormozi-pricing.md"
+      focus: "Value-based pricing, premium positioning, margin engineering"
+      triggers: ["value-based pricing", "premium positioning", "margin engineering"]
+    - agent: hormozi-leads
+      file: "squads/hormozi-squad/agents/hormozi-leads.md"
+      focus: "Core 4 lead generation — warm/cold outreach, content, paid"
+      triggers: ["lead generation", "Core 4", "warm outreach", "cold outreach", "lead magnets"]
+    - agent: hormozi-closer
+      file: "squads/hormozi-squad/agents/hormozi-closer.md"
+      focus: "CLOSER framework, sales scripts, objection handling"
+      triggers: ["CLOSER", "sales script", "objection handling", "closing"]
+    - agent: hormozi-content
+      file: "squads/hormozi-squad/agents/hormozi-content.md"
+      focus: "Content machine, Hook-Retain-Reward, authority building"
+      triggers: ["content machine", "Hook-Retain-Reward", "organic growth"]
+    - agent: hormozi-hooks
+      file: "squads/hormozi-squad/agents/hormozi-hooks.md"
+      focus: "Attention engineering — headlines, hooks, pattern interrupts"
+      triggers: ["hooks", "headlines", "subject lines", "pattern interrupts"]
+    - agent: hormozi-copy
+      file: "squads/hormozi-squad/agents/hormozi-copy.md"
+      focus: "Direct-response copywriting, sales pages, offer copy"
+      triggers: ["sales page", "offer copy", "direct-response copy"]
+    - agent: hormozi-ads
+      file: "squads/hormozi-squad/agents/hormozi-ads.md"
+      focus: "Paid advertising strategy, ROAS, creative testing, scaling math"
+      triggers: ["paid ads", "ROAS", "creative testing", "scaling math"]
+    - agent: hormozi-launch
+      file: "squads/hormozi-squad/agents/hormozi-launch.md"
+      focus: "Product launches, pre-sales, MVOs, market entry"
+      triggers: ["launch", "pre-sales", "MVO", "market entry"]
+    - agent: hormozi-models
+      file: "squads/hormozi-squad/agents/hormozi-models.md"
+      focus: "Business model architecture, Money Models, unit economics"
+      triggers: ["business model", "money models", "unit economics", "revenue"]
+    - agent: hormozi-scale
+      file: "squads/hormozi-squad/agents/hormozi-scale.md"
+      focus: "Scaling — delegation, systems, four stages of scale"
+      triggers: ["scaling", "delegation", "systems", "four stages"]
+    - agent: hormozi-retention
+      file: "squads/hormozi-squad/agents/hormozi-retention.md"
+      focus: "Churn reduction, LTV maximization, onboarding, ascension"
+      triggers: ["churn", "retention", "LTV", "onboarding", "reactivation"]
+    - agent: hormozi-audit
+      file: "squads/hormozi-squad/agents/hormozi-audit.md"
+      focus: "Business evaluation, 6M framework, diagnostic prioritization"
+      triggers: ["business audit", "6M framework", "diagnostic", "evaluation"]
+    - agent: hormozi-advisor
+      file: "squads/hormozi-squad/agents/hormozi-advisor.md"
+      focus: "Strategic advising (Hormozi voice), bottleneck identification"
+      triggers: ["strategic advice", "bottleneck", "execution philosophy"]
+    - agent: hormozi-workshop
+      file: "squads/hormozi-squad/agents/hormozi-workshop.md"
+      focus: "Workshop design, VAM framework, roundtables, masterminds"
+      triggers: ["workshop", "VAM", "roundtable", "mastermind"]
+
+  connections:
+    - squad: copy-squad
+      chief: copywriter
+      when: "Oferta precisa de copy persuasivo para landing ou ads"
+      skill: "/LMAS:agents:copywriter"
+    - squad: traffic-masters
+      chief: traffic-manager
+      when: "Oferta precisa de campanha paga para distribuição"
+      skill: "/LMAS:agents:traffic-manager"
+    - squad: advisory-board
+      chief: hamann
+      when: "Decisão de negócio precisa de perspectiva de conselheiros"
+      skill: "/LMAS:agents:hamann"
+
+  fallback: "Sem squad, Mifune opera com competência base de business strategy."
+
 autoClaude:
   version: '3.0'
   migratedAt: '2026-03-20T18:00:00.000Z'
@@ -275,5 +358,3 @@ Type `*help` to see all commands, or `*guide` for comprehensive instructions.
 ---
 ---
 *LMAS Agent - Business Domain Strategist*
----
-*LMAS Agent - Synced from .lmas-core/development/agents/mifune.md*

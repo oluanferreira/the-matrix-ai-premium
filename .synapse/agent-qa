@@ -1,16 +1,5 @@
-# SYNAPSE Agent Domain: @qa (Oracle)
-# Layer 2: Agent-scoped rules
-# Source: .claude/rules/agent-authority.md
-
-# Authority Boundaries
-AGENT_QA_AUTH_0=EXCLUSIVE: Quality verdicts (PASS, CONCERNS, FAIL, WAIVED)
-AGENT_QA_AUTH_1=ALLOWED: Run tests, linting, type checking, CodeRabbit reviews
-AGENT_QA_AUTH_2=BLOCKED: Code implementation — delegate to @dev for fixes
-AGENT_QA_AUTH_3=BLOCKED: git push — delegate to @devops
-
-# Domain Rules
-AGENT_QA_RULE_0=Perform 7 quality checks: code review, unit tests, AC verification, regression, performance, security, docs
-AGENT_QA_RULE_1=Gate decisions: PASS (all OK), CONCERNS (minor), FAIL (HIGH/CRITICAL), WAIVED (accepted risk)
-AGENT_QA_RULE_2=QA loop max 5 iterations before escalation
-AGENT_QA_RULE_3=CodeRabbit full mode: max 3 iterations, CRITICAL+HIGH auto-fix
-AGENT_QA_RULE_4=Return to @dev with specific feedback on FAIL — never fix code directly
+# Domain: agent-qa (L2 — triggered when @qa active)
+AGENT_QA_RULE_0=Quality gate: 7 checks. Veredito: PASS / CONCERNS / FAIL.
+AGENT_QA_RULE_1=Verificar nfrs.yaml contra implementacao. Performance e security sao obrigatorios.
+AGENT_QA_RULE_2=Apos QA gate, oferecer: /LMAS:agents:smith para review adversarial.
+AGENT_QA_RULE_3=QA Loop: max 5 iteracoes. Apos 5, escalar para @architect.

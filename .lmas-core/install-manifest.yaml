@@ -7,10 +7,10 @@
 # - SHA256 hashes for change detection
 # - File types for categorization
 #
-version: 1.2.2
-generated_at: "2026-03-26T19:35:22.145Z"
+version: 1.2.4
+generated_at: "2026-03-28T18:56:09.195Z"
 generator: scripts/generate-install-manifest.js
-file_count: 1190
+file_count: 1205
 files:
   - path: cli/commands/config/index.js
     hash: sha256:c241b04a75440d489bc8c80160bc1aa8070cac1d424e9305413d933083a6a593
@@ -1105,21 +1105,21 @@ files:
     type: core
     size: 8122
   - path: core/synapse/engine.js
-    hash: sha256:47bab93a2144edce875ee68cc2717fee1bd824c9affdd5964454f5141310b8e0
+    hash: sha256:00bc13917550c2cf989fa1c7cdef0e9748cf4ad7d619ac5c916b054b11bebc68
     type: core
-    size: 13602
+    size: 13870
   - path: core/synapse/layers/l0-constitution.js
     hash: sha256:2123a6a44915aaac2a6bbd26c67c285c9d1e12b50fe42a8ada668306b07d1c4a
     type: core
     size: 2383
   - path: core/synapse/layers/l1-global.js
-    hash: sha256:21f6969e6d64e9a85c876be6799db4ca7d090f0009057f4a06ead8da12392d45
+    hash: sha256:d324e28ad32b75f6d927d7aec6178d60d46b82df64c1cd92fa998ec42c234d5b
     type: core
-    size: 3131
+    size: 3157
   - path: core/synapse/layers/l2-agent.js
-    hash: sha256:a8677dc58ae7927c5292a4b52883bbc905c8112573b8b8631f0b8bc01ea2b6e6
+    hash: sha256:627410c8d45f5c93c8abdf5f113459510ba2dcd76b077b6c3042144ca4aa672c
     type: core
-    size: 2721
+    size: 4337
   - path: core/synapse/layers/l3-workflow.js
     hash: sha256:496cbd71d7dac9c1daa534ffac45c622d0c032f334fedf493e9322a565b2b181
     type: core
@@ -1133,9 +1133,9 @@ files:
     type: core
     size: 7408
   - path: core/synapse/layers/l6-keyword.js
-    hash: sha256:8e5405999a2ce2f3ca4e62e863cf702ba27448914241f5eb8f02760bc7477523
+    hash: sha256:96ffd60533c3c70e6dd45f2c8594346d5a3f7f818480b59bfd57ebe66a6f1690
     type: core
-    size: 4513
+    size: 4617
   - path: core/synapse/layers/l7-star-command.js
     hash: sha256:3b8372ac1c51830c1ef560b1012b112a3559651b0750e42f2037f7fe9e6787d6
     type: core
@@ -1212,14 +1212,74 @@ files:
     hash: sha256:512babf3b511680b2f18d27c072caa401387b687f9b2f35602810b01e9857d7a
     type: data
     size: 6212
+  - path: data/artifact-system/artifact-validation.yaml
+    hash: sha256:a75f66a8da993327f29c8dc02219fc798a81071a47e01ac91282ff8e9c6ab645
+    type: data
+    size: 5268
+  - path: data/artifact-system/brand-dna-tmpl.yaml
+    hash: sha256:2c7031c78b305cf12eb78781e835d88eb9fa1c0dadb06442f0f1419669f48147
+    type: data
+    size: 1920
+  - path: data/artifact-system/bridge-contract-tmpl.yaml
+    hash: sha256:4bc523268ddaaafdb76cb0ab3fbe4f8861b505589aeb1065f7d7b19944c8c24e
+    type: data
+    size: 2208
+  - path: data/artifact-system/business-model-tmpl.yaml
+    hash: sha256:363ceb2f8bbb6eeb7072ae69ed9ac7d980e4096e78fce410f01baf39bbf272f6
+    type: data
+    size: 1641
+  - path: data/artifact-system/competitive-landscape-tmpl.yaml
+    hash: sha256:c81d64eaad7e055083e2455b7abe7c287f1af2013df459b060b05bafafeec8ec
+    type: data
+    size: 455
+  - path: data/artifact-system/content-quality-gate-tmpl.yaml
+    hash: sha256:ee383745ff582a16a35dd14cdb7b63096f9ca35ec1be31e07daa834cab774089
+    type: data
+    size: 1723
+  - path: data/artifact-system/icp-tmpl.yaml
+    hash: sha256:6e226f49fd586711d8d4d509f2bb57395db80bb3df991d7e2335a808ac24b500
+    type: data
+    size: 712
+  - path: data/artifact-system/nfrs-tmpl.yaml
+    hash: sha256:62d26bb08918f6c2288d37303727ec746d4ea71014171e69c6afc5ba1a592c17
+    type: data
+    size: 524
+  - path: data/artifact-system/phase-artifact-tmpl.md
+    hash: sha256:51b7e665d7c9d2747d9733dee1c5246aee2729dea720e92097db52822bbd5467
+    type: data
+    size: 3221
+  - path: data/artifact-system/pipeline-status-tmpl.yaml
+    hash: sha256:6467e31ae9034103b7fe627035241c31728b59b50af498fd4b32cbe0cfbcb4d2
+    type: data
+    size: 2751
+  - path: data/artifact-system/project-context-tmpl.yaml
+    hash: sha256:83ebdbca2891d22cefc2aced2b607445573472a9747d58f732fdf7e2785176d7
+    type: data
+    size: 2431
+  - path: data/artifact-system/reference-format.md
+    hash: sha256:b6779895407ce4996478e4fc69edfbed34ba793db21f4fd7ae89660b9cbb6c2a
+    type: data
+    size: 1113
+  - path: data/artifact-system/risk-register-tmpl.yaml
+    hash: sha256:ba7235bd12c57aa02d97a9c4f6300a6cd8891e0dab9ecdda5ba1468d6e24c22a
+    type: data
+    size: 2310
+  - path: data/artifact-system/sector-stages.yaml
+    hash: sha256:80eee33b290fd8a322f0e7b610c0870401a377d6b30eb27cb6b32bc260a4fd74
+    type: data
+    size: 14460
+  - path: data/artifact-system/squad-schema.yaml
+    hash: sha256:bd674e0343f8f36be98416bcbfd132c556a987bf1e5c88920b8b751a4461ba5d
+    type: data
+    size: 4798
   - path: data/capability-detection.js
     hash: sha256:46a8701302ff80af52a7ef5b6694ecb6f54f51ab04ce28b9bbc8a9dce41d8b14
     type: data
     size: 9575
   - path: data/domain-registry.yaml
-    hash: sha256:bd763497e6ae944984f062d3cfae28ed674dca91712b96b01b0f093649229d57
+    hash: sha256:20ebb65e182dfecc77e7f9b38065de9b09901ff772825dcb24f13ab5d99ad793
     type: data
-    size: 7336
+    size: 11170
   - path: data/entity-registry.yaml
     hash: sha256:5e97b17446a947d5c280aa11699c77541163552fa9e0497fa2ce5176921d8ebc
     type: data
@@ -1353,9 +1413,9 @@ files:
     type: agent
     size: 1390
   - path: development/agents/bugs.md
-    hash: sha256:a6108b2929c9001fa1dc225f16c761d9db0ad4cd5ad0ae9afa337fa6ddeb62f8
+    hash: sha256:b9633b3379737f0881334d58a8162610c2135fa3fc642c737cc5915dab7c1344
     type: agent
-    size: 12088
+    size: 15254
   - path: development/agents/bugs/MEMORY.md
     hash: sha256:bb922a73e200fb4c30300b23d2dfd2e0bb446aa4ec18a59c7754150c3d038fde
     type: agent
@@ -1377,9 +1437,9 @@ files:
     type: agent
     size: 15610
   - path: development/agents/copywriter.md
-    hash: sha256:ccb2c84bb7e086524a2e114f7e09c2dee1ddab33ac273b08de7fcd77481aaa63
+    hash: sha256:5e8a1d0ecbb64cc3f3c3b3da9120db5886d4490bb618560090dbce050d4d6fa7
     type: agent
-    size: 18290
+    size: 24211
   - path: development/agents/data-engineer.md
     hash: sha256:f492f167e27393ed1dc03917907bddeae430d355cc320f70ca959dccd21cd300
     type: agent
@@ -1405,33 +1465,33 @@ files:
     type: agent
     size: 1402
   - path: development/agents/hamann.md
-    hash: sha256:908e1047f0ad09602c526023d16011fec69dc4e58ddd67e81140a16fd8d2eadb
+    hash: sha256:a27f7f4fa84c2b82731f6984d1b158bcc4c9eae7a3967d4c2f8fd41577ad6a1c
     type: agent
-    size: 11479
+    size: 14314
   - path: development/agents/hamann/MEMORY.md
     hash: sha256:bb922a73e200fb4c30300b23d2dfd2e0bb446aa4ec18a59c7754150c3d038fde
     type: agent
     size: 160
   - path: development/agents/kamala.md
-    hash: sha256:02870cfc8ab4038e47d46aeaaffef2c803f330c7188068f73818f5a3335066fe
+    hash: sha256:ef02828562e69ee2c54da8581c5eb5370505c4ace3a8a806ebe1c034922e5330
     type: agent
-    size: 14771
+    size: 18752
   - path: development/agents/kamala/MEMORY.md
     hash: sha256:bb922a73e200fb4c30300b23d2dfd2e0bb446aa4ec18a59c7754150c3d038fde
     type: agent
     size: 160
   - path: development/agents/lmas-master.md
-    hash: sha256:c36d3c9c3c177302f61d224a919c6d6f1fcf192b2a9d3ca246509c8e6257c75c
+    hash: sha256:1562250a7cc66f91a3e3657d5dfffafd1e1eda25672fa49e1baeee278e15dcc5
     type: agent
-    size: 39505
+    size: 46838
   - path: development/agents/marketing-chief.md
     hash: sha256:a42f338698b445a333cff4bf750305923255e963a711c50e756ecd9b3d2149e3
     type: agent
     size: 16549
   - path: development/agents/mifune.md
-    hash: sha256:86105994dd65f08af3a9d963420f75ee36f27562f5ddb80e6598b39f922fdb02
+    hash: sha256:ccc432067cc79f68315c4ab4fbc00b132de7dc2f723e2740c127591565ed5c3d
     type: agent
-    size: 12811
+    size: 17108
   - path: development/agents/mifune/MEMORY.md
     hash: sha256:bb922a73e200fb4c30300b23d2dfd2e0bb446aa4ec18a59c7754150c3d038fde
     type: agent
@@ -1485,9 +1545,9 @@ files:
     type: agent
     size: 16106
   - path: development/agents/traffic-manager.md
-    hash: sha256:b4645300d02791f0cb90d40bde91e8c794cad230b883320445a371c0842a302a
+    hash: sha256:cabdb3a1f2d062c6fb570a7e0e91f7a41afa747d67b0cde5189800c0ec711d84
     type: agent
-    size: 16694
+    size: 20841
   - path: development/agents/ux-design-expert.md
     hash: sha256:d500c21b9ad4f46d60d6fe435e997f9453e66db783ceafb260d56551ebb337f4
     type: agent

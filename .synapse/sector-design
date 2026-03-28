@@ -1,0 +1,9 @@
+# Domain: sector-design (L3 — loaded by recall keywords)
+# Regras especificas quando trabalhando no setor DESIGN
+
+SECTOR_DESIGN_RULE_0=REQUER brand/4-identity artifact como entrada. Se nao existe, BLOQUEAR e informar.
+SECTOR_DESIGN_RULE_1=Ler brand-dna.yaml para: archetype_behavior.visual_expression, personality, voice.
+SECTOR_DESIGN_RULE_2=Todo token de design DEVE ter integration_point mapeado (artifact_element → code_target).
+SECTOR_DESIGN_RULE_3=Ao completar design/4-asset-handoff, VALIDAR bridge BRIDGE-design-to-dev.
+SECTOR_DESIGN_RULE_4=Tokens devem seguir naming convention consistente. Valores hardcoded sao findings de Smith.
+SECTOR_DESIGN_RULE_5=Acessibilidade WCAG 2.1 AA e obrigatoria. Contrast ratio minimo 4.5:1 para texto.

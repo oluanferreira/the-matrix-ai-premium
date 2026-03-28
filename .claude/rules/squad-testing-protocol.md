@@ -1,3 +1,8 @@
+---
+paths:
+  - "squads/**"
+  - ".claude/commands/**"
+---
 # Squad Testing Protocol
 
 ## Purpose

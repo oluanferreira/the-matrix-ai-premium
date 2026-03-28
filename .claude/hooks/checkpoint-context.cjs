@@ -8,6 +8,10 @@
  * If projects/ directory exists, lists all available projects with brief
  * checkpoint summaries. The agent then asks the user which project to work on.
  *
+ * PIPELINE-STATUS INJECTION (v2.1):
+ * Reads pipeline-status.yaml from each project and injects a compact
+ * sector status summary + bridge blockers + risk count into context.
+ *
  * TELEMETRY:
  * - Generates unified session_id (written to .lmas/.session-id) for all hooks
  * - Fire-and-forget session_start ping to Supabase
@@ -147,6 +151,11 @@ function generateMultiProjectContext(projectsDir) {
       if (activeCtx) line += ` — ${activeCtx}`;
       else if (description) line += ` — ${description}`;
       lines.push(line);
+
+      // Pipeline-status injection (v2.1)
+      const pipelineSummary = parsePipelineStatus(path.join(projDir, 'pipeline-status.yaml'));
+      if (pipelineSummary) lines.push(`  ${pipelineSummary}`);
+
       projectCount++;
     }
 
@@ -167,6 +176,52 @@ function generateMultiProjectContext(projectsDir) {
   } catch { return null; }
 }
 
+/**
+ * Parse pipeline-status.yaml and return a compact one-line summary.
+ * Lightweight regex-based parsing — no js-yaml dependency.
+ *
+ * Output format: "brand=not-started | dev=in-progress(current) | bridges: 0 blocked | risks: 2"
+ *
+ * @param {string} filePath - Absolute path to pipeline-status.yaml
+ * @returns {string|null} Compact summary or null if file doesn't exist
+ */
+function parsePipelineStatus(filePath) {
+  try {
+    if (!fs.existsSync(filePath)) return null;
+    const content = fs.readFileSync(filePath, 'utf8');
+    if (!content || content.trim().length < 20) return null;
+
+    const parts = [];
+
+    // Extract sectors: match "  {name}:\n    status: {value}\n    current: {value}"
+    const sectorRegex = /^ {2}(\w+):\s*\n\s+status:\s*(.+)/gm;
+    let match;
+    while ((match = sectorRegex.exec(content)) !== null) {
+      const name = match[1].trim();
+      const status = match[2].trim().replace(/"/g, '');
+      // Find current stage for this sector
+      const afterSector = content.substring(match.index);
+      const currentMatch = afterSector.match(/current:\s*(?:"([^"]*)"|(null|\S+))/);
+      const current = currentMatch ? (currentMatch[1] || currentMatch[2] || '').replace(/null/g, '') : '';
+      let label = `${name}=${status}`;
+      if (current && current !== 'null') label += `(${current.substring(0, 30)})`;
+      parts.push(label);
+    }
+
+    // Count blocked bridges
+    const bridgeBlocked = (content.match(/status:\s*blocked/gi) || []).length;
+    const bridgePending = (content.match(/status:\s*pending/gi) || []).length - parts.length; // subtract sector statuses
+    if (bridgeBlocked > 0) parts.push(`bridges: ${bridgeBlocked} blocked`);
+
+    // Count risk entries
+    const riskEntries = (content.match(/^ {2}- id: RISK-/gm) || []).length;
+    if (riskEntries > 0) parts.push(`risks: ${riskEntries}`);
+
+    if (parts.length === 0) return null;
+    return parts.join(' | ');
+  } catch { return null; }
+}
+
 function generateSummary(content) {
   const lines = [];
   lines.push('<checkpoint-context>');
@@ -181,6 +236,15 @@ function generateSummary(content) {
     } else {
       sections[currentSection] = (sections[currentSection] || '') + line + '\n';
     }
+  }
+
+  // Pipeline-status injection (v2.1) — before active context
+  const pipelineSummary = parsePipelineStatus(path.join(PROJECT_ROOT, 'docs', 'pipeline-status.yaml'))
+    || parsePipelineStatus(path.join(PROJECT_ROOT, 'pipeline-status.yaml'));
+  if (pipelineSummary) {
+    lines.push('PIPELINE:');
+    lines.push(pipelineSummary);
+    lines.push('');
   }
 
   const ctx = sections['Contexto Ativo']?.trim();

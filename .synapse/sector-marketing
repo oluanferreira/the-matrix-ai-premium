@@ -1,0 +1,10 @@
+# Domain: sector-marketing (L3 — loaded by recall keywords)
+# Regras especificas quando trabalhando no setor MARKETING
+
+SECTOR_MARKETING_RULE_0=REQUER brand-dna.yaml E icp.yaml. Se nao existem, BLOQUEAR e informar.
+SECTOR_MARKETING_RULE_1=Todo conteudo DEVE mapear para funnel stage (awareness/consideration/decision/retention).
+SECTOR_MARKETING_RULE_2=Quality gate: score >= 7/10 usando content-quality-gate.yaml. Abaixo = BLOCKED.
+SECTOR_MARKETING_RULE_3=Brand voice do/dont sao LEI. Copy que viola "dont" e finding CRITICAL.
+SECTOR_MARKETING_RULE_4=Competitive landscape informa messaging angles. Ler antes de escrever copy.
+SECTOR_MARKETING_RULE_5=Approval chain: @copywriter → @content-reviewer (score) → @marketing-chief (final).
+SECTOR_MARKETING_RULE_6=Ao completar marketing/4-copy, verificar bridge BRIDGE-business-to-marketing para offer alignment.

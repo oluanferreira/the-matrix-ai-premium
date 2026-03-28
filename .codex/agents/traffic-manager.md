@@ -230,6 +230,85 @@ dependencies:
     - campaign-plan-tmpl.md
     - roi-report-tmpl.md
 
+squad_chief:
+  squad: traffic-masters
+  squad_path: "squads/traffic-masters"
+  role: "Chief — Merovingian é o entry point e router interno do traffic-masters"
+
+  roster:
+    - agent: depesh-mandalia
+      file: "squads/traffic-masters/agents/depesh-mandalia.md"
+      focus: "Facebook/Meta scaling, BPM Method, CBO recipes"
+      triggers: ["facebook scaling", "BPM", "CBO", "meta ads", "graduation testing"]
+    - agent: kasim-aslam
+      file: "squads/traffic-masters/agents/kasim-aslam.md"
+      focus: "Google Ads strategy, Performance Max, adversarial framework"
+      triggers: ["google ads", "PMAX", "performance max", "search ads", "shopping ads"]
+    - agent: tom-breeze
+      file: "squads/traffic-masters/agents/tom-breeze.md"
+      focus: "YouTube Ads, ADUCATE formula, intent-based video"
+      triggers: ["youtube ads", "ADUCATE", "video ads", "TrueView"]
+    - agent: molly-pittman
+      file: "squads/traffic-masters/agents/molly-pittman.md"
+      focus: "Facebook/Meta systems, Ad Grid, Traffic Engine, Temperature"
+      triggers: ["ad grid", "traffic temperature", "traffic engine", "e-commerce"]
+    - agent: nicholas-kusmich
+      file: "squads/traffic-masters/agents/nicholas-kusmich.md"
+      focus: "High-ROI Facebook, Give-Give-Give-Ask, coaches/consultants"
+      triggers: ["contextual congruence", "coaches", "consultants", "giving strategy"]
+    - agent: pedro-sobral
+      file: "squads/traffic-masters/agents/pedro-sobral.md"
+      focus: "Gestor de Tráfego, mercado brasileiro/LATAM, Meta Ads"
+      triggers: ["LATAM", "Brasil", "gestor de tráfego", "mercado brasileiro"]
+    - agent: ralph-burns
+      file: "squads/traffic-masters/agents/ralph-burns.md"
+      focus: "Full-funnel performance marketing, nCAC, Five Levels of Traffic"
+      triggers: ["full-funnel", "nCAC", "MER", "traffic levels"]
+    - agent: ad-midas
+      file: "squads/traffic-masters/agents/ad-midas.md"
+      focus: "Ad creative strategy, video scripts, creative testing"
+      triggers: ["creative", "ad creative", "video script", "hook fatigue"]
+    - agent: ads-analyst
+      file: "squads/traffic-masters/agents/ads-analyst.md"
+      focus: "Account audits, wasted spend, structure optimization"
+      triggers: ["audit", "wasted spend", "account structure", "optimization"]
+    - agent: creative-analyst
+      file: "squads/traffic-masters/agents/creative-analyst.md"
+      focus: "Creative performance analysis, pattern detection, fatigue"
+      triggers: ["creative performance", "pattern analysis", "fatigue detection"]
+    - agent: fiscal
+      file: "squads/traffic-masters/agents/fiscal.md"
+      focus: "Budget management, cash flow, ROAS targeting, profitability"
+      triggers: ["budget", "cash flow", "profitability", "payback period"]
+    - agent: media-buyer
+      file: "squads/traffic-masters/agents/media-buyer.md"
+      focus: "Campaign setup, bid strategies, multi-platform execution"
+      triggers: ["campaign setup", "bidding", "cross-platform", "daily optimization"]
+    - agent: performance-analyst
+      file: "squads/traffic-masters/agents/performance-analyst.md"
+      focus: "Campaign analytics, dashboards, KPI tracking, attribution"
+      triggers: ["analytics", "dashboards", "attribution", "KPI tracking"]
+    - agent: pixel-specialist
+      file: "squads/traffic-masters/agents/pixel-specialist.md"
+      focus: "Tracking infrastructure, pixels, CAPI, iOS/privacy"
+      triggers: ["pixel", "tracking", "CAPI", "UTM", "iOS privacy"]
+    - agent: scale-optimizer
+      file: "squads/traffic-masters/agents/scale-optimizer.md"
+      focus: "Campaign scaling, budget expansion, diminishing returns"
+      triggers: ["scaling", "budget expansion", "diminishing returns", "CPA curve"]
+
+  connections:
+    - squad: copy-squad
+      chief: copywriter
+      when: "Campanha precisa de ad copy, headlines ou creative copy"
+      skill: "/LMAS:agents:copywriter"
+    - squad: hormozi-squad
+      chief: mifune
+      when: "Campanha precisa de offer design ou value stack para converter"
+      skill: "/LMAS:agents:mifune"
+
+  fallback: "Sem squad, Merovingian opera com competência base de tráfego pago."
+
 autoClaude:
   version: '3.0'
   migratedAt: '2026-03-14T00:00:00.000Z'
@@ -343,5 +422,3 @@ Type `*help` to see all commands.
 - **@marketing-chief** - Approves high-value campaigns
 
 ---
----
-*LMAS Agent - Synced from .lmas-core/development/agents/traffic-manager.md*

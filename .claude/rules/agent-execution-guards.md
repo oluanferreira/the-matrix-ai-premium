@@ -34,11 +34,14 @@ Duas sessoes simultaneas podem trabalhar em projetos diferentes sem conflito.
 
 ### O que ler (em ordem de prioridade):
 
-1. **PRD** — `{raiz}/prd/` ou `docs/prd*.md` (se existir) → entender o produto, publico, proposta de valor
-2. **Stories concluidas** — `{raiz}/stories/` com status Done/Ready for Review → entender o que ja foi construido
-3. **Architecture docs** — `{raiz}/architecture/` (se existir) → entender stack e decisoes tecnicas
-4. **Design System** — `docs/DESIGN-SYSTEM.md` ou `MASTER.md` (se existir) → tokens, componentes, brand
-5. **Project CLAUDE.md** — `{raiz}/CLAUDE.md` (se existir) → convencoes especificas do projeto
+1. **Pipeline Status** — `{raiz}/pipeline-status.yaml` (se existir) → saber em que fase cada setor esta, bridges pendentes, proxima acao
+2. **Project Context** — `{raiz}/project-context.yaml` (se existir) → identidade, objetivos, stack, user profile
+3. **Risk Register** — `{raiz}/risk-register.yaml` (se existir) → debugs resolvidos e riscos ativos (NAO repetir erros)
+4. **PRD** — `{raiz}/prd/` ou `docs/prd*.md` (se existir) → entender o produto, publico, proposta de valor
+5. **Stories concluidas** — `{raiz}/stories/` com status Done/Ready for Review → entender o que ja foi construido
+6. **Architecture docs** — `{raiz}/architecture/` (se existir) → entender stack e decisoes tecnicas
+7. **Context files do setor ativo** — `{raiz}/brand-dna.yaml`, `{raiz}/icp.yaml`, `{raiz}/business-model.yaml` etc (ler SOMENTE os relevantes para o setor do agente)
+8. **Project CLAUDE.md** — `{raiz}/CLAUDE.md` (se existir) → convencoes especificas do projeto
 
 ### Quando aplicar:
 
@@ -54,16 +57,26 @@ Duas sessoes simultaneas podem trabalhar em projetos diferentes sem conflito.
 
 O agente NAO precisa ler todos os arquivos. Deve:
 1. **Resolver o projeto ativo** (Passo 0)
-2. Ler o project CLAUDE.md (se existir) — stack, convencoes, code_path
-3. Ler o PRD (se existir) — scanning rapido de features e publico
-4. Listar stories concluidas — entender o que foi implementado
-5. Se a task envolve UI/design/marketing → verificar o que o produto ja tem
+2. **Ler pipeline-status.yaml** (se existir) — saber onde cada setor esta, qual o proximo stage, bridges pendentes
+3. **Ler risk-register.yaml** (se existir) — scanning rapido de debugs resolvidos e riscos ativos
+4. Ler o project CLAUDE.md (se existir) — stack, convencoes, code_path
+5. Ler o PRD (se existir) — scanning rapido de features e publico
+6. Ler context files do SEU setor — ex: @kamala le brand-dna.yaml, @mifune le business-model.yaml, @dev le nfrs.yaml
+7. Se a task envolve UI/design/marketing → verificar o que o produto ja tem
 
 ### Output esperado:
 
 Antes de iniciar a task, o agente declara em 2-3 linhas:
 ```
 📋 Projeto: [nome] | Contexto carregado: [N features], publico [Y], stack [Z].
+📊 Pipeline: brand [{status}] | design [{status}] | dev [{status}] | marketing [{status}] | business [{status}]
+⚠️ Riscos ativos: [N] | Debugs registrados: [N]
+🌉 Bridges pendentes: [lista ou "nenhum"]
+```
+
+Se pipeline-status.yaml nao existir:
+```
+📋 Projeto: [nome] | Sem pipeline-status — projeto sem artifact system configurado.
 ```
 
 Se nao encontrar docs de contexto:
@@ -81,20 +94,52 @@ Após completar qualquer command que aparece como step em `workflow-chains.yaml`
 
 ### Como funciona:
 
-1. Agente completa command (ex: Sati completa `*landing`)
-2. Agente consulta `workflow-chains.yaml` para verificar se o command faz parte de algum chain
-3. Se sim → identifica o próximo step no chain
-4. Sugere ao usuário (NÃO auto-executa)
+1. Agente completa command/stage
+2. Agente consulta fontes de pipeline na seguinte PRIORIDADE:
+   - **Prioridade 1:** `sector-stages.yaml` (artifact system) → Se o stage aparece aqui, usar formato artifact-driven com artefatos produzidos/esperados
+   - **Prioridade 2:** `workflow-chains.yaml` (chains legados) → Fallback para commands que nao estao no sector-stages
+3. Se encontrou → identifica o proximo step
+4. Sugere ao usuario (NAO auto-executa)
 
 ### Formato da sugestão:
 
 ```
 ✅ [task concluída]
+📋 Artefato produzido: projects/{projeto}/artifacts/{setor}/{stage}.md
 
 💡 Próximo step no pipeline [{pipeline-name}]:
-   → @{agent} {command} — {descrição do output}
+   → Copie: /LMAS:agents:{agent}
+   → Comando: *{command}
+   📋 Artefato esperado: projects/{projeto}/artifacts/{setor}/{próximo-stage}.md
+   🌉 Bridge: {bridge-id} (status: {pending|validated})
    Prosseguir? (sim / pular / ver pipeline completo)
 ```
+
+### Formato ALTERNATIVO para handoff cross-setor (bridges):
+
+Quando o próximo step está em OUTRO setor, incluir informação do bridge contract:
+
+```
+✅ [task concluída] — Setor {setor} stage {stage} COMPLETE
+📋 Artefato produzido: projects/{projeto}/artifacts/{setor}/{stage}.md
+
+🌉 BRIDGE CROSS-SETOR: {setor-origem} → {setor-destino}
+   Contrato: projects/{projeto}/bridges/BRIDGE-{origem}-to-{destino}.yaml
+   Status: {pending|validated|blocked}
+
+   → Copie: /LMAS:agents:{agent-destino}
+   → Artefato de entrada: projects/{projeto}/artifacts/{setor}/{stage}.md
+   → Artefato esperado: projects/{projeto}/artifacts/{setor-destino}/{stage-destino}.md
+   Prosseguir? (sim / pular / ver pipeline completo)
+```
+
+### Pipeline-Status Update (MUST — em TODA fase):
+
+Ao completar QUALQUER stage (com ou sem bridge), o agente DEVE atualizar `pipeline-status.yaml`:
+1. Mover o stage concluido para `sectors.{setor}.done[]`
+2. Definir `sectors.{setor}.current` como proximo stage (ou null se setor completo)
+3. Se setor completo → definir `sectors.{setor}.status: complete`
+4. Adicionar entrada no `session_log[]` com: session_id, date, agent, stage_completed, artifacts_produced, next_action
 
 ### Regras:
 
@@ -211,6 +256,62 @@ Agente completa command
 
 ---
 
+## Rule 4: Bridge Validation (Protecao de Handoff Cross-Setor)
+
+**MUST — All Agents**
+
+Quando um agente completa uma fase que tem bridge para outro setor, ele DEVE validar o contrato antes de sugerir handoff.
+
+### Como funciona:
+
+1. Agente completa fase (ex: @kamala completa brand/4-identity)
+2. Agente verifica `pipeline-status.yaml` → bridges[] para encontrar bridge de saida
+3. Se bridge existe → ler contrato em `projects/{id}/bridges/BRIDGE-{x}-to-{y}.yaml`
+4. Verificar: `provider_delivers` → os artifacts/campos listados existem e estao preenchidos?
+5. Se SIM → bridge status = `validated`. Sugerir handoff com confianca.
+6. Se NAO → bridge status = `blocked`. Informar o que falta ANTES de sugerir handoff.
+
+### Formato quando bridge VALIDATED:
+
+```
+✅ Fase {stage} completa.
+🌉 Bridge {bridge-id}: VALIDATED — contrato atendido.
+   → Copie: /LMAS:agents:{agent-destino}
+   📋 Artefato de entrada pronto: {artifact path}
+```
+
+### Formato quando bridge BLOCKED:
+
+```
+✅ Fase {stage} completa.
+🌉 Bridge {bridge-id}: BLOCKED — contrato NAO atendido.
+   ❌ Campos faltando no artefato de origem:
+     - {campo 1}
+     - {campo 2}
+   → Completar campos antes de prosseguir para {setor-destino}.
+```
+
+### Quando NAO aplicar:
+
+- Fase sem bridge de saida → nao validar (comportamento normal)
+- Bridge com `critical: false` no sector-stages.yaml → WARNING em vez de BLOCK
+- Usuario explicitamente diz "pular validacao" → registrar override no session_log
+- Contrato de bridge ainda nao criado → WARNING: "Bridge sem contrato definido"
+
+### Atualizacao do pipeline-status:
+
+Apos validacao (positiva ou negativa), o agente DEVE atualizar `pipeline-status.yaml`:
+
+```yaml
+bridges:
+  - id: BRIDGE-brand-to-design
+    status: validated  # ou blocked
+    validated_at: "2026-03-28"
+    validated_by: kamala
+```
+
+---
+
 ## Obrigatoriedade
 
-Estas regras são **MUST** para todos os agentes, incluindo Morpheus. A única exceção é quando o usuário **explicitamente** pede para ignorar (ex: "faz tudo sem delegar").
+Estas regras (1-4) são **MUST** para todos os agentes, incluindo Morpheus. A única exceção é quando o usuário **explicitamente** pede para ignorar (ex: "faz tudo sem delegar").

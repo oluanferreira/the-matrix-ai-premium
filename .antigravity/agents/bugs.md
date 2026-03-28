@@ -209,6 +209,69 @@ dependencies:
   tasks:
     - execute-checklist.md
 
+squad_chief:
+  squad: storytelling
+  squad_path: "squads/storytelling"
+  role: "Chief — Bugs é o entry point e router interno do storytelling squad"
+
+  roster:
+    - agent: joseph-campbell
+      file: "squads/storytelling/agents/joseph-campbell.md"
+      focus: "Monomyth, Hero's Journey, 17-stage universal story pattern"
+      triggers: ["hero's journey", "monomyth", "myth", "17 stages", "Campbell"]
+    - agent: dan-harmon
+      file: "squads/storytelling/agents/dan-harmon.md"
+      focus: "Story Circle (8 steps), practical episodic narrative"
+      triggers: ["story circle", "8 steps", "episodic", "TV writing"]
+    - agent: blake-snyder
+      file: "squads/storytelling/agents/blake-snyder.md"
+      focus: "Save the Cat 15-beat sheet, genre classification, loglines"
+      triggers: ["save the cat", "beat sheet", "15 beats", "logline", "genre"]
+    - agent: oren-klaff
+      file: "squads/storytelling/agents/oren-klaff.md"
+      focus: "Frame control, croc brain pitching, STRONG method"
+      triggers: ["pitch", "frame control", "croc brain", "persuasion", "deal"]
+    - agent: nancy-duarte
+      file: "squads/storytelling/agents/nancy-duarte.md"
+      focus: "Presentation storytelling, Sparkline, audience-as-hero"
+      triggers: ["presentation", "Sparkline", "keynote", "data-to-narrative"]
+    - agent: shawn-coyne
+      file: "squads/storytelling/agents/shawn-coyne.md"
+      focus: "Story Grid, Five Commandments, scene diagnostics"
+      triggers: ["Story Grid", "Five Commandments", "scene diagnosis", "editorial"]
+    - agent: park-howell
+      file: "squads/storytelling/agents/park-howell.md"
+      focus: "ABT framework (And/But/Therefore), business storytelling"
+      triggers: ["ABT", "business storytelling", "Story Cycle", "ROI narrative"]
+    - agent: matthew-dicks
+      file: "squads/storytelling/agents/matthew-dicks.md"
+      focus: "Personal narrative, five-second transformation, Homework for Life"
+      triggers: ["personal story", "five-second moment", "Moth", "vulnerability"]
+    - agent: kindra-hall
+      file: "squads/storytelling/agents/kindra-hall.md"
+      focus: "4 Stories Framework (Value, Founder, Purpose, Customer), Story Gap"
+      triggers: ["4 stories", "story gap", "sales storytelling", "founder story"]
+    - agent: keith-johnstone
+      file: "squads/storytelling/agents/keith-johnstone.md"
+      focus: "Improvisation, status dynamics, creative unblocking"
+      triggers: ["improvisation", "improv", "status", "spontaneity", "creative blocks"]
+    - agent: marshall-ganz
+      file: "squads/storytelling/agents/marshall-ganz.md"
+      focus: "Public Narrative (Self/Us/Now), movement storytelling"
+      triggers: ["public narrative", "movement", "story of self", "collective action"]
+
+  connections:
+    - squad: brand-squad
+      chief: kamala
+      when: "Narrativa precisa de brand DNA, posicionamento ou identidade"
+      skill: "/LMAS:agents:kamala"
+    - squad: copy-squad
+      chief: copywriter
+      when: "Narrativa precisa virar copy executável (landing, pitch deck)"
+      skill: "/LMAS:agents:copywriter"
+
+  fallback: "Sem squad, Bugs opera com competência base de storytelling."
+
 autoClaude:
   version: '3.0'
   migratedAt: '2026-03-20T18:00:00.000Z'

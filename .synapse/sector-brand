@@ -1,0 +1,10 @@
+# Domain: sector-brand (L3 — loaded by recall keywords)
+# Regras especificas quando trabalhando no setor BRAND
+
+SECTOR_BRAND_RULE_0=Ler brand-dna.yaml como primeira acao. Se nao existe, criar usando brand-dna-tmpl.yaml.
+SECTOR_BRAND_RULE_1=Toda decisao de marca DEVE ter rationale (campo "why"). Decisao sem "why" e incompleta.
+SECTOR_BRAND_RULE_2=Naming e decisao IRREVERSIVEL. Registrar TODAS as alternativas avaliadas com scores.
+SECTOR_BRAND_RULE_3=Brand coherence rules (immutable/flexible) devem ser respeitadas por TODOS os agentes downstream.
+SECTOR_BRAND_RULE_4=Ao completar brand/4-identity, VALIDAR bridge BRIDGE-brand-to-design antes de sugerir design.
+SECTOR_BRAND_RULE_5=Ao completar brand/6-brandbook, VALIDAR bridge BRIDGE-brand-to-marketing antes de sugerir marketing.
+SECTOR_BRAND_RULE_6=Context files produzidos: brand-dna.yaml (progressivo stages 2-6), competitive-landscape.yaml (stage 1), icp.yaml (stage 1).

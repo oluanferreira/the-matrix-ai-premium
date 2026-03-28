@@ -1,56 +1,74 @@
-# ==========================================
-# SYNAPSE Manifest — Domain Registry
-# ==========================================
+# SYNAPSE Manifest — Central Domain Registry
+# Format: KEY=VALUE (parsed by domain-loader.js)
+# Configured: 2026-03-28 — Fase 3 Framework Optimization
 
-# Debug mode (append debug section to every response)
-DEVMODE=false
-
-# Layer 0: Constitution (NON-NEGOTIABLE, cannot be overridden)
+# ═══════════════════════════════════════════════════
+# Layer 0: Constitution (NON-NEGOTIABLE)
+# Regras que NUNCA podem ser violadas
+# ═══════════════════════════════════════════════════
 CONSTITUTION_STATE=active
 CONSTITUTION_ALWAYS_ON=true
 CONSTITUTION_NON_NEGOTIABLE=true
 
-# Layer 1: Global (ALWAYS_ON)
+# ═══════════════════════════════════════════════════
+# Layer 1: Global (always loaded)
+# Regras que se aplicam a TODOS os agentes/sessoes
+# ═══════════════════════════════════════════════════
 GLOBAL_STATE=active
 GLOBAL_ALWAYS_ON=true
 
-# Layer 1: Context brackets (ALWAYS_ON)
-CONTEXT_STATE=active
-CONTEXT_ALWAYS_ON=true
+# Context: Pipeline awareness
+CONTEXT_PIPELINE_STATE=active
+CONTEXT_PIPELINE_ALWAYS_ON=true
 
-# Layer 7: Star-commands
-COMMANDS_STATE=active
-
-# Layer 2: Agent-scoped domains (auto-activated by active agent)
+# ═══════════════════════════════════════════════════
+# Layer 2: Agent domains (loaded per agent)
+# ═══════════════════════════════════════════════════
 AGENT_DEV_STATE=active
 AGENT_DEV_AGENT_TRIGGER=dev
+
 AGENT_QA_STATE=active
 AGENT_QA_AGENT_TRIGGER=qa
+
 AGENT_ARCHITECT_STATE=active
 AGENT_ARCHITECT_AGENT_TRIGGER=architect
-AGENT_PM_STATE=active
-AGENT_PM_AGENT_TRIGGER=pm
-AGENT_PO_STATE=active
-AGENT_PO_AGENT_TRIGGER=po
-AGENT_SM_STATE=active
-AGENT_SM_AGENT_TRIGGER=sm
-AGENT_DEVOPS_STATE=active
-AGENT_DEVOPS_AGENT_TRIGGER=devops
-AGENT_ANALYST_STATE=active
-AGENT_ANALYST_AGENT_TRIGGER=analyst
-AGENT_DATA_ENGINEER_STATE=active
-AGENT_DATA_ENGINEER_AGENT_TRIGGER=data-engineer
-AGENT_UX_STATE=active
-AGENT_UX_AGENT_TRIGGER=ux-design-expert
-AGENT_LMAS_MASTER_STATE=active
-AGENT_LMAS_MASTER_AGENT_TRIGGER=lmas-master
-AGENT_SQUAD_CREATOR_STATE=active
-AGENT_SQUAD_CREATOR_AGENT_TRIGGER=squad-creator
 
-# Layer 3: Workflow domains (state-driven)
-WORKFLOW_STORY_DEV_STATE=active
-WORKFLOW_STORY_DEV_WORKFLOW_TRIGGER=story_development
-WORKFLOW_EPIC_CREATE_STATE=active
-WORKFLOW_EPIC_CREATE_WORKFLOW_TRIGGER=epic_creation
-WORKFLOW_ARCH_REVIEW_STATE=active
-WORKFLOW_ARCH_REVIEW_WORKFLOW_TRIGGER=architecture_review
+AGENT_KAMALA_STATE=active
+AGENT_KAMALA_AGENT_TRIGGER=kamala
+
+AGENT_MIFUNE_STATE=active
+AGENT_MIFUNE_AGENT_TRIGGER=mifune
+
+AGENT_COPYWRITER_STATE=active
+AGENT_COPYWRITER_AGENT_TRIGGER=copywriter
+
+AGENT_TRAFFIC_STATE=active
+AGENT_TRAFFIC_AGENT_TRIGGER=traffic-manager
+
+# ═══════════════════════════════════════════════════
+# Layer 3: Sector domains (loaded by keyword recall)
+# Ativados quando o contexto menciona o setor
+# ═══════════════════════════════════════════════════
+SECTOR_BRAND_STATE=active
+SECTOR_BRAND_RECALL=brand,marca,posicionamento,naming,identidade,arquetipo,brandbook
+
+SECTOR_DESIGN_STATE=active
+SECTOR_DESIGN_RECALL=design,wireframe,ui,ux,tokens,componente,design system,figma
+
+SECTOR_DEV_STATE=active
+SECTOR_DEV_RECALL=implementar,codigo,story,feature,bug,deploy,test,migration
+
+SECTOR_MARKETING_STATE=active
+SECTOR_MARKETING_RECALL=marketing,copy,seo,conteudo,campanha,publicar,editorial,social media
+
+SECTOR_BUSINESS_STATE=active
+SECTOR_BUSINESS_RECALL=oferta,pricing,negocio,lancamento,leads,roi,budget,campanha paga
+
+# ═══════════════════════════════════════════════════
+# Layer 7: Star-commands
+# ═══════════════════════════════════════════════════
+COMMANDS_STATE=active
+
+# Global settings
+DEVMODE=false
+GLOBAL_EXCLUDE=

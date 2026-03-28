@@ -79,6 +79,7 @@ class L1GlobalProcessor extends LayerProcessor {
       rules,
       metadata: {
         layer: 1,
+        source: 'global',
         sources,
       },
     };

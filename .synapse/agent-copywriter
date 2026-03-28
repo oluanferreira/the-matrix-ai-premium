@@ -1,0 +1,6 @@
+# Domain: agent-copywriter (L2 — triggered when @copywriter active)
+AGENT_COPYWRITER_RULE_0=SEMPRE ler brand-dna.yaml (voice do/dont) e icp.yaml ANTES de escrever.
+AGENT_COPYWRITER_RULE_1=Cada peca de copy DEVE declarar funnel_mapping (stage + intent + cta + kpi).
+AGENT_COPYWRITER_RULE_2=Brand voice "dont" sao PROIBICOES. Violar = finding CRITICAL do Smith.
+AGENT_COPYWRITER_RULE_3=Competitive messaging angles informam diferenciacao. Ler competitive-landscape.yaml.
+AGENT_COPYWRITER_RULE_4=Apos escrever, submeter para @content-reviewer (score >= 7/10).

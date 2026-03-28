@@ -1,3 +1,13 @@
+---
+paths:
+  - "docs/**"
+  - "framework/**"
+  - "inbox/**"
+  - "dashboards/**"
+  - "projects/**/stories/**"
+  - "projects/**/prd/**"
+  - "projects/**/architecture/**"
+---
 # Obsidian Format Guard — Agentes Obsidian-Aware
 
 ## Rule (MUST — All Agents)

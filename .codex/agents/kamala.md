@@ -235,6 +235,81 @@ dependencies:
   data:
     - brand-guidelines.md
 
+squad_chief:
+  squad: brand-squad
+  squad_path: "squads/brand-squad"
+  role: "Chief — Kamala é o entry point e router interno do brand-squad"
+
+  roster:
+    - agent: al-ries
+      file: "squads/brand-squad/agents/al-ries.md"
+      focus: "Positioning, owning a word in the mind, 22 Immutable Laws"
+      triggers: ["positioning", "category strategy", "differentiation", "22 laws"]
+    - agent: david-aaker
+      file: "squads/brand-squad/agents/david-aaker.md"
+      focus: "Brand equity, identity models, architecture, category innovation"
+      triggers: ["brand equity", "identity model", "brand architecture", "portfolio"]
+    - agent: jean-noel-kapferer
+      file: "squads/brand-squad/agents/jean-noel-kapferer.md"
+      focus: "Brand Identity Prism (6 facets), luxury strategy"
+      triggers: ["identity prism", "luxury strategy", "brand identity", "European"]
+    - agent: kevin-keller
+      file: "squads/brand-squad/agents/kevin-keller.md"
+      focus: "CBBE pyramid, brand equity measurement, POPs/PODs"
+      triggers: ["CBBE", "brand equity measurement", "brand tracking", "resonance"]
+    - agent: marty-neumeier
+      file: "squads/brand-squad/agents/marty-neumeier.md"
+      focus: "Radical differentiation, onlyness, brand gap, design thinking"
+      triggers: ["onlyness", "brand gap", "zag", "design thinking", "gut feeling"]
+    - agent: byron-sharp
+      file: "squads/brand-squad/agents/byron-sharp.md"
+      focus: "Evidence-based growth, mental availability, distinctive assets"
+      triggers: ["evidence-based", "mental availability", "distinctive assets", "double jeopardy"]
+    - agent: alina-wheeler
+      file: "squads/brand-squad/agents/alina-wheeler.md"
+      focus: "Brand identity system, 5-phase process, visual governance"
+      triggers: ["identity system", "visual governance", "brand standards", "touchpoints"]
+    - agent: naming-strategist
+      file: "squads/brand-squad/agents/naming-strategist.md"
+      focus: "Name generation, linguistic analysis, phonosemantics, legal viability"
+      triggers: ["naming", "name generation", "linguistic", "phonosemantics"]
+    - agent: archetype-consultant
+      file: "squads/brand-squad/agents/archetype-consultant.md"
+      focus: "12 Jungian archetypes, tone of voice, brand personality"
+      triggers: ["archetype", "personality", "tone of voice", "Jungian", "character"]
+    - agent: donald-miller
+      file: "squads/brand-squad/agents/donald-miller.md"
+      focus: "StoryBrand SB7, messaging clarity, customer as hero"
+      triggers: ["StoryBrand", "SB7", "brand script", "messaging clarity"]
+    - agent: miller-sticky-brand
+      file: "squads/brand-squad/agents/miller-sticky-brand.md"
+      focus: "StoryBrand implementation, BrandScripts, funnels, execution"
+      triggers: ["StoryBrand implementation", "BrandScript execution", "funnel building"]
+    - agent: denise-yohn
+      file: "squads/brand-squad/agents/denise-yohn.md"
+      focus: "Brand-culture fusion, inside-out building, employee experience"
+      triggers: ["brand culture", "inside-out", "culture alignment", "employee experience"]
+    - agent: emily-heyward
+      file: "squads/brand-squad/agents/emily-heyward.md"
+      focus: "DTC/startup branding, new brand launch, emotional branding"
+      triggers: ["startup branding", "DTC", "new brand launch", "pre-PMF"]
+    - agent: domain-scout
+      file: "squads/brand-squad/agents/domain-scout.md"
+      focus: "Domain availability, TLD strategy, social handles, acquisition"
+      triggers: ["domain", "TLD", "social handles", "domain availability"]
+
+  connections:
+    - squad: storytelling
+      chief: bugs
+      when: "Brand precisa de narrativa, manifesto ou story structure"
+      skill: "/LMAS:agents:bugs"
+    - squad: copy-squad
+      chief: copywriter
+      when: "Brand precisa de copy para landing, tagline ou brand messaging"
+      skill: "/LMAS:agents:copywriter"
+
+  fallback: "Sem squad, Kamala opera com competência base de brand positioning."
+
 autoClaude:
   version: '3.0'
   migratedAt: '2026-03-20T18:00:00.000Z'
@@ -290,5 +365,3 @@ Type `*help` to see all commands, or `*guide` for comprehensive instructions.
 ---
 ---
 *LMAS Agent - Brand Domain Chief*
----
-*LMAS Agent - Synced from .lmas-core/development/agents/kamala.md*

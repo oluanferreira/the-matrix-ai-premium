@@ -1,0 +1,6 @@
+# Domain: agent-traffic (L2 — triggered when @traffic-manager active)
+AGENT_TRAFFIC_RULE_0=Budget allocation REQUER business-model.yaml (unit economics, CAC target).
+AGENT_TRAFFIC_RULE_1=ROI projetado >= 3x obrigatorio antes de aprovar campanha.
+AGENT_TRAFFIC_RULE_2=Budget > R$1.000 requer aprovacao do @mifune.
+AGENT_TRAFFIC_RULE_3=Segmentacao DEVE ser baseada em icp.yaml (demographics, channels, pain_points).
+AGENT_TRAFFIC_RULE_4=Toda campanha DEVE ter KPIs mensuraveis com deadline.

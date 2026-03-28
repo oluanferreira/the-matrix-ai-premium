@@ -238,3 +238,119 @@ cross_domain_agents:
       - competitive analysis
       - growth metrics
     rationale: "Atlas faz research e brainstorming que servem business strategy e brand positioning."
+
+# ─────────────────────────────────────────────
+# Squad Registry — Chief-First Architecture
+# ─────────────────────────────────────────────
+# ALL squads are active. No dormant/connected distinction.
+# type: enhanced = chief is a core agent (squad_chief in agent file)
+# type: standalone = chief is a squad-only agent (skill redirect)
+# Graceful degradation: if squad dir doesn't exist on disk, skip silently.
+
+squads:
+  # ── Enhanced Squads (chief = core agent) ──
+  - id: copy-squad
+    path: squads/copy-squad
+    type: enhanced
+    chief: copywriter
+    chief_persona: Mouse
+    agents: 22
+    skill: "LMAS:agents:copywriter"
+    description: "Direct response masters — Halbert, Schwartz, Ogilvy, Sugarman, and 18 more"
+
+  - id: traffic-masters
+    path: squads/traffic-masters
+    type: enhanced
+    chief: traffic-manager
+    chief_persona: Merovingian
+    agents: 15
+    skill: "LMAS:agents:traffic-manager"
+    description: "Platform-specific ad specialists — Meta, Google, YouTube + analytics"
+
+  - id: advisory-board
+    path: squads/advisory-board
+    type: enhanced
+    chief: hamann
+    chief_persona: Hamann
+    agents: 10
+    skill: "LMAS:agents:hamann"
+    description: "Virtual advisory board — Dalio, Munger, Naval, Thiel, Sinek, and 5 more"
+
+  - id: brand-squad
+    path: squads/brand-squad
+    type: enhanced
+    chief: kamala
+    chief_persona: Kamala
+    agents: 14
+    skill: "LMAS:agents:kamala"
+    description: "Brand strategy — Aaker, Ries, Kapferer, Neumeier, Wheeler, and 9 more"
+
+  - id: storytelling
+    path: squads/storytelling
+    type: enhanced
+    chief: bugs
+    chief_persona: Bugs
+    agents: 11
+    skill: "LMAS:agents:bugs"
+    description: "Narrative frameworks — Campbell, Klaff, Duarte, Harmon, and 7 more"
+
+  - id: hormozi-squad
+    path: squads/hormozi-squad
+    type: enhanced
+    chief: mifune
+    chief_persona: Mifune
+    agents: 15
+    skill: "LMAS:agents:mifune"
+    description: "Hormozi business frameworks — Offers, Leads, Pricing, Scale, and 11 more"
+
+  # ── Standalone Squads (chief = squad agent) ──
+  - id: claude-code-mastery
+    path: squads/claude-code-mastery
+    type: standalone
+    chief: claude-mastery-chief
+    chief_persona: Orion
+    agents: 8
+    tasks: 25
+    skill: "claude-code-mastery:agents:claude-mastery-chief"
+    description: "Claude Code internals — hooks, MCP, skills, subagents, context engineering"
+
+  - id: cybersecurity
+    path: squads/cybersecurity
+    type: standalone
+    chief: cyber-chief
+    agents: 15
+    skill: "cybersecurity:agents:cyber-chief"
+    description: "Pentest, red/blue team, AppSec, incident response, OWASP"
+
+  - id: c-level-squad
+    path: squads/c-level-squad
+    type: standalone
+    chief: vision-chief
+    agents: 6
+    skill: "c-level-squad:agents:vision-chief"
+    description: "Virtual C-suite — CEO, COO, CMO, CTO, CIO, CAIO"
+
+  - id: data-squad
+    path: squads/data-squad
+    type: standalone
+    chief: data-chief
+    agents: 7
+    skill: "data-squad:agents:data-chief"
+    description: "Data-driven strategy — analytics, CLV, growth, community, retention"
+
+  - id: design-squad
+    path: squads/design-squad
+    type: standalone
+    chief: design-chief
+    agents: 4
+    skill: "design-squad:agents:design-chief"
+    complements: ux-design-expert
+    description: "DesignOps, design system governance, AI visual generation — complements Sati"
+
+  - id: movement
+    path: squads/movement
+    type: standalone
+    chief: movement-chief
+    agents: 7
+    skill: "movement:agents:movement-chief"
+    description: "Movement building — phenomenology, identity, manifestos, growth cycles, impact"
