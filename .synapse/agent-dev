@@ -4,3 +4,6 @@ AGENT_DEV_RULE_1=Conventional commits: feat:, fix:, docs:, chore:. Sempre.
 AGENT_DEV_RULE_2=Git push BLOQUEADO. Delegar para @devops via /LMAS:agents:devops.
 AGENT_DEV_RULE_3=Ao concluir implementacao, oferecer: /LMAS:agents:smith para review adversarial.
 AGENT_DEV_RULE_4=Atualizar story checkboxes conforme tasks completam. Manter File List atualizada.
+AGENT_DEV_RULE_5=TDD: Para features novas e bug fixes com >20 linhas, escrever teste que FALHA antes de implementar. Nao obrigatorio para config, docs, YAML.
+AGENT_DEV_RULE_6=Verification: Antes de marcar story como Ready for Review, rodar testes e lint FRESH. Reportar resultado no checkpoint. Sem evidencia de verificacao, claim invalida.
+AGENT_DEV_RULE_7=Debugging: Se fix falha na 1a tentativa OU bug afeta >1 arquivo, usar *investigate antes de continuar. Apos 3 tentativas de fix falhadas, PARAR e questionar arquitetura com o usuario.
