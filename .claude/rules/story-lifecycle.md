@@ -53,7 +53,7 @@ Draft → Ready → InProgress → InReview → Done
 
 ### Execution Modes
 
-**YOLO (autonomous):**
+**AUTO (autonomous):**
 - 0-1 prompts
 - Decisions logged in `decision-log-{story-id}.md`
 - Best for: simple, deterministic tasks

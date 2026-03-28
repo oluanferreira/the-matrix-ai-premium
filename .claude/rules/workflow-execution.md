@@ -27,7 +27,7 @@ Uma task validada é lei: deve ser executada conforme configurada, com todas as 
 
 #### Phase 3: Implement (@dev)
 - **Task:** `dev-develop-story.md`
-- **Modes:** Interactive / YOLO / Pre-Flight
+- **Modes:** Interactive / AUTO / Pre-Flight
 - **CodeRabbit:** Self-healing max 2 iterations
 - **Status:** Ready → InProgress
 
@@ -147,4 +147,4 @@ Every statement in spec.md MUST trace to FR-*, NFR-*, CON-*, or research finding
 | QA found issues, need iteration | QA Loop |
 | Complex feature needs spec | Spec Pipeline → then SDC |
 | Joining existing project | Brownfield Discovery |
-| Simple bug fix | SDC only (YOLO mode) |
+| Simple bug fix | SDC only (AUTO mode) |

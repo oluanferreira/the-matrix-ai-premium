@@ -17,7 +17,7 @@ Recontextualizar onde estamos: projeto, branch, task atual.
 
 | Exec Mode | Comportamento |
 |-----------|---------------|
-| YOLO | SKIP — sem re-ground (0 prompts) |
+| AUTO | SKIP — sem re-ground (0 prompts) |
 | Interactive | Curto — projeto + task em 1 frase |
 | Proposital | Agente PROPOE o que faria e por que, pede apenas correcoes |
 | Pre-Flight | Completo — projeto + branch + story + task + contexto |
@@ -126,11 +126,11 @@ Corrija se discordar, ou confirme para prosseguir.
 
 **Quando usar:** Projetos onde o usuario confia no julgamento do agente e prefere velocidade a controle granular. Ideal para trabalho iterativo com contexto ja estabelecido.
 
-**Diferenca de YOLO:** YOLO nao comunica nada. Proposital COMUNICA a intencao e DA CHANCE de corrigir antes de executar.
+**Diferenca de AUTO:** AUTO nao comunica nada. Proposital COMUNICA a intencao e DA CHANCE de corrigir antes de executar.
 
 ## Quando NAO Aplicar
 
-- Modo YOLO (0 elicitation points — agente decide sozinho)
+- Modo AUTO (0 elicitation points — agente decide sozinho)
 - Confirmacoes triviais (sim/nao sem opcoes)
 - Morpheus executando `*task` diretamente
 - Informacoes fatuais (nao ha decisao a tomar)
