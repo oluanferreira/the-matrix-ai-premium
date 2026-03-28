@@ -88,6 +88,82 @@ obs outline file="core-architecture"
 obs wordcount file="PRD"
 ```
 
+## Novos Comandos (Obsidian CLI v2+)
+
+### Bases (Database Views Nativas)
+
+```bash
+# Criar base file
+obsidian create name="dashboard" ext=base content="filters:\n  and:\n    - 'tags contains \"project\"'\nviews:\n  - type: table\n    order:\n      - file.name\n      - status"
+
+# Bases sao .base files — criar via CLI ou Write tool
+```
+
+### Plugin Development
+
+```bash
+# Recarregar plugin apos mudancas
+obsidian plugin:reload id=my-plugin
+
+# Verificar erros do plugin
+obsidian dev:errors
+
+# Screenshot programatico
+obsidian dev:screenshot path=screenshot.png
+
+# Inspecionar DOM
+obsidian dev:dom selector=".workspace-leaf" text
+
+# Inspecionar CSS
+obsidian dev:css selector=".workspace-leaf" prop=background-color
+
+# Rodar JavaScript no contexto do app
+obsidian eval code="app.vault.getFiles().length"
+
+# Console output (filtrar por nivel)
+obsidian dev:console level=error
+
+# Mobile emulation toggle
+obsidian dev:mobile on
+```
+
+### Operacoes Avancadas
+
+```bash
+# Embed de busca (cria search embed na nota)
+obsidian search query="tag:#important" limit=20
+
+# Gerenciar tarefas
+obsidian tasks daily todo              # Listar todos da daily note
+obsidian tasks daily done              # Listar concluidos
+
+# Propriedades em batch
+obsidian property:set name="status" value="Done" file="Story-5.3"
+obsidian property:read name="status" file="Story-5.3"
+
+# Links de saida de uma nota
+obsidian links file="architecture"
+
+# Notas orfas (sem backlinks)
+obsidian orphans total
+
+# Links nao resolvidos
+obsidian unresolved total
+```
+
+## Quando Usar CLI vs Read Tool vs Bases
+
+| Necessidade | Usar CLI | Usar Read | Usar .base |
+|-------------|----------|-----------|------------|
+| Dashboard de stories por status | NAO | NAO | SIM — .base com filter + table view |
+| Ver conteudo de uma nota | NAO | SIM | NAO |
+| Buscar texto no vault | SIM | NAO | NAO |
+| Agrupar notas por propriedade | NAO | NAO | SIM — .base com groupBy |
+| Screenshot do app | SIM | NAO | NAO |
+| Debug de plugin | SIM | NAO | NAO |
+| Contar palavras | SIM | NAO | NAO |
+| Formulas sobre propriedades | NAO | NAO | SIM — .base com formulas |
+
 ## Limitacoes
 
 - CLI requer Obsidian aberto (desktop app rodando)
