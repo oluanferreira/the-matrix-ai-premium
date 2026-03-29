@@ -97,3 +97,7 @@ created: 2026-03-29
 | [[anthropic-pdf-skill\|Anthropic PDF]] | D (Reference) | ABSORB � skill oficial, 5 gaps preenchidos (tabelas, merge, OCR, criacao, decrypt) |
 
 | [[anthropic-pptx-skill\|Anthropic PPTX]] | D (Reference) | ABSORB � criacao de apresentacoes, 10 paletas, design system, QA visual |
+
+| extract-design-system | C (Tool) | SKIP � 1 star, 2 WARNs, dev-browser cobre. Sati confirmou. |
+
+| ui-ux-pro-max-skill | C (Tool) | ADAPT (dados only) � stars infladas, scam premium. Extrair 161 reasoning rules + 161 paletas + 57 fonts como referencia. NAO instalar CLI. Pendente: sessao dedicada para extracao. |
