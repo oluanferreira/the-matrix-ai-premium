@@ -219,7 +219,7 @@ flow-d:
 # ─────────────────────────────────────────────
 rules:
   parallelism: "Phases 1-2 may run in parallel via Agent tool when independent"
-  governance_gate: "Phase 3 (DECIDE) is ALWAYS Morpheus in main context — never delegated"
+  governance_gate: "Phase 4 (DECIDE) is ALWAYS Morpheus in main context — never delegated"
   constitution: "NOTHING is absorbed if it contradicts LMAS Constitution"
   duplication: "Equivalent features NAO significa equivalent tool — verificar modelo de execucao, benchmarks, arquitetura antes de SKIP"
   skill_activation: "CONSTITUTION_RULE_6 — ALL agent handoffs via Skill tool"
@@ -294,7 +294,70 @@ deep_analysis_mandate:
         - "Comparacao tecnica de APIs"
       output: "Relatorio avaliativo com feedback da comunidade e riscos"
 
-    sequence: "OBRIGATORIAMENTE sequencial. Phase 1 COMPLETA antes de Phase 2 iniciar."
+    sequence: "OBRIGATORIAMENTE sequencial. Phase 1 (Tecnico) → Phase 2 (Avaliativo) → Phase 3 (Domain Expert, condicional) → Phase 4 (DECIDE) → Phase 5 (IMPLEMENT) → Phase 6 (VERIFY) → REPORT."
+
+    phase_3_domain_expert:
+      description: "Review pelo especialista do dominio impactado. CONDICIONAL — so ativa quando o repo impacta um dominio/agente especifico."
+      trigger: "Repo claramente impacta um dominio (SEO, design, copy, database, brand, business, etc.)"
+      activation: "Via Skill do agente especialista do dominio"
+      scope:
+        - "O repo melhora MEU fluxo de trabalho atual? Como?"
+        - "O repo substitui algum workaround que eu uso hoje?"
+        - "O repo adiciona capacidade que eu NAO tinha?"
+        - "Quais dos MEUS comandos seriam impactados?"
+        - "Que NOVOS comandos eu deveria ganhar com essa skill?"
+        - "Meus workflows precisam de steps novos ou alterados?"
+        - "Meus artifacts de setor mudam?"
+      NOT_allowed:
+        - "Analise de arquitetura interna (escopo do Orion)"
+        - "Pesquisa de comunidade (escopo do Atlas)"
+      output: "Relatorio do domain expert com recomendacoes especificas para SEU dominio"
+      when_to_skip: "Repo generico sem dominio claro (ex: Obsidian markdown, PDF generico)"
+      examples:
+        - repo: "SEO tool" 
+          expert: "/LMAS:agents:seo"
+          why: "Cypher sabe quais audits faz hoje e o que falta"
+        - repo: "design system ref"
+          expert: "/LMAS:agents:ux-design-expert"
+          why: "Sati sabe os gaps de tokens e componentes"
+        - repo: "copywriting framework"
+          expert: "/LMAS:agents:copywriter"
+          why: "Mouse sabe quais frameworks ja usa"
+        - repo: "database tool"
+          expert: "/LMAS:agents:data-engineer"
+          why: "Tank sabe as limitacoes atuais de schema"
+        - repo: "brand methodology"
+          expert: "/LMAS:agents:kamala"
+          why: "Kamala sabe se complementa ou contradiz brand-dna"
+
+      # ROUTING TABLE: qual expert para qual flow
+      routing_by_flow:
+        flow_a:
+          note: "Orion JA E o domain expert de Claude Code — Phase 3 implicita na Phase 1"
+          skip: true
+        flow_b:
+          default_expert: "@architect"
+          condition: "Se repo muda padroes de orquestracao ou arquitetura de agentes"
+          fallback: "Morpheus decide se outro agente e mais relevante"
+        flow_c:
+          default_expert: "Agente que USARA a tool no dia-a-dia"
+          resolution: "Morpheus identifica o usuario primario da tool"
+          always: true
+          examples:
+            - "Browser tool → @dev"
+            - "SEO tool → @seo"
+            - "PDF/PPTX → @analyst + @pm"
+            - "Database tool → @data-engineer"
+            - "Design tool → @ux-design-expert"
+        flow_d:
+          default_expert: "Agente do dominio da referencia"
+          condition: "Se dominio claramente identificavel"
+          skip_when: "Referencia generica sem dominio claro (ex: Obsidian markdown)"
+          examples:
+            - "Ref de copy → @copywriter"
+            - "Ref de brand → @kamala"
+            - "Ref de business → @mifune"
+            - "Ref de design → @ux-design-expert"
     rationale: "Cada agente tem expertise distinta. Misturar = analise superficial."
 
   blocker_checks:
@@ -307,7 +370,88 @@ deep_analysis_mandate:
   anti_pattern: "NUNCA 'ja temos X -> SKIP' sem verificar COMO faz. Considerar OPTIMIZE antes de SKIP."
 
 # ─────────────────────────────────────────────
-# # OPTIMIZATION DETECTION
+# # POST-ABSORPTION INTEGRATION IMPACT ANALYSIS
+# Lesson: PDF skill (2026-03-29). Absorber NAO e suficiente.
+# A skill MUDA a forma de trabalhar dos agentes afetados.
+# Awareness e o minimo. Integration e o objetivo.
+post_absorption_impact:
+  mandate: "Apos ABSORB, executar IMPACT ANALYSIS completa: como a skill MUDA o trabalho dos agentes."
+  trigger: "Toda decisao ABSORB que introduz nova capacidade (lib, tool, skill, referencia acionavel)"
+  
+  # 7 dimensoes de impacto — todas devem ser avaliadas
+  dimensions:
+
+    1_new_commands:
+      question: "A skill justifica NOVOS COMANDOS em agentes existentes?"
+      examples:
+        - "PDF skill → @analyst ganha *extract-pdf-tables"
+        - "PDF skill → @pm ganha *export-prd-pdf"
+        - "dev-browser → @dev ganha *browser-test com script batching"
+      action: "Propor novos comandos via *modify agent {id}"
+      blocker: false
+
+    2_workflow_changes:
+      question: "Algum workflow existente precisa de STEPS NOVOS ou ALTERADOS?"
+      examples:
+        - "PDF skill → design handoff inclui PDF export como step"
+        - "PDF skill → release workflow inclui changelog PDF"
+        - "dev-browser → SDC Phase 3 usa dev-browser em vez de claude-in-chrome"
+      action: "Atualizar workflow-chains.yaml e/ou workflow YAML"
+      blocker: false
+
+    3_tool_substitutions:
+      question: "A skill SUBSTITUI uma forma antiga de fazer algo? Qual era o workaround?"
+      examples:
+        - "dev-browser substituiu claude-in-chrome para automacao"
+        - "pdfplumber substitui copia manual de texto de PDF"
+        - "defuddle substitui WebFetch para artigos/docs"
+      action: "Atualizar tool-examples.md marcando o novo padrao. Deprecar workaround antigo."
+      blocker: true
+
+    4_agent_definitions:
+      question: "As DEFINICOES dos agentes afetados precisam ser atualizadas? (tools, dependencies)"
+      examples:
+        - "@analyst → adicionar pdfplumber aos tools"
+        - "@pm → adicionar reportlab aos tools"
+        - "@dev → adicionar dev-browser aos tools (substituir browser)"
+      action: "Editar agent YAML em .lmas-core/development/agents/"
+      blocker: false
+
+    5_quality_gates:
+      question: "O Smith ou QA podem agora VERIFICAR algo que antes nao conseguiam?"
+      examples:
+        - "PDF skill → Smith pode verificar PDFs gerados (formatacao, conteudo)"
+        - "dev-browser → QA pode rodar testes browser com menos custo"
+      action: "Documentar nova capacidade de verificacao"
+      blocker: false
+
+    6_sector_artifacts:
+      question: "Novos ARTIFACTS ou HANDOFFS sao possiveis nos setores?"
+      examples:
+        - "PDF skill → design/4-asset-handoff pode incluir PDF spec"
+        - "PDF skill → marketing/4-copy pode exportar como PDF"
+      action: "Avaliar se sector-stages.yaml precisa de update"
+      blocker: false
+
+    7_synapse_awareness:
+      question: "Os agentes SABEM que a capacidade existe? SYNAPSE rule + tool-examples?"
+      action: "Adicionar SYNAPSE rule (global ou sector) + tool-examples.md"
+      blocker: true
+
+  execution: |
+    A impact analysis e executada por Morpheus (Phase 4 DECIDE, apos decisao ABSORB).
+    NAO e um passo separado — e parte integrante da decisao.
+    Para cada dimensao, Morpheus documenta: IMPACTA / NAO IMPACTA / A AVALIAR.
+    Dimensoes com blocker=true DEVEM ser resolvidas antes de considerar absorcao completa.
+    Dimensoes advisory sao registradas como proximos passos recomendados.
+
+  anti_pattern: |
+    NUNCA absorver e assumir que agentes sabem usar automaticamente.
+    NUNCA tratar absorcao como apenas "salvar referencia + SYNAPSE rule".
+    Absorcao MUDA a forma de trabalhar — avaliar todas as 7 dimensoes.
+    Awareness (saber que existe) e o MINIMO. Integration (mudar o fluxo) e o OBJETIVO.
+
+# # # OPTIMIZATION DETECTION
 # ─────────────────────────────────────────────
 optimization_triggers:
   description: |
@@ -345,3 +489,70 @@ optimization_triggers:
       question: "Does this pattern require an entirely new component (agent/squad/workflow)?"
       if_yes: "Create via *create {type} — last resort, prefer extending existing"
       example: "External framework has a capability none of our agents cover"
+
+# ─────────────────────────────────────────────
+# ABSORPTION REPORT (Phase Final — OBRIGATORIA)
+# ─────────────────────────────────────────────
+# Ao final de TODA absorcao, Morpheus apresenta um relatorio
+# consolidado ao usuario com TODAS as mudancas e impactos.
+absorption_report:
+  mandate: "Ao final de toda absorcao, apresentar Absorption Report ao usuario. NAO e opcional."
+  trigger: "Apos Phase 6 (VERIFY) ou apos Phase 4 (DECIDE) se skip de verify"
+  presenter: lmas-master
+
+  format: |
+    ## Absorption Report — {repo-name}
+
+    ### Classificacao
+    - Tipo: {A/B/C/D}
+    - Decisao: {ABSORB/ADAPT/SKIP/OPTIMIZE}
+
+    ### O que mudou na Matrix
+    | Area | Antes | Depois |
+    |------|-------|--------|
+    | {area} | {estado anterior} | {estado novo} |
+
+    ### Agentes impactados
+    | Agente | Impacto | Detalhe |
+    |--------|---------|---------|
+    | {agente} | {novo comando / workflow alterado / tool substituido} | {descricao} |
+
+    ### Arquivos criados/modificados
+    - {lista de arquivos com path completo}
+
+    ### SYNAPSE rules adicionadas
+    - {DOMAIN_RULE_N} = {texto}
+
+    ### Proximos passos recomendados
+    - [ ] {acao pendente que nao foi implementada agora}
+
+    ### Decisoes de SKIP (se houver)
+    - {o que foi avaliado e NAO absorvido, com justificativa}
+
+  sections:
+    classification:
+      required: true
+      content: "Tipo do repo + decisao tomada + justificativa"
+    changes:
+      required: true
+      content: "Tabela antes/depois de TUDO que mudou"
+    agents_impacted:
+      required: true
+      content: "Quais agentes foram afetados e COMO (novos comandos, workflows, tools)"
+    files:
+      required: true
+      content: "Lista completa de arquivos criados ou modificados"
+    synapse:
+      required: true
+      content: "Rules adicionadas ao SYNAPSE (constitution, global, sector, agent)"
+    next_steps:
+      required: true
+      content: "Acoes pendentes que ficaram como recomendacao (nao implementadas agora)"
+    skipped:
+      required: false
+      content: "O que foi avaliado e descartado (transparencia total)"
+
+  delivery: |
+    O report e apresentado como ULTIMA mensagem da absorcao, ANTES do commit/push.
+    Formato: markdown direto na conversa (nao salva em arquivo separado).
+    O usuario DEVE ver o report completo antes de aprovar commit.

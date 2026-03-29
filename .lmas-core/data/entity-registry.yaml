@@ -1,7 +1,7 @@
 metadata:
   version: 1.0.0
-  lastUpdated: '2026-03-28T18:56:27.182Z'
-  entityCount: 818
+  lastUpdated: '2026-03-29T16:43:51.119Z'
+  entityCount: 819
   checksumAlgorithm: sha256
   resolutionRate: 100
 entities:
@@ -13471,8 +13471,8 @@ entities:
         score: 0.3
         constraints: []
         extensionPoints: []
-      checksum: sha256:1562250a7cc66f91a3e3657d5dfffafd1e1eda25672fa49e1baeee278e15dcc5
-      lastVerified: '2026-03-28T18:56:27.173Z'
+      checksum: sha256:3d3c889d418ad222bc56a00169b628fb16184f95df4fc4c3e7ee9f6ce76b7d6e
+      lastVerified: '2026-03-28T23:16:03.686Z'
     pm:
       path: .lmas-core/development/agents/pm.md
       layer: L2
@@ -14272,8 +14272,8 @@ entities:
         score: 0.5
         constraints: []
         extensionPoints: []
-      checksum: sha256:20ebb65e182dfecc77e7f9b38065de9b09901ff772825dcb24f13ab5d99ad793
-      lastVerified: '2026-03-28T18:56:27.164Z'
+      checksum: sha256:cb0d1dc156d452a3016a978ccc20c0eb48bc3df78e6d263986fd2483fdfc0a62
+      lastVerified: '2026-03-28T23:16:03.682Z'
     entity-registry:
       path: .lmas-core/data/entity-registry.yaml
       layer: L3
@@ -14439,8 +14439,8 @@ entities:
         score: 0.5
         constraints: []
         extensionPoints: []
-      checksum: sha256:adb7ec828ee42af53e2565039750951abe83508cfa3ee642dc8e0aaf1ef63c79
-      lastVerified: '2026-03-19T11:22:24.337Z'
+      checksum: sha256:4d0caff05874fc7b6163151441084e660a5654ba9c6409e60c505f69da0b32ba
+      lastVerified: '2026-03-29T16:43:51.108Z'
     workflow-patterns:
       path: .lmas-core/data/workflow-patterns.yaml
       layer: L3
@@ -14892,8 +14892,8 @@ entities:
         score: 0.5
         constraints: []
         extensionPoints: []
-      checksum: sha256:80eee33b290fd8a322f0e7b610c0870401a377d6b30eb27cb6b32bc260a4fd74
-      lastVerified: '2026-03-28T18:56:27.161Z'
+      checksum: sha256:8adeeaf637d132d2722bb4599273a84309e1b050c5d9e44bd3e237c079acacce
+      lastVerified: '2026-03-28T23:16:03.679Z'
     squad-schema:
       path: .lmas-core/data/artifact-system/squad-schema.yaml
       layer: L3
@@ -15359,6 +15359,24 @@ entities:
         extensionPoints: []
       checksum: sha256:ae1590eecd63be89580180e84ee8809c8e5f4f34ed6c489349c6bfeb3cc95b8f
       lastVerified: '2026-03-19T11:22:24.470Z'
+    repo-absorption:
+      path: .lmas-core/development/workflows/repo-absorption.yaml
+      layer: L2
+      type: workflow
+      purpose: '|'
+      keywords:
+        - repo
+        - absorption
+        - repository
+        - workflow
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.4
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:57845284011100ce60c06b76a71a70f15fc8a1f9afc5dc3f49330e974c0cc15b
+      lastVerified: '2026-03-29T16:43:51.113Z'
   utils:
     output-formatter:
       path: .lmas-core/core/utils/output-formatter.js

@@ -238,3 +238,7 @@ tags:
 | [[obsidian-bases-spec]] | Kepano | Database views (.base files) |
 | [[json-canvas-spec]] | Kepano | Canvas file format (.canvas) |
 | [[defuddle-reference]] | Kepano | Web content extraction (token-efficient) |
+
+| [[anthropic-pdf-skill]] | Anthropic (oficial) | PDF processing: tabelas, merge, OCR, criacao |
+
+| [[anthropic-pptx-skill]] | Anthropic (oficial) | PPTX: criar/ler apresentacoes, 10 paletas, design system |

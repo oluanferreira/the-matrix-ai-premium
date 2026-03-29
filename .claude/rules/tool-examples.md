@@ -67,6 +67,22 @@ Use for ALL browser automation. Script-based, persistent state, sandbox WASM. Su
 - **Conectar ao Chrome existente:** `dev-browser --connect <<'EOF' ... EOF`
 - **Tips:** Usar `--timeout 10` para fail fast. Named pages persistem entre scripts. `--headless` para automacao sem janela.
 
+### pdf-processing — PDF Manipulation (Python)
+Use for extracting tables, merging, splitting, creating PDFs, and OCR. Libs instaladas globalmente.
+- **Extrair tabelas:** `python -c "import pdfplumber; pdf=pdfplumber.open('file.pdf'); t=pdf.pages[0].extract_table(); print(t)"`
+- **Extrair texto:** `python -c "import pdfplumber; pdf=pdfplumber.open('file.pdf'); print(pdf.pages[0].extract_text())"`
+- **Merge PDFs:** `python -c "from pypdf import PdfMerger; m=PdfMerger(); m.append('a.pdf'); m.append('b.pdf'); m.write('merged.pdf')"`
+- **Split PDF:** `python -c "from pypdf import PdfReader,PdfWriter; r=PdfReader('file.pdf'); [PdfWriter().add_page(r.pages[i]) or PdfWriter().write(f'page_{i}.pdf') for i in range(len(r.pages))]"`
+- **OCR (scanned):** `python -c "from pdf2image import convert_from_path; import pytesseract; [print(pytesseract.image_to_string(img)) for img in convert_from_path('scan.pdf')]"`
+- **Criar PDF:** Use reportlab (Canvas ou Platypus). Ref: `framework/references/anthropic-pdf-skill.md`
+
+### pptx-processing — PowerPoint Presentations
+Use for creating, reading, and editing PowerPoint files. Design system com 10 paletas anti-AI-slop.
+- **Ler PPTX:** `python -m markitdown presentation.pptx`
+- **Criar slide (Node.js):** `node -e "const P=require('pptxgenjs');const p=new P();const s=p.addSlide();s.addText('Title',{x:0.5,y:0.5,fontSize:36,bold:true});p.writeFile({fileName:'output.pptx'})"`
+- **Verificar placeholders:** `python -m markitdown output.pptx | grep -iE "xxxx|lorem|ipsum"`
+- **Design:** 10 paletas curadas. 1 cor domina (60-70%). Body 14-16pt, titles 36-44pt. NUNCA slides só texto.
+
 ### supabase — Database Operations
 Use for migrations and database management.
 - **Apply migrations:** `supabase db push`
