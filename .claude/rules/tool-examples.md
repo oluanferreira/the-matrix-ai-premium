@@ -27,10 +27,45 @@ Use before commits and PRs for quality validation. Runs in WSL.
 - **Pre-commit:** `wsl bash -c 'cd /mnt/c/.../lmas-core && ~/.local/bin/coderabbit --prompt-only -t uncommitted'`
 - **Pre-PR:** `wsl bash -c 'cd /mnt/c/.../lmas-core && ~/.local/bin/coderabbit --prompt-only --base main'`
 
-### browser — Web Testing
-Use for UI validation, console checks, and web interaction.
-- **Navigate:** Open `http://localhost:3000` to inspect the running app
-- **Console check:** Navigate to a page and check for JavaScript errors/warnings
+### dev-browser — Browser Automation (PADRAO)
+Use for ALL browser automation. Script-based, persistent state, sandbox WASM. Substitui claude-in-chrome para automacao.
+- **Navegar e inspecionar:**
+  ```bash
+  dev-browser <<'EOF'
+  const page = await browser.getPage("main");
+  await page.goto("https://example.com");
+  console.log(JSON.stringify({ url: page.url(), title: await page.title() }));
+  EOF
+  ```
+- **ARIA snapshot (descoberta de elementos — preferir sobre screenshots):**
+  ```bash
+  dev-browser <<'EOF'
+  const page = await browser.getPage("main");
+  const snap = await page.snapshotForAI();
+  console.log(snap.full);
+  EOF
+  ```
+- **Interagir (click, fill, form):**
+  ```bash
+  dev-browser <<'EOF'
+  const page = await browser.getPage("login");
+  await page.fill("#email", "user@example.com");
+  await page.fill("#password", "pass");
+  await page.click("button[type=submit]");
+  await page.waitForURL("**/dashboard");
+  console.log("Login OK:", page.url());
+  EOF
+  ```
+- **Screenshot:**
+  ```bash
+  dev-browser <<'EOF'
+  const page = await browser.getPage("main");
+  const path = await saveScreenshot(await page.screenshot(), "debug.png");
+  console.log(path);
+  EOF
+  ```
+- **Conectar ao Chrome existente:** `dev-browser --connect <<'EOF' ... EOF`
+- **Tips:** Usar `--timeout 10` para fail fast. Named pages persistem entre scripts. `--headless` para automacao sem janela.
 
 ### supabase — Database Operations
 Use for migrations and database management.
@@ -57,6 +92,20 @@ Use for dependency graphs and circular dependency detection.
 Use for managing Docker-based MCP servers. `@devops` manages infrastructure.
 - **Health check:** `curl http://localhost:8080/health`
 - **List servers:** `docker mcp server ls`
+
+### defuddle — Web Content Extraction
+Use for extracting clean markdown from web pages with minimal tokens. Preferred over WebFetch for articles, docs, and blog posts.
+- **Extract article:** `npx -y defuddle parse https://example.com/article --md`
+- **Save to file:** `npx -y defuddle parse https://example.com/doc --md -o content.md`
+- **Get metadata:** `npx -y defuddle parse https://example.com -p title`
+- **Pre-process for *absorb:** `npx -y defuddle parse <url> --md` then analyze clean output
+
+### obsidian-rest-api — Vault Operations
+Use for reading, writing, and searching the Obsidian vault. Requires Obsidian app running.
+- **Read note:** `curl -s -k -H "Authorization: Bearer $OBSIDIAN_API_KEY" https://localhost:27124/vault/path/to/note.md`
+- **Create note:** `curl -s -k -X PUT -H "Authorization: Bearer $OBSIDIAN_API_KEY" -H "Content-Type: text/markdown" --data-binary @- https://localhost:27124/vault/path/to/note.md`
+- **Search:** `curl -s -k -H "Authorization: Bearer $OBSIDIAN_API_KEY" "https://localhost:27124/search/simple/?query=keyword"`
+- **List dir:** `curl -s -k -H "Authorization: Bearer $OBSIDIAN_API_KEY" https://localhost:27124/vault/framework/`
 
 ## Reference
 

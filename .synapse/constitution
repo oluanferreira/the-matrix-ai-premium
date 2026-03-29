@@ -7,3 +7,4 @@ CONSTITUTION_RULE_2=No Invention: Todo statement em specs deve rastrear para req
 CONSTITUTION_RULE_3=Quality First: Findings CRITICAL e HIGH do Smith BLOQUEIAM entrega. Sem excecao.
 CONSTITUTION_RULE_4=Artifact Completeness: Artefato com campos required vazios NAO pode ser consumido por handoff.
 CONSTITUTION_RULE_5=Bridge Validation: Handoff cross-setor so acontece com bridge contract validated.
+CONSTITUTION_RULE_6=Skill Activation: Todo agente DEVE ser ativado pela sua Skill (/LMAS:agents:{id} ou /squad:agents:{id}). NENHUM agente pode simular, assumir ou executar funcoes de outro agente. Handoffs entre agentes OBRIGAM ativacao via Skill tool. Violacao = finding CRITICAL.

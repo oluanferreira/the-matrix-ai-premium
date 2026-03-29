@@ -605,3 +605,32 @@ deploy-pipeline:
         agent: "@social-media-manager"
         command: "*publish"
         output: "Video published to platform"
+
+  # Repository Absorption Pipeline — Framework Evolution
+  - id: repo-absorption
+    name: Repository Absorption Pipeline
+    description: Analyze external repos and absorb beneficial patterns into THE MATRIX (4 type-specific flows)
+    chain:
+      - step: 1
+        agent: "@lmas-master"
+        command: "*absorb"
+        output: "Repo classified (Type A/B/C/D) + scan agent selected"
+      - step: 2
+        agent: "@claude-code-mastery:claude-mastery-chief OR @analyst"
+        command: "*diagnose OR *research"
+        output: "Scan report + gap analysis"
+        note: "Type A/C → Orion. Type B/D → Analyst."
+      - step: 3
+        agent: "@lmas-master"
+        command: "*absorb (DECIDE phase)"
+        output: "Absorption plan (ABSORB/ADAPT/SKIP/OPTIMIZE per pattern)"
+        note: "Governance gate — Morpheus only, never delegated"
+      - step: 4
+        agent: "@dev"
+        command: "*develop (IMPLEMENT phase)"
+        output: "Files created/modified (vault via Obsidian API, rules via Edit)"
+      - step: 5
+        agent: "@smith"
+        command: "*verify"
+        output: "Smith verdict (COMPROMISED/INFECTED/CONTAINED/CLEAN)"
+        note: "CRITICAL/HIGH findings BLOCK absorption"

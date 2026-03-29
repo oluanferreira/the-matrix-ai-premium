@@ -24,6 +24,42 @@ Alias sugerido no bash:
 alias obs='"/c/Users/luanf/AppData/Local/Programs/Obsidian/Obsidian.exe"'
 ```
 
+## REST API (Preferencial)
+
+A Local REST API roda na porta 27124 quando Obsidian esta aberto:
+```bash
+curl -s -k -H "Authorization: Bearer $OBSIDIAN_API_KEY" https://localhost:27124/<endpoint>
+```
+
+API Key persistida em `~/.bashrc` como `OBSIDIAN_API_KEY`.
+
+## Resolucao de Arquivos (Kepano Spec)
+
+| Parametro | Resolucao | Exemplo |
+|-----------|-----------|---------|
+| `file=<name>` | Wikilink-style (sem path, sem extensao) | `file="My Note"` |
+| `path=<path>` | Path exato a partir da raiz do vault | `path="folder/note.md"` |
+| `vault=<name>` | Vault especifico (default: ultimo focado) | `vault="MINHA MATRIX"` |
+
+Sem parametro de arquivo, comandos operam no arquivo ativo.
+
+## Flags Uteis
+
+| Flag | Efeito |
+|------|--------|
+| `--copy` | Copia resultado para clipboard |
+| `silent` | Nao abre o arquivo apos criar/modificar |
+| `overwrite` | Sobrescreve se ja existir |
+| `total` | Mostra apenas contagem (para listas) |
+| `template="X"` | Usa template do Obsidian ao criar |
+
+## Conteudo Multiline
+
+Para conteudo com multiplas linhas, use `\n` para quebras e `\t` para tabs:
+```bash
+obs create name="Note" content="# Title\n\nParagraph 1\n\n- Item 1\n- Item 2"
+```
+
 ## Quando Usar CLI vs Read Tool
 
 | Necessidade | Usar CLI | Usar Read Tool |
