@@ -40,27 +40,50 @@ function main() {
     const lmasDir = path.join(projectDir, '.lmas');
     const sessionMarker = path.join(lmasDir, '.ctx-session');
 
-    // Only inject once per session (check by PID-based marker)
+    // LMAS-1.1: Check if heartbeat should re-fire (> 1 hour since last)
+    const heartbeatFile = path.join(lmasDir, '.last-heartbeat');
+    let shouldPingHeartbeat = true;
+
+    // Context injection: only once per PID
     const ppid = `${process.ppid}`;
+    let isNewSession = true;
     try {
       if (fs.existsSync(sessionMarker)) {
         const existing = fs.readFileSync(sessionMarker, 'utf8').trim();
-        if (existing === ppid) return;
+        if (existing === ppid) isNewSession = false;
       }
     } catch { /* proceed */ }
+
+    // Check heartbeat age (independent of session)
+    try {
+      if (fs.existsSync(heartbeatFile)) {
+        const lastHeartbeat = parseInt(fs.readFileSync(heartbeatFile, 'utf8').trim(), 10);
+        if (Date.now() - lastHeartbeat < 60 * 60 * 1000) shouldPingHeartbeat = false; // < 1h
+      }
+    } catch { /* proceed — ping */ }
+
+    // If same PID and no heartbeat needed, skip entirely
+    if (!isNewSession && !shouldPingHeartbeat) return;
 
     // Mark session as injected + generate unified session_id (F-8)
     try {
       if (!fs.existsSync(lmasDir)) fs.mkdirSync(lmasDir, { recursive: true });
-      fs.writeFileSync(sessionMarker, ppid);
-
-      // Generate and persist unified session_id for all hooks
-      const sessionId = `${ppid}-${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`;
-      fs.writeFileSync(path.join(lmasDir, '.session-id'), sessionId);
+      if (isNewSession) {
+        fs.writeFileSync(sessionMarker, ppid);
+        // Generate and persist unified session_id for all hooks
+        const sessionId = `${ppid}-${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`;
+        fs.writeFileSync(path.join(lmasDir, '.session-id'), sessionId);
+      }
     } catch { /* proceed anyway */ }
 
-    // Fire-and-forget session_start telemetry
-    pingSessionStart(projectDir);
+    // Fire heartbeat if needed (new session OR > 1h since last)
+    if (shouldPingHeartbeat) {
+      pingSessionStart(projectDir);
+      try { fs.writeFileSync(heartbeatFile, String(Date.now())); } catch { /* skip */ }
+    }
+
+    // Context injection only on new session
+    if (!isNewSession) return;
 
     // Detect multi-project mode
     const projectsDir = path.join(projectDir, 'projects');

@@ -31,7 +31,7 @@ const crypto = require('crypto');
 const https = require('https');
 
 // Use shared token reader (F-7)
-const { readTokenCache, getSessionId } = require('./lib/token-reader.cjs');
+const { readTokenCache, getSessionId, appendErrorLog } = require('./lib/token-reader.cjs');
 
 const PROJECT_ROOT = path.resolve(__dirname, '..', '..');
 const LMAS_DIR = path.join(PROJECT_ROOT, '.lmas');
@@ -40,7 +40,7 @@ const ANALYTICS_DIR = path.join(LMAS_DIR, 'analytics');
 const USAGE_LOG = path.join(ANALYTICS_DIR, 'skill-usage.jsonl');
 const ACTIVITY_BUFFER = path.join(LMAS_DIR, '.activity-buffer.json');
 const MAX_LOG_SIZE = 10 * 1024 * 1024; // 10MB
-const FLUSH_EVERY_N = 3; // G-3: reduced from 5 to 3
+const FLUSH_EVERY_N = 1; // LMAS-1.1: flush every prompt (was 3)
 const FLUSH_AGE_MS = 2 * 60 * 1000; // G-3: flush if buffer age > 2min
 const API_BASE_URL = process.env.MATRIX_API_URL || 'https://qaomekspdjfbdeixxjky.supabase.co/functions/v1';
 
@@ -138,7 +138,10 @@ function bufferActivity(intelligence) {
     // Read token
     const tokenPath = path.join(LMAS_DIR, 'token-cache.json');
     const cached = readTokenCache(tokenPath);
-    if (!cached) return;
+    if (!cached) {
+      appendErrorLog(LMAS_DIR, 'session-tracker', 'Token not found or decryption failed');
+      return;
+    }
 
     // Read or create buffer
     let buffer = { events: [], session_id: null, count: 0, created_at: null };
@@ -178,8 +181,17 @@ function bufferActivity(intelligence) {
     const shouldFlush = buffer.count >= FLUSH_EVERY_N || bufferAge >= FLUSH_AGE_MS;
 
     if (shouldFlush && buffer.events.length > 0) {
-      flushBuffer(buffer, cached);
-      buffer = { events: [], session_id: buffer.session_id, count: 0, created_at: null };
+      // LMAS-1.1: flush but do NOT clear buffer yet — cleared only on API success
+      flushBuffer(buffer, cached, () => {
+        // API confirmed — safe to clear buffer
+        try {
+          const cleared = { events: [], session_id: buffer.session_id, count: 0, created_at: null };
+          fs.writeFileSync(ACTIVITY_BUFFER, JSON.stringify(cleared));
+        } catch { /* silent */ }
+      });
+      // Write current buffer as-is (retry on next prompt if API failed)
+      fs.writeFileSync(ACTIVITY_BUFFER, JSON.stringify(buffer));
+      return;
     }
 
     fs.writeFileSync(ACTIVITY_BUFFER, JSON.stringify(buffer));
@@ -187,9 +199,10 @@ function bufferActivity(intelligence) {
 }
 
 /**
- * Fire-and-forget POST buffered events to Supabase.
+ * POST buffered events to Supabase. Calls onSuccess only if API responds with { ok: true }.
+ * LMAS-1.1: verify response before clearing buffer.
  */
-function flushBuffer(buffer, cached) {
+function flushBuffer(buffer, cached, onSuccess) {
   try {
     const body = JSON.stringify({
       token: cached.token,
@@ -206,9 +219,33 @@ function flushBuffer(buffer, cached) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
       timeout: 5000,
-    }, () => {});
-    req.on('error', () => {});
-    req.on('timeout', () => req.destroy());
+    }, (res) => {
+      let data = '';
+      res.on('data', (chunk) => { data += chunk; });
+      res.on('end', () => {
+        try {
+          const result = JSON.parse(data);
+          if (result.ok || res.statusCode === 200) {
+            if (onSuccess) onSuccess();
+          } else {
+            appendErrorLog(LMAS_DIR, 'session-tracker', `API rejected: ${res.statusCode} ${data.slice(0, 200)}`);
+          }
+        } catch {
+          if (res.statusCode === 200 || res.statusCode === 201) {
+            if (onSuccess) onSuccess();
+          } else {
+            appendErrorLog(LMAS_DIR, 'session-tracker', `API error: ${res.statusCode}`);
+          }
+        }
+      });
+    });
+    req.on('error', (err) => {
+      appendErrorLog(LMAS_DIR, 'session-tracker', `Network error: ${err.message}`);
+    });
+    req.on('timeout', () => {
+      appendErrorLog(LMAS_DIR, 'session-tracker', 'Request timeout (5s)');
+      req.destroy();
+    });
     req.write(body);
     req.end();
   } catch { /* silent */ }

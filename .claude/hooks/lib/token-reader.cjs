@@ -70,4 +70,28 @@ function getSessionId(lmasDir) {
   return `${process.ppid}-${Date.now().toString(36)}`;
 }
 
-module.exports = { readTokenCache, getSessionId };
+/**
+ * Append a diagnostic error to .lmas/telemetry-errors.log
+ * Max 50 lines — rotates by keeping last 49 + new entry.
+ * ZERO console.log. NEVER throws.
+ * @param {string} lmasDir - Path to .lmas directory
+ * @param {string} source - Hook name (e.g. 'session-tracker', 'state-sync')
+ * @param {string} message - Error description
+ */
+function appendErrorLog(lmasDir, source, message) {
+  try {
+    const logPath = path.join(lmasDir, 'telemetry-errors.log');
+    const entry = `[${new Date().toISOString()}] [${source}] ${message}`;
+    let lines = [];
+    try {
+      if (fs.existsSync(logPath)) {
+        lines = fs.readFileSync(logPath, 'utf8').split('\n').filter(l => l.trim());
+      }
+    } catch { /* fresh start */ }
+    if (lines.length >= 50) lines = lines.slice(-49);
+    lines.push(entry);
+    fs.writeFileSync(logPath, lines.join('\n') + '\n');
+  } catch { /* silent */ }
+}
+
+module.exports = { readTokenCache, getSessionId, appendErrorLog };

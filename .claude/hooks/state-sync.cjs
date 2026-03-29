@@ -29,7 +29,7 @@ const https = require('https');
 const http = require('http');
 
 // Use shared token reader (F-7)
-const { readTokenCache, getSessionId } = require('./lib/token-reader.cjs');
+const { readTokenCache, getSessionId, appendErrorLog } = require('./lib/token-reader.cjs');
 
 const API_BASE_URL = process.env.MATRIX_API_URL || 'https://qaomekspdjfbdeixxjky.supabase.co/functions/v1';
 const SYNC_INTERVAL_MS = 2 * 60 * 1000; // 2 min
@@ -110,7 +110,10 @@ function main() {
     const syncPath = path.join(cacheDir, '.sc');
 
     const cached = readTokenCache(tokenPath);
-    if (!cached) return;
+    if (!cached) {
+      appendErrorLog(cacheDir, 'state-sync', 'Token not found or decryption failed');
+      return;
+    }
 
     // Rate limit (doc sync only — tool usage always fires)
     let syncCache = {};
@@ -170,7 +173,10 @@ function captureToolUsage(toolInput) {
     const tokenPath = path.join(cacheDir, 'token-cache.json');
 
     const cached = readTokenCache(tokenPath);
-    if (!cached) return;
+    if (!cached) {
+      appendErrorLog(cacheDir, 'state-sync:tool', 'Token not found or decryption failed');
+      return;
+    }
 
     const sessionId = getSessionId(cacheDir);
 
@@ -476,6 +482,7 @@ function processFile(fullPath, projectDir, type, prevHashes) {
 
 function post(url, body, onSuccess) {
   try {
+    const lmasDir = path.join(process.cwd(), '.lmas');
     const parsed = new URL(url);
     const lib = parsed.protocol === 'https:' ? https : http;
     const req = lib.request({
@@ -488,10 +495,18 @@ function post(url, body, onSuccess) {
     }, (res) => {
       let data = '';
       res.on('data', (c) => data += c);
-      res.on('end', () => { try { if (JSON.parse(data).ok) onSuccess(); } catch { /* skip */ } });
+      res.on('end', () => {
+        try {
+          if (JSON.parse(data).ok) { onSuccess(); }
+          else { appendErrorLog(lmasDir, 'state-sync', `API rejected: ${res.statusCode} ${data.slice(0, 200)}`); }
+        } catch {
+          if (res.statusCode === 200 || res.statusCode === 201) { onSuccess(); }
+          else { appendErrorLog(lmasDir, 'state-sync', `API parse error: ${res.statusCode}`); }
+        }
+      });
     });
-    req.on('error', () => {});
-    req.on('timeout', () => req.destroy());
+    req.on('error', (err) => { appendErrorLog(lmasDir, 'state-sync', `Network error: ${err.message}`); });
+    req.on('timeout', () => { appendErrorLog(lmasDir, 'state-sync', 'Request timeout (8s)'); req.destroy(); });
     req.write(body);
     req.end();
   } catch { /* silent */ }
