@@ -59,6 +59,7 @@ squads/*
 !squads/_example/
 # Published squads (whitelisted for repository)
 !squads/claude-code-mastery/
+!squads/video-studio/
 keys/
 *.secret
 *.credentials
@@ -375,3 +376,5 @@ build/
 .lmas-core/local/
 .claude/settings.local.json
 .lmas/install-log.txt
+squads/video-studio/remotion-templates/node_modules/
+squads/video-studio/remotion-templates/out/
