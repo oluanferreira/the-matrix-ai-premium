@@ -1,6 +1,6 @@
 metadata:
   version: 1.0.0
-  lastUpdated: '2026-03-29T16:43:51.119Z'
+  lastUpdated: '2026-03-29T18:15:29.270Z'
   entityCount: 819
   checksumAlgorithm: sha256
   resolutionRate: 100
@@ -15375,8 +15375,8 @@ entities:
         score: 0.4
         constraints: []
         extensionPoints: []
-      checksum: sha256:57845284011100ce60c06b76a71a70f15fc8a1f9afc5dc3f49330e974c0cc15b
-      lastVerified: '2026-03-29T16:43:51.113Z'
+      checksum: sha256:de5140b333b51ee3bca4670d04b92e46bf3f1a3551b8a37e40284fffcf7ada3a
+      lastVerified: '2026-03-29T18:15:29.262Z'
   utils:
     output-formatter:
       path: .lmas-core/core/utils/output-formatter.js
