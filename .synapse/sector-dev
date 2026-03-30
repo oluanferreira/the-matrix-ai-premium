@@ -8,3 +8,4 @@ SECTOR_DEV_RULE_3=Todo phase-artifact dev DEVE ter rollback plan quando envolver
 SECTOR_DEV_RULE_4=Se design/4-asset-handoff existe, ler integration_points para mapear tokens → codigo.
 SECTOR_DEV_RULE_5=Decisoes arquiteturais DEVEM linkar para ADR (decisions[].adr_ref).
 SECTOR_DEV_RULE_6=SDC: story → validate → implement → QA. Nao pular fases. Nao committar sem QA.
+SECTOR_DEV_RULE_7=Supabase Postgres: Em RLS policies, SEMPRE usar (select auth.uid()) em vez de auth.uid() direto (100x+ mais rapido). SEMPRE indexar colunas de FK. Consultar framework/references/supabase-postgres/ por prefixo (query-*, security-*, schema-*, etc) ON-DEMAND. NUNCA carregar todos 31 files de uma vez. Ref: supabase-postgres-best-practices v1.1.0 (MIT, Supabase oficial).

@@ -134,20 +134,46 @@ agent:
     3. Check if Paper is responding (get_basic_info)
     4. Default: text mode
 
-    21ST.DEV COMPONENT LIBRARY INTEGRATION:
-    When 21st.dev Magic MCP is available (mcp__magic__* tools exist):
+    21ST.DEV COMPONENT LIBRARY INTEGRATION (LIBRARY-FIRST):
 
-    - *build {component} → FIRST call component_inspiration for similar components,
-      then use best match as reference/base, adapt to project tokens
-    - *landing {type} → call component_inspiration for each section (hero, features,
-      pricing, CTA), compose from 21st.dev references
-    - *wireframe → call component_inspiration for layout patterns as reference
-    - Logo needed → call logo_search for SVG/TSX
+    SATI USA:
+    - component_inspiration → buscar referencias visuais da library (0 tokens)
+    - logo_search → referencias de logos para specs de brand/identity
+    - Library browse (via inspiration) → 1.100+ componentes para spec
+
+    SATI NAO USA (DELEGA AO @dev):
+    - component_builder → @dev instala e adapta (implementacao)
+    - component_refiner → @dev melhora codigo existente
+
+    WORKFLOW LIBRARY-FIRST:
+
+    *wireframe → component_inspiration para cada secao
+      → Selecionar componentes da library como base visual
+      → Wireframe referencia componentes reais (nao abstratos)
+
+    *build {component} → component_inspiration PRIMEIRO
+      → Se library tem similar → SPEC referenciando componente + adaptacoes
+      → Handoff para @dev: "instalar via CLI + adaptar tokens"
+      → Se library NAO tem → build spec manual como antes
+
+    *landing {type} → component_inspiration por SECAO
+      → Hero: buscar na categoria hero (284 opcoes)
+      → Features: buscar na categoria features (36 opcoes)
+      → Pricing: buscar na categoria pricing (17 opcoes)
+      → CTA: buscar na categoria call-to-action
+      → Footer: buscar na categoria footer (14 opcoes)
+      → Compor spec completo referenciando componentes reais
+      → Handoff para @dev: instalar todos via CLI + adaptar
+
+    *audit → Comparar componentes do projeto com library
+      → "Voce tem X buttons customizados. Library tem 250 testados."
+
+    Logo needed → call logo_search for SVG/TSX
 
     When 21st.dev NOT available:
     - Build from scratch (current behavior, fully backward compatible)
     - On FIRST *build per session, suggest once:
-      "💡 Com 21st.dev Magic, Sati busca milhares de componentes prontos. Use `*21st setup` para ativar."
+      "Com 21st.dev Magic, Sati busca 1.100+ componentes prontos. Use *21st setup para ativar."
 
     COMMAND-TO-TASK MAPPING (TOKEN OPTIMIZATION):
     Use DIRECT Read() with exact paths. NO Search/Grep.
@@ -419,6 +445,23 @@ dependencies:
       - ux/sub-skills/chart-colors.csv
       - ux/sub-skills/landing-patterns.csv
       - ux/sub-skills/landing-principles.csv
+    industry_data:
+      # Source: ui-ux-pro-max (ADAPT — data only, MIT license)
+      # Path: framework/references/ui-ux-industry-data/
+      - ui-ux-industry-data/colors.csv          # 161 product-type palettes (full shadcn tokens)
+      - ui-ux-industry-data/typography.csv       # 74 font pairings with CSS/Tailwind
+      - ui-ux-industry-data/ui-reasoning.csv     # 162 decision rules by product type
+      - ui-ux-industry-data/styles.csv           # 85 UI styles with AI prompts + checklists
+      - ui-ux-industry-data/products.csv         # 162 product→style/color/landing router
+      - ui-ux-industry-data/landing.csv          # 35 landing patterns with conversion tips
+      - ui-ux-industry-data/ux-guidelines.csv    # 99 UX do/don't rules
+      - ui-ux-industry-data/app-interface.csv    # 30 mobile accessibility rules
+      - ui-ux-industry-data/charts.csv           # 26 chart type selection guide
+      - ui-ux-industry-data/icons.csv            # 105 Phosphor icons catalog
+      - ui-ux-industry-data/react-performance.csv # 45 React/Next.js performance patterns
+      - ui-ux-industry-data/stacks/react.csv     # 54 React best practices
+      - ui-ux-industry-data/stacks/nextjs.csv    # 53 Next.js guidelines
+      - ui-ux-industry-data/stacks/shadcn.csv    # 61 shadcn/ui guidelines
     scripts:
       - ux/scripts/core.py
       - ux/scripts/search.py

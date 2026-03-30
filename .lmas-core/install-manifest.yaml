@@ -8,7 +8,7 @@
 # - File types for categorization
 #
 version: 1.3.2
-generated_at: "2026-03-29T21:19:16.953Z"
+generated_at: "2026-03-30T18:35:21.763Z"
 generator: scripts/generate-install-manifest.js
 file_count: 1206
 files:
@@ -1549,13 +1549,13 @@ files:
     type: agent
     size: 20841
   - path: development/agents/ux-design-expert.md
-    hash: sha256:d500c21b9ad4f46d60d6fe435e997f9453e66db783ceafb260d56551ebb337f4
+    hash: sha256:1f109e2a243510bacca7bc77d260076325f72d309ecabb55be0ee54046ba888e
     type: agent
-    size: 30487
+    size: 32826
   - path: development/agents/ux/MEMORY.md
-    hash: sha256:fbc06a2da962093f9069ace7e75ec85ffc4c8c0ec74beeac03595af11bba2cde
+    hash: sha256:0672469e7e3926bc1151ce76614697058df3761e8d6ed06e5038245753e8fcb9
     type: agent
-    size: 1073
+    size: 2925
   - path: development/checklists/accessibility-wcag-checklist.md
     hash: sha256:f43cbe8c5fbed77fd724a04048c00929a2bc7dde52af24b3f2b1a09b89d1f1c5
     type: checklist

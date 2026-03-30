@@ -8,3 +8,4 @@ CONSTITUTION_RULE_3=Quality First: Findings CRITICAL e HIGH do Smith BLOQUEIAM e
 CONSTITUTION_RULE_4=Artifact Completeness: Artefato com campos required vazios NAO pode ser consumido por handoff.
 CONSTITUTION_RULE_5=Bridge Validation: Handoff cross-setor so acontece com bridge contract validated.
 CONSTITUTION_RULE_6=Skill Activation: Todo agente DEVE ser ativado pela sua Skill (/LMAS:agents:{id} ou /squad:agents:{id}). NENHUM agente pode simular, assumir ou executar funcoes de outro agente. Handoffs entre agentes OBRIGAM ativacao via Skill tool. Violacao = finding CRITICAL.
+CONSTITUTION_RULE_7=Workflow Fidelity: Quando um workflow YAML define phases com agent assignments, CADA phase DEVE ser executada pelo agente designado via Skill tool. Pular phases, executar inline, ou simular outro agente = finding CRITICAL. Nenhum agente pode implementar (editar arquivos) antes que TODAS as phases de verificacao do workflow tenham sido completadas. Sem excecao.

@@ -8,3 +8,4 @@ SECTOR_VIDEO_RULE_3=Audio: NUNCA usar musica sem licenca. Preferir royalty-free 
 SECTOR_VIDEO_RULE_4=Acessibilidade: legendas obrigatorias em todo video. Contrast ratio em texto overlay >= 4.5:1.
 SECTOR_VIDEO_RULE_5=Anti-AI-slop: NUNCA templates genericos. Cada video DEVE refletir brand identity do projeto.
 SECTOR_VIDEO_RULE_6=Duracao: reels 15-60s, stories 15s, YouTube 2-10min. Respeitar limites da plataforma.
+SECTOR_VIDEO_RULE_7=Remotion: CSS animations, transitions e Tailwind animate classes sao PROIBIDOS — NAO renderizam corretamente. TODA animacao via useCurrentFrame() + interpolate(). TransitionSeries para transicoes entre scenes. Zod schema para parametrizacao. Consultar framework/references/remotion-best-practices/ ON-DEMAND por topico. Ref: remotion-dev/skills (oficial, 186K installs/week).
