@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
     await supabase.from('matrix_install_logs').insert({
       user_id: tokenData.user_id,
       token_id: tokenData.id,
-      plan: 'premium',
+      plan: (tokenData.matrix_users as any)?.plan || 'free',
       project_name: project_name || null,
       os: os || null,
       node_version: node_version || null,
@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
       JSON.stringify({
         valid: true,
         user: { name: user.name, email: user.email },
-        plan: 'premium',
+        plan: user?.plan || 'free',
         expires_at: tokenData.expires_at,
         days_remaining: daysRemaining,
       }),

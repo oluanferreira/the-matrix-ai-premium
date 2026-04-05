@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
 
     const { data, error } = await supabase
       .from('matrix_tokens')
-      .select('id, user_id, expires_at, revoked')
+      .select('id, user_id, expires_at, revoked, matrix_users(plan)')
       .eq('token', token)
       .single()
 
@@ -50,7 +50,7 @@ Deno.serve(async (req) => {
     await supabase.from('matrix_install_logs').insert({
       user_id: data.user_id,
       token_id: data.id,
-      plan: 'premium',
+      plan: (data.matrix_users as any)?.plan || 'free',
       project_name: project_name || null,
       event: shouldPurge ? 'purge' : 'heartbeat',
       ip_address: ip,
