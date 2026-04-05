@@ -5,8 +5,9 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
   const tab = req.nextUrl.searchParams.get('tab') || 'sessions'
-  const page = parseInt(req.nextUrl.searchParams.get('page') || '1')
-  const range = req.nextUrl.searchParams.get('range') || '7d'
+  const page = Math.max(1, parseInt(req.nextUrl.searchParams.get('page') || '1') || 1)
+  const range = ['1d', '7d', '30d'].includes(req.nextUrl.searchParams.get('range') || '')
+    ? req.nextUrl.searchParams.get('range')! : '7d'
   const limit = 50
   const from = (page - 1) * limit
   const to = from + limit - 1
@@ -31,32 +32,25 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ data, total: count || 0 })
   }
 
-  let query = supabase
+  // Sessions or integrity — same table, different filters
+  let countQuery = supabase
     .from('matrix_session_activity')
-    .select('*', { count: 'exact' })
+    .select('*', { count: 'exact', head: true })
     .gte('created_at', since)
-    .order('created_at', { ascending: false })
 
-  if (tab === 'integrity') {
-    query = query.eq('event_type', 'integrity_report')
-  }
-
-  const { count } = await query
-  const { data, error } = await supabase
+  let dataQuery = supabase
     .from('matrix_session_activity')
     .select('*')
     .gte('created_at', since)
     .order('created_at', { ascending: false })
-    .range(from, to)
-    .then((res) => {
-      if (tab === 'integrity') {
-        return {
-          ...res,
-          data: (res.data || []).filter((r) => r.event_type === 'integrity_report'),
-        }
-      }
-      return res
-    })
+
+  if (tab === 'integrity') {
+    countQuery = countQuery.eq('event_type', 'integrity_report')
+    dataQuery = dataQuery.eq('event_type', 'integrity_report')
+  }
+
+  const { count } = await countQuery
+  const { data, error } = await dataQuery.range(from, to)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ data, total: count || 0 })

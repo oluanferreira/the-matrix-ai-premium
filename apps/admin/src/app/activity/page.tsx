@@ -25,17 +25,28 @@ export default function ActivityPage() {
   const [loading, setLoading] = useState(true)
 
   async function loadData() {
-    setLoading(true)
-    const res = await fetch(`/api/data/activity?tab=${tab}&page=${page}&range=${range}`)
-    const json = await res.json()
-    setData(json.data || [])
-    setTotal(json.total || 0)
-    setLoading(false)
+    try {
+      setLoading(true)
+      const res = await fetch(`/api/data/activity?tab=${tab}&page=${page}&range=${range}`)
+      if (!res.ok) throw new Error('Failed to fetch')
+      const json = await res.json()
+      setData(json.data || [])
+      setTotal(json.total || 0)
+    } catch {
+      console.error('Failed to load activity data')
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function loadStats() {
-    const res = await fetch('/api/data/activity/stats')
-    setStats(await res.json())
+    try {
+      const res = await fetch('/api/data/activity/stats')
+      if (!res.ok) throw new Error('Failed to fetch')
+      setStats(await res.json())
+    } catch {
+      console.error('Failed to load activity stats')
+    }
   }
 
   useEffect(() => { loadStats() }, [])

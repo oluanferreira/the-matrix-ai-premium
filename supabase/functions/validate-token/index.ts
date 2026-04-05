@@ -3,14 +3,20 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+const ALLOWED_ORIGINS = ['https://admin-eight-rose.vercel.app', 'http://localhost:3000']
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('origin') || ''
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  }
 }
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: getCorsHeaders(req) })
   }
 
   try {
@@ -19,7 +25,7 @@ Deno.serve(async (req) => {
     if (!token) {
       return new Response(
         JSON.stringify({ valid: false, error: 'Token is required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
       )
     }
 
@@ -27,7 +33,7 @@ Deno.serve(async (req) => {
     if (!/^MTX-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(token)) {
       return new Response(
         JSON.stringify({ valid: false, error: 'Invalid token format' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
       )
     }
 
@@ -46,7 +52,7 @@ Deno.serve(async (req) => {
     if (tokenError || !tokenData) {
       return new Response(
         JSON.stringify({ valid: false, error: 'Token not found' }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 404, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
       )
     }
 
@@ -54,7 +60,7 @@ Deno.serve(async (req) => {
     if (tokenData.revoked) {
       return new Response(
         JSON.stringify({ valid: false, error: 'Token has been revoked', purge: true }),
-        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 403, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
       )
     }
 
@@ -62,16 +68,20 @@ Deno.serve(async (req) => {
     if (new Date(tokenData.expires_at) < new Date()) {
       return new Response(
         JSON.stringify({ valid: false, error: 'Token has expired', purge: true }),
-        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 403, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
       )
     }
+
+    // F5: Validate relation properly instead of `as any`
+    const user = Array.isArray(tokenData.matrix_users) ? tokenData.matrix_users[0] : tokenData.matrix_users
+    const userPlan = user?.plan || 'free'
 
     // Log the event
     const ip = req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || 'unknown'
     await supabase.from('matrix_install_logs').insert({
       user_id: tokenData.user_id,
       token_id: tokenData.id,
-      plan: (tokenData.matrix_users as any)?.plan || 'free',
+      plan: userPlan,
       project_name: project_name || null,
       os: os || null,
       node_version: node_version || null,
@@ -80,7 +90,6 @@ Deno.serve(async (req) => {
       ip_address: ip,
     })
 
-    const user = tokenData.matrix_users as any
     const daysRemaining = Math.ceil(
       (new Date(tokenData.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
     )
@@ -88,17 +97,18 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({
         valid: true,
-        user: { name: user.name, email: user.email },
-        plan: user?.plan || 'free',
+        user: { name: user?.name, email: user?.email },
+        plan: userPlan,
         expires_at: tokenData.expires_at,
         days_remaining: daysRemaining,
       }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
     )
   } catch (err) {
+    console.error(`[validate-token] Error:`, err)
     return new Response(
       JSON.stringify({ valid: false, error: 'Internal server error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 500, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
     )
   }
 })

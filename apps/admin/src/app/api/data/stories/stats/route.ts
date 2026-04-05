@@ -8,7 +8,7 @@ export async function GET() {
     .from('matrix_story_events')
     .select('story_id, event, agent, created_at')
     .order('created_at', { ascending: false })
-    .limit(5000)
+    .limit(1000)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 

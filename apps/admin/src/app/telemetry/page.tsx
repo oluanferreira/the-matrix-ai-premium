@@ -34,18 +34,27 @@ export default function TelemetryPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`/api/data/telemetry/charts?range=${range}`).then((r) => r.json()).then(setCharts)
+    fetch(`/api/data/telemetry/charts?range=${range}`)
+      .then((r) => { if (!r.ok) throw new Error('Failed to fetch'); return r.json() })
+      .then(setCharts)
+      .catch(() => console.error('Failed to load telemetry charts'))
   }, [range])
 
   useEffect(() => {
     if (tab === 'metrics') {
       setLoading(true)
-      fetch(`/api/data/telemetry/metrics?page=${metricsPage}`).then((r) => r.json()).then((j) => {
-        setMetrics(j.data || []); setMetricsTotal(j.total || 0); setLoading(false)
-      })
+      fetch(`/api/data/telemetry/metrics?page=${metricsPage}`)
+        .then((r) => { if (!r.ok) throw new Error('Failed to fetch'); return r.json() })
+        .then((j) => { setMetrics(j.data || []); setMetricsTotal(j.total || 0) })
+        .catch(() => console.error('Failed to load telemetry metrics'))
+        .finally(() => setLoading(false))
     } else {
       setLoading(true)
-      fetch('/api/data/telemetry/scores').then((r) => r.json()).then((d) => { setScores(d); setLoading(false) })
+      fetch('/api/data/telemetry/scores')
+        .then((r) => { if (!r.ok) throw new Error('Failed to fetch'); return r.json() })
+        .then((d) => { setScores(d) })
+        .catch(() => console.error('Failed to load telemetry scores'))
+        .finally(() => setLoading(false))
     }
   }, [tab, metricsPage])
 

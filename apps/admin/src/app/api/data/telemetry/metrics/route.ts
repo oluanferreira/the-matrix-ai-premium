@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
-  const page = parseInt(req.nextUrl.searchParams.get('page') || '1')
+  const page = Math.max(1, parseInt(req.nextUrl.searchParams.get('page') || '1') || 1)
   const limit = 50
   const from = (page - 1) * limit
   const to = from + limit - 1

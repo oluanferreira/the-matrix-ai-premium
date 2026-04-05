@@ -8,6 +8,7 @@ export async function GET() {
     .from('telemetry_user_scores')
     .select('*')
     .order('churn_score', { ascending: false })
+    .limit(500)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data)

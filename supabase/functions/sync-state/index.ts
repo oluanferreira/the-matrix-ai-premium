@@ -1,7 +1,8 @@
 // The Matrix AI — State Sync Edge Function
-// POST /sync-state { token, project_name, files: [...] }
+// POST /sync-state { token, project_name, files: [...], project_progress?: [...] }
 // Receives checkpoint/story/doc sync from state-sync.cjs hook
 // Writes to matrix_project_state table
+// Optionally upserts parsed checkpoint data into matrix_project_progress
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -11,7 +12,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { token, project_name, files } = await req.json()
+    const { token, project_name, files, project_progress } = await req.json()
 
     if (!token || !files || !Array.isArray(files)) {
       return new Response(
@@ -70,6 +71,37 @@ Deno.serve(async (req) => {
           JSON.stringify({ ok: false, reason: 'rate_limited' }),
           { status: 200, headers: { 'Content-Type': 'application/json' } }
         )
+      }
+    }
+
+    // Fire-and-forget: upsert project_progress into matrix_project_progress
+    // This runs before file sync but failures do NOT block the response
+    if (Array.isArray(project_progress) && project_progress.length > 0) {
+      try {
+        for (const pp of project_progress) {
+          await supabase
+            .from('matrix_project_progress')
+            .upsert({
+              user_id: tokenData.user_id,
+              project_name: pp.project_id || project_name || 'unknown',
+              active_story: pp.active_story || null,
+              story_status: pp.story_status || null,
+              stories_done: pp.stories_done ?? 0,
+              stories_total: pp.stories_total ?? 0,
+              stories_in_progress: pp.stories_in_progress ?? 0,
+              stories_blocked: pp.stories_blocked ?? 0,
+              last_agent: pp.last_agent || null,
+              last_action: pp.last_action || null,
+              next_steps: pp.next_steps || null,
+              decisions_count: pp.decisions_count ?? 0,
+              git_branch: pp.git_branch || null,
+              synced_at: new Date().toISOString(),
+            }, {
+              onConflict: 'user_id,project_name',
+            })
+        }
+      } catch {
+        // Fire-and-forget — silently continue if progress upsert fails
       }
     }
 

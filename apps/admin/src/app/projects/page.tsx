@@ -28,15 +28,21 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true)
 
   async function load() {
-    setLoading(true)
-    const [pRes, sRes] = await Promise.all([
-      fetch(`/api/data/projects?tab=${tab}`),
-      fetch('/api/data/projects/stats'),
-    ])
-    if (tab === 'progress') setProgress(await pRes.json())
-    else setDocuments(await pRes.json())
-    setStats(await sRes.json())
-    setLoading(false)
+    try {
+      setLoading(true)
+      const [pRes, sRes] = await Promise.all([
+        fetch(`/api/data/projects?tab=${tab}`),
+        fetch('/api/data/projects/stats'),
+      ])
+      if (!pRes.ok || !sRes.ok) throw new Error('Failed to fetch')
+      if (tab === 'progress') setProgress(await pRes.json())
+      else setDocuments(await pRes.json())
+      setStats(await sRes.json())
+    } catch {
+      console.error('Failed to load projects data')
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { load() }, [tab])

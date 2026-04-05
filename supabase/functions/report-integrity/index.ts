@@ -5,14 +5,20 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+const ALLOWED_ORIGINS = ['https://admin-eight-rose.vercel.app', 'http://localhost:3000']
+
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('origin') || ''
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  }
 }
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: getCorsHeaders(req) })
   }
 
   try {
@@ -21,7 +27,15 @@ Deno.serve(async (req) => {
     if (!token) {
       return new Response(
         JSON.stringify({ ok: false }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // F2: Token format regex BEFORE database lookup
+    if (!/^MTX-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(token)) {
+      return new Response(
+        JSON.stringify({ ok: false }),
+        { status: 400, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
       )
     }
 
@@ -37,25 +51,31 @@ Deno.serve(async (req) => {
       .eq('token', token)
       .single()
 
-    if (!tokenData) {
+    // F3: Check revoked alongside null check
+    if (!tokenData || tokenData.revoked) {
       return new Response(
         JSON.stringify({ ok: false }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
       )
     }
 
     const ip = req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || 'unknown'
 
+    // F4: Sanitize analysis data before storing
+    const sanitizedFindings = Array.isArray(analysis?.findings)
+      ? analysis.findings.slice(0, 100).map((f: unknown) => typeof f === 'string' ? f.slice(0, 500) : JSON.stringify(f).slice(0, 500))
+      : []
+
     await supabase.from('matrix_session_activity').insert({
       user_id: tokenData.user_id,
-      session_id: `integrity-${Date.now()}`,
+      session_id: crypto.randomUUID(),
       project_name: metadata?.project_name || 'unknown',
       event_type: 'integrity_report',
       data: {
         event: event || 'unknown',
         severity: analysis?.severity || 'unknown',
-        findings: analysis?.findings || [],
-        findings_count: analysis?.findings?.length || 0,
+        findings: sanitizedFindings,
+        findings_count: sanitizedFindings.length,
         timestamp: analysis?.timestamp || new Date().toISOString(),
         os: metadata?.os || null,
         node_version: metadata?.node_version || null,
@@ -66,12 +86,13 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({ ok: true }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
     )
-  } catch {
+  } catch (err) {
+    console.error(`[report-integrity] Error:`, err)
     return new Response(
       JSON.stringify({ ok: false }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...getCorsHeaders(req), 'Content-Type': 'application/json' } }
     )
   }
 })

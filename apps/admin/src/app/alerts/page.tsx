@@ -35,10 +35,16 @@ export default function AlertsPage() {
   const [message, setMessage] = useState('')
 
   async function load() {
-    setLoading(true)
-    const res = await fetch('/api/data/alerts')
-    setAlerts(await res.json())
-    setLoading(false)
+    try {
+      setLoading(true)
+      const res = await fetch('/api/data/alerts')
+      if (!res.ok) throw new Error('Failed to fetch')
+      setAlerts(await res.json())
+    } catch {
+      console.error('Failed to load alerts')
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { load() }, [])
@@ -55,15 +61,18 @@ export default function AlertsPage() {
   const acknowledged = alerts.filter((a) => a.acknowledged && !a.resolved_at).length
 
   async function handleAction(id: string, action: string) {
-    const res = await fetch('/api/alerts', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, action }),
-    })
-    if (res.ok) {
+    try {
+      const res = await fetch('/api/alerts', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, action }),
+      })
+      if (!res.ok) throw new Error('Failed to update alert')
       setMessage(action === 'acknowledge' ? 'Alerta reconhecido' : 'Alerta resolvido')
       setTimeout(() => setMessage(''), 3000)
       load()
+    } catch {
+      console.error('Failed to update alert')
     }
   }
 

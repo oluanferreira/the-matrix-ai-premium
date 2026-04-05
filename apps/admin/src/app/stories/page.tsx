@@ -24,8 +24,14 @@ export default function StoriesPage() {
   const perPage = 50
 
   useEffect(() => {
-    fetch('/api/data/stories').then((r) => r.json()).then(setEvents)
-    fetch('/api/data/stories/stats').then((r) => r.json()).then(setStats)
+    fetch('/api/data/stories')
+      .then((r) => { if (!r.ok) throw new Error('Failed to fetch'); return r.json() })
+      .then(setEvents)
+      .catch(() => console.error('Failed to load stories'))
+    fetch('/api/data/stories/stats')
+      .then((r) => { if (!r.ok) throw new Error('Failed to fetch'); return r.json() })
+      .then(setStats)
+      .catch(() => console.error('Failed to load stories stats'))
   }, [])
 
   const filtered = filter === 'all' ? events : events.filter((e) => e.event === filter)

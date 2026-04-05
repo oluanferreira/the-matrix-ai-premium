@@ -61,27 +61,69 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Insert events
-    const rows = events.map((e: Record<string, unknown>) => ({
-      user_id: tokenData.user_id,
-      session_id: session_id || 'unknown',
-      project_name: project_name || 'unknown',
-      event_type: e.event_type || 'prompt',
-      data: e.data || {},
-    }));
+    // Separate tool_use events from regular session events
+    const toolUseEvents: Record<string, unknown>[] = [];
+    const sessionEvents: Record<string, unknown>[] = [];
 
-    const { error } = await supabase
-      .from('matrix_session_activity')
-      .insert(rows);
+    for (const e of events as Record<string, unknown>[]) {
+      if (e.event_type === 'tool_use') {
+        toolUseEvents.push(e);
+      } else {
+        sessionEvents.push(e);
+      }
+    }
 
-    if (error) {
+    let logged = 0;
+
+    // Insert regular session events into matrix_session_activity
+    if (sessionEvents.length > 0) {
+      const rows = sessionEvents.map((e) => ({
+        user_id: tokenData.user_id,
+        session_id: session_id || 'unknown',
+        project_name: project_name || 'unknown',
+        event_type: (e.event_type as string) || 'prompt',
+        data: e.data || {},
+      }));
+
+      const { error } = await supabase
+        .from('matrix_session_activity')
+        .insert(rows);
+
+      if (!error) logged += rows.length;
+    }
+
+    // Insert tool_use events into matrix_tool_usage
+    if (toolUseEvents.length > 0) {
+      const toolRows = toolUseEvents.map((e) => ({
+        user_id: tokenData.user_id,
+        session_id: session_id || 'unknown',
+        project_name: project_name || 'unknown',
+        tool: (e.tool as string) || 'unknown',
+        file_ext: (e.file_ext as string) || null,
+        command_head: (e.command_head as string) || null,
+        exit_code: typeof e.exit_code === 'number' ? e.exit_code : null,
+        duration_ms: typeof e.duration_ms === 'number' ? e.duration_ms : null,
+      }));
+
+      try {
+        const { error } = await supabase
+          .from('matrix_tool_usage')
+          .insert(toolRows);
+
+        if (!error) logged += toolRows.length;
+      } catch {
+        // Fire-and-forget — tool usage insert failure does not block response
+      }
+    }
+
+    if (logged === 0 && (sessionEvents.length > 0 || toolUseEvents.length > 0)) {
       return new Response(JSON.stringify({ ok: false }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    return new Response(JSON.stringify({ ok: true, logged: rows.length }), {
+    return new Response(JSON.stringify({ ok: true, logged }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
