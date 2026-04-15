@@ -276,7 +276,7 @@ waiver: { active: false }
 schema: 1
 story: '1.3'
 gate: WAIVED
-status_reason: 'Known issues accepted for MVP release.'
+status_reason: 'Known issues accepted as SLC slice carve-out (see PRD slc_carve_out).'
 reviewer: 'Oracle'
 updated: '2025-01-12T10:15:00Z'
 top_issues:
@@ -286,7 +286,7 @@ top_issues:
     suggested_action: 'Implement pagination in next sprint'
 waiver:
   active: true
-  reason: 'MVP release - performance optimization deferred'
+  reason: 'SLC slice - performance optimization deferred per slc_carve_out (documented in PRD)'
   approved_by: 'Product Owner'
 ```
 

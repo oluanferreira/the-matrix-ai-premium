@@ -81,6 +81,15 @@ workflow:
       returns_to: po-validate-artifacts
       notes: "If PO finds issues, PO delegates fixes to the relevant agent. After fixes are applied, returns to po-validate-artifacts for re-validation before proceeding to Phase 2."
 
+    - id: smith-verify-slc-axes
+      agent: smith
+      action: verify_slc_axes
+      uses: verify-slc-axes
+      duration_estimate: "15-30 min"
+      blocking: true
+      notes: |
+        MANDATORY per CONSTITUTION_RULE_9. Smith audits PRD SLC Slice Definition across the 3 axes (Simple/Lovable/Complete) with evidence per axis. Missing evidence when slc_carve_out=none (full SLC) = CRITICAL. Severity routing per smith.md:slc_audit_routing. Services backend-only may declare slc_carve_out=internal-tool when applicable; Smith verifies claim matches project nature.
+
     # ═══════════════════════════════════════════════════════════════════════════
     # PHASE 2: DOCUMENT SHARDING
     # ═══════════════════════════════════════════════════════════════════════════

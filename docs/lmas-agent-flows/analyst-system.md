@@ -1,5 +1,7 @@
 # Sistema do Agente Analyst (@analyst) - LMAS
 
+> **NOTE (2026-04-14):** SLC (Simple, Lovable, Complete) is the default Phase 1 methodology per CONSTITUTION_RULE_9. MVP references in this doc are historical. See `framework/references/slc-methodology.md`.
+
 > **Versão:** 1.0.0
 > **Criado:** 2026-02-04
 > **Owner:** @analyst (Atlas)

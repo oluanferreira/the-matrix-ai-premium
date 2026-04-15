@@ -1,5 +1,7 @@
 # Workflow: Greenfield Service/API Development
 
+> **NOTE (2026-04-14):** Per CONSTITUTION_RULE_9, SLC (Simple, Lovable, Complete) is default for user-facing Phase 1. MVP applies only to service/internal carve-outs. See `framework/references/slc-methodology.md`.
+
 **Documento:** GREENFIELD-SERVICE-WORKFLOW.md
 **Versão:** 1.0
 **Criado:** 2026-02-04

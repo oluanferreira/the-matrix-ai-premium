@@ -12,6 +12,19 @@ workflow:
   elicitation: advanced-elicitation
 
 sections:
+  - id: slc-upgrade-path
+    title: SLC Upgrade Path
+    instruction: |
+      Brownfield projects do NOT retroactively become SLC overnight. Per CONSTITUTION_RULE_9 (framework/references/slc-methodology.md), every new enhancement enters as an SLC slice and the product gradually meets SLC standards. Document here the gap between current state and SLC baseline (Simple/Lovable/Complete), and the roadmap of improvements that close the gap. Each new feature in this PRD MUST be delivered as a full SLC slice.
+    elicit: true
+    sections:
+      - id: current-gap
+        title: Current Gap vs SLC Baseline
+        instruction: Where does the existing product fall short on Simple (scope clarity), Lovable (UI polish, brand, copy), Complete (tests, error states, edge cases)?
+      - id: upgrade-roadmap
+        title: Upgrade Roadmap
+        instruction: Ordered list of improvements that bring the product up to SLC standard. Each item tagged by axis (Simple/Lovable/Complete).
+
   - id: intro-analysis
     title: Intro Project Analysis and Context
     instruction: |

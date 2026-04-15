@@ -12,7 +12,7 @@ workflow:
     - saas
     - enterprise-app
     - prototype
-    - mvp
+    - slc-slice  # Phase 1 default per CONSTITUTION_RULE_9 (SLC First). Declare a carve-out in PRD slc_carve_out field (internal-tool | spike | hypothesis-validation) when full SLC does not apply.
 
   metadata:
     elicit: true
@@ -133,6 +133,25 @@ workflow:
       duration_estimate: "15-30 min"
       condition: po_checklist_issues
       notes: "If PO finds issues, PO delegates fixes to the relevant agent and re-validates updated documents in docs/ folder."
+
+    - id: smith-verify-slc-axes
+      agent: smith
+      action: verify_slc_axes
+      requires:
+        - prd.md
+        - front-end-spec.md
+        - fullstack-architecture.md
+      uses: verify-slc-axes
+      duration_estimate: "20-40 min"
+      blocking: true
+      notes: |
+        MANDATORY per CONSTITUTION_RULE_9 (SLC First). Smith adversarial audits the PRD SLC Slice Definition against the 3 axes:
+        - Simple: 1 end-to-end journey defined, features out-of-slice listed explicitly.
+        - Lovable: @ux-design-expert + @kamala + @copywriter sign-off evidence present.
+        - Complete: per-feature definition of done, tests planned, error states covered.
+        If claim is slc_carve_out=none (full SLC), missing evidence = CRITICAL finding (blocks Phase 2).
+        If slc_carve_out declared (internal-tool|spike|hypothesis-validation), Smith verifies carve-out matches project nature.
+        Severity routing per smith.md:slc_audit_routing.
 
     - meta: guidance
       id: project-setup-guidance

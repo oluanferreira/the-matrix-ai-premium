@@ -19,7 +19,7 @@ workflow:
       - "Explore alternative solution approaches"
       - "Analyze resource/constraint trade-offs"
       - "Generate risk mitigation strategies"
-      - "Challenge scope from MVP minimalist view"
+      - "Challenge scope from SLC slice discipline (cut features, never quality — CONSTITUTION_RULE_9)"
       - "Brainstorm creative feature possibilities"
       - "If only we had [resource/capability/time]..."
       - "Proceed to next section"
@@ -100,24 +100,38 @@ sections:
         type: bullet-list
         template: "- {{kpi}}: {{definition_and_target}}"
 
-  - id: mvp-scope
-    title: MVP Scope
-    instruction: Define the minimum viable product clearly. Be specific about what's in and what's out. Help user distinguish must-haves from nice-to-haves.
+  - id: slc-slice
+    title: SLC Slice Definition (Phase 1)
+    instruction: |
+      Define the Phase 1 SLC slice per CONSTITUTION_RULE_9 (see framework/references/slc-methodology.md). SLC (Simple, Lovable, Complete) is the DEFAULT for user-facing projects with brand investment. MVP carve-outs exist ONLY for internal tools (<10 users), spikes, and hypothesis validation. The three axes are non-negotiable quality gates.
     sections:
-      - id: core-features
-        title: Core Features (Must Have)
+      - id: simple-scope
+        title: "Simple — The One Journey"
+        instruction: Describe the ONE end-to-end journey this slice delivers. List features OUT of the slice and why.
         type: bullet-list
         template: "- **{{feature}}:** {{description_and_rationale}}"
+      - id: lovable-criteria
+        title: "Lovable — Polish Requirements"
+        instruction: UI polish standard, microcopy review (@copywriter), brand presence (@kamala), UX flow approval (@ux-design-expert), accessibility baseline.
+        type: bullet-list
+      - id: complete-criteria
+        title: "Complete — Definition of Done"
+        instruction: Per feature — happy path + edge cases, tests, error states, no stubs. @qa audits evidence.
+        type: bullet-list
+      - id: slc-carve-out
+        title: "SLC Carve-Out (if MVP applies)"
+        instruction: "Declare carve-out if applicable: internal-tool | spike | hypothesis-validation | none (default)"
+        template: "{{carve_out_declaration}}"
       - id: out-of-scope
-        title: Out of Scope for MVP
+        title: Out of Scope (Future Phases)
         type: bullet-list
         template: "- {{feature_or_capability}}"
-      - id: mvp-success-criteria
-        title: MVP Success Criteria
-        template: "{{mvp_success_definition}}"
+      - id: slice-success-criteria
+        title: Slice Success Criteria
+        template: "{{slice_success_definition}}"
 
-  - id: post-mvp-vision
-    title: Post-MVP Vision
+  - id: post-slice-vision
+    title: Post-Slice Vision
     instruction: Outline the longer-term product direction without overcommitting to specifics
     sections:
       - id: phase-2-features

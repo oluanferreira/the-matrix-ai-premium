@@ -1,5 +1,7 @@
 # Workflow: Greenfield Service/API Development
 
+> **NOTE (2026-04-14):** Per CONSTITUTION_RULE_9, SLC (Simple, Lovable, Complete) is the default methodology for Phase 1 user-facing delivery. MVP is reserved for carve-outs (internal tools, spikes, hypothesis validation). Service/API workflows may still use MVP language when the service is purely internal. See `framework/references/slc-methodology.md`.
+
 **Documento:** GREENFIELD-SERVICE-WORKFLOW.md
 **Versao:** 1.0
 **Criado:** 2026-02-04

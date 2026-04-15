@@ -1,5 +1,7 @@
 # Sistema do Agente Analyst (@analyst) - LMAS
 
+> **NOTE (2026-04-14):** The Matrix adopted SLC (Simple, Lovable, Complete) as the default methodology for Phase 1 delivery per CONSTITUTION_RULE_9. References to "MVP" in this document represent historical state and the equivalent external-facing vocabulary. For the current methodology, see `framework/references/slc-methodology.md`.
+
 > **Versao:** 1.0.0
 > **Criado:** 2026-02-04
 > **Owner:** @analyst (Atlas)

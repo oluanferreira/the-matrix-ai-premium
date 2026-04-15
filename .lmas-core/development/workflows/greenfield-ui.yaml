@@ -87,6 +87,15 @@ workflow:
       condition: po_checklist_issues
       notes: "If PO finds issues, PO delegates fixes to the relevant agent and re-validates updated documents in docs/ folder."
 
+    - id: smith-verify-slc-axes
+      agent: smith
+      action: verify_slc_axes
+      uses: verify-slc-axes
+      duration_estimate: "20-40 min"
+      blocking: true
+      notes: |
+        MANDATORY per CONSTITUTION_RULE_9. Smith audits PRD SLC Slice Definition across the 3 axes with evidence per axis. UI workflows have HIGHER Lovable bar (brand presence, microcopy, accessibility baseline) — @ux-design-expert + @kamala + @copywriter sign-off evidence REQUIRED. Missing evidence = CRITICAL. Severity routing per smith.md:slc_audit_routing.
+
     - meta: guidance
       id: project-setup-guidance
       action: guide_project_structure

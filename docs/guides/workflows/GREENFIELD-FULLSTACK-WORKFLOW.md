@@ -1,5 +1,7 @@
 # Workflow Greenfield Full-Stack
 
+> **NOTE (2026-04-14):** Phase 1 of greenfield full-stack is **SLC Slice Delivery** (Simple, Lovable, Complete) per CONSTITUTION_RULE_9, not MVP. User-facing products demand brand presence, UI polish, and feature completeness. MVP carve-outs apply only to internal tools, spikes, or hypothesis validation. See `framework/references/slc-methodology.md`.
+
 **Versao:** 1.0.0
 **Tipo:** Greenfield
 **Ultima Atualizacao:** 2026-02-04

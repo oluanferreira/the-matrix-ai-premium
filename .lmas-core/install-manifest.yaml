@@ -7,10 +7,10 @@
 # - SHA256 hashes for change detection
 # - File types for categorization
 #
-version: 1.3.2
-generated_at: "2026-03-30T18:49:15.969Z"
+version: 1.3.3
+generated_at: "2026-04-15T00:42:21.409Z"
 generator: scripts/generate-install-manifest.js
-file_count: 1206
+file_count: 1207
 files:
   - path: cli/commands/config/index.js
     hash: sha256:c241b04a75440d489bc8c80160bc1aa8070cac1d424e9305413d933083a6a593
@@ -1281,7 +1281,7 @@ files:
     type: data
     size: 11423
   - path: data/entity-registry.yaml
-    hash: sha256:63cb2f9f3babc2e4899a52528b1aee35cc9504bde90b9a4da057b0b5c1be6d49
+    hash: sha256:f0d9c5a0487cb84ea21b0aa1eed9213cb35f80aaa1d72ef9dcfa3dd8f1fb3bca
     type: data
     size: 556845
   - path: data/learned-patterns.yaml
@@ -1397,25 +1397,25 @@ files:
     type: development
     size: 5119
   - path: development/agents/analyst.md
-    hash: sha256:ef884725bf49c8feba87e7a791387ce6c6d062572c1d1746765db41eabe485e4
+    hash: sha256:db49292431d141344a2ee88847198b9bb8ead1a4a2415acc341ae7e7c1b8fdfa
     type: agent
-    size: 14710
+    size: 14873
   - path: development/agents/analyst/MEMORY.md
     hash: sha256:3bc1fdc291953bf389ea3043ec3ac96d761410ea02cc3b3599295d083f52c331
     type: agent
     size: 1254
   - path: development/agents/architect.md
-    hash: sha256:cf1fd77237bb3d04785b09e4e45b6e01f6b42d100f3868c37fcb031a4d63a8bf
+    hash: sha256:4067976a8131a865b0ee18fcd88c7e717abe6b14d584c09ef42918c1927feecd
     type: agent
-    size: 23035
+    size: 23145
   - path: development/agents/architect/MEMORY.md
     hash: sha256:4a7d2f376f7503b1328d39fe31fa3ca74305459c49a27df3051e77d4d6e90b2f
     type: agent
     size: 1390
   - path: development/agents/bugs.md
-    hash: sha256:b9633b3379737f0881334d58a8162610c2135fa3fc642c737cc5915dab7c1344
+    hash: sha256:10e65c8fd9a1ea5083cb376f50a447ef11d1fa338c8310050aa846504f1348b2
     type: agent
-    size: 15254
+    size: 15543
   - path: development/agents/bugs/MEMORY.md
     hash: sha256:bb922a73e200fb4c30300b23d2dfd2e0bb446aa4ec18a59c7754150c3d038fde
     type: agent
@@ -1437,9 +1437,9 @@ files:
     type: agent
     size: 15610
   - path: development/agents/copywriter.md
-    hash: sha256:5e8a1d0ecbb64cc3f3c3b3da9120db5886d4490bb618560090dbce050d4d6fa7
+    hash: sha256:dc414ebc449c7b2d13a74fd9c42912f248b9b7768fca96233ee86b0ddd823cca
     type: agent
-    size: 24211
+    size: 24349
   - path: development/agents/data-engineer.md
     hash: sha256:f492f167e27393ed1dc03917907bddeae430d355cc320f70ca959dccd21cd300
     type: agent
@@ -1465,17 +1465,17 @@ files:
     type: agent
     size: 1402
   - path: development/agents/hamann.md
-    hash: sha256:a27f7f4fa84c2b82731f6984d1b158bcc4c9eae7a3967d4c2f8fd41577ad6a1c
+    hash: sha256:7b823e528837a6e9da839fe9555ef4f5f4e7b59b6827315ca46c82b5ea9056b3
     type: agent
-    size: 14314
+    size: 14490
   - path: development/agents/hamann/MEMORY.md
     hash: sha256:bb922a73e200fb4c30300b23d2dfd2e0bb446aa4ec18a59c7754150c3d038fde
     type: agent
     size: 160
   - path: development/agents/kamala.md
-    hash: sha256:ef02828562e69ee2c54da8581c5eb5370505c4ace3a8a806ebe1c034922e5330
+    hash: sha256:7bc9afde5e226f71add40c71b20cde2260edaf98e1700315145b670ae0c686a2
     type: agent
-    size: 18752
+    size: 18890
   - path: development/agents/kamala/MEMORY.md
     hash: sha256:bb922a73e200fb4c30300b23d2dfd2e0bb446aa4ec18a59c7754150c3d038fde
     type: agent
@@ -1489,33 +1489,33 @@ files:
     type: agent
     size: 16549
   - path: development/agents/mifune.md
-    hash: sha256:ccc432067cc79f68315c4ab4fbc00b132de7dc2f723e2740c127591565ed5c3d
+    hash: sha256:897bb0558fb1f76507be6504f7024d75b02ee56888b53910c0105ff916d7fb4a
     type: agent
-    size: 17108
+    size: 17387
   - path: development/agents/mifune/MEMORY.md
     hash: sha256:bb922a73e200fb4c30300b23d2dfd2e0bb446aa4ec18a59c7754150c3d038fde
     type: agent
     size: 160
   - path: development/agents/pm.md
-    hash: sha256:1d1a97728ef9445240da6083d85fef6c0c82765d54fc12be6424486a3abda109
+    hash: sha256:9341377c347d19e4dbf5005ff25e90bb48da2e53c17726bd11817fb1a17e77ba
     type: agent
-    size: 19200
+    size: 19371
   - path: development/agents/pm/MEMORY.md
     hash: sha256:c8e6f2c9e120403ba76baec69319808bebb9ee5e5b74d4b40a2bc405d5a4bb79
     type: agent
     size: 1221
   - path: development/agents/po.md
-    hash: sha256:8f9ea4ddccd8d56c5cb6e01f27accc6adb9f4b5a9689c011929d3b8ccf900f0d
+    hash: sha256:391f9f6c2c47e951914288a7fe627a6db1dd3cd8cab7472ef7569762af231902
     type: agent
-    size: 16574
+    size: 16866
   - path: development/agents/po/MEMORY.md
     hash: sha256:dd9bc218765aa439bf63f08b74bea29a6e3235c6e67add2c211d6c02d602e5d7
     type: agent
     size: 1381
   - path: development/agents/qa.md
-    hash: sha256:ffa81cc30725afecde5e039e0c89e0d42370f8f2fec141a1f46a0e9500708bbf
+    hash: sha256:ab7dc70e05506c5a87e3f9a156d49b03e0e72bf9c8ef5522458b377d34ae1b3b
     type: agent
-    size: 21845
+    size: 22008
   - path: development/agents/qa/MEMORY.md
     hash: sha256:c0c54d234300db9739cd21dd7b71eab87459c7e418c2c630dd8a70a515a496dd
     type: agent
@@ -1525,17 +1525,17 @@ files:
     type: agent
     size: 23287
   - path: development/agents/sm.md
-    hash: sha256:abae06f663da6b25f61c5b5f83b75fbcaf4f0e7561df01df7055f42899b87efd
+    hash: sha256:ce319f34d02358192b39f467ed24f77f7374d06681feb4ff6d622241b183eabf
     type: agent
-    size: 14885
+    size: 15038
   - path: development/agents/sm/MEMORY.md
     hash: sha256:f6447bea0dd2d3a2c33688c8fee478dff13a1e9fe1e990c503ef44cc1f99b754
     type: agent
     size: 1123
   - path: development/agents/smith.md
-    hash: sha256:c41c0851768ebfeead9aca6b35004d236083d75d74b2369c3b5efcb59130183d
+    hash: sha256:ee8383db3f5dcec717870f0aae6c2a6c1fd9af51b96985c58ee02f03065eebea
     type: agent
-    size: 26498
+    size: 28210
   - path: development/agents/social-media-manager.md
     hash: sha256:ae63d2d98b720c7c850fdbe353f24c98fa3838184eeca090d38593b19753aa24
     type: agent
@@ -1549,9 +1549,9 @@ files:
     type: agent
     size: 20841
   - path: development/agents/ux-design-expert.md
-    hash: sha256:1f109e2a243510bacca7bc77d260076325f72d309ecabb55be0ee54046ba888e
+    hash: sha256:ebc88d21e0543cf72e9ca2e7655b3f3cd3917e7abb9d09495986e3a7c0b1dd04
     type: agent
-    size: 32826
+    size: 33030
   - path: development/agents/ux/MEMORY.md
     hash: sha256:0672469e7e3926bc1151ce76614697058df3761e8d6ed06e5038245753e8fcb9
     type: agent
@@ -2089,9 +2089,9 @@ files:
     type: task
     size: 11311
   - path: development/tasks/correct-course.md
-    hash: sha256:8f853f54dede87a0d1e2ebb5d1f151ef94bd6623ef6eda28e5b2e2494bc326f9
+    hash: sha256:8dc4d4944b4a9892ea020da4e24aae24e5f2cb6228cbcb510c292497e681c26c
     type: task
-    size: 11651
+    size: 11719
   - path: development/tasks/create-agent.md
     hash: sha256:9e0cc53e3273f4de0d2333b8083cc2776c450f98d0a70b0e66a578b682fcad21
     type: task
@@ -2553,9 +2553,9 @@ files:
     type: task
     size: 15785
   - path: development/tasks/qa-gate.md
-    hash: sha256:ab0e2f31d137e797bad72c4b2a1f290cbd9118714e9a0fd26e082f97a156b4bb
+    hash: sha256:f9b2d090c61ad9f60158ec04537a4020fa46c0ebe879810818c1ea882866fd5d
     type: task
-    size: 10764
+    size: 10831
   - path: development/tasks/qa-generate-tests.md
     hash: sha256:1903b5928b194a234970b8a9957c8b19aaec42ee0a73c168eca3928aec7a8059
     type: task
@@ -2928,6 +2928,10 @@ files:
     hash: sha256:dec95efe341f738c56d2519f7e91265c453cf8040cf71a0fc856e16cdfea45d5
     type: task
     size: 11138
+  - path: development/tasks/verify-slc-axes.md
+    hash: sha256:2c83a9bfb17b981f10746574616a846f5188b897877560d4841f1b67350af4bc
+    type: task
+    size: 9548
   - path: development/tasks/verify-subtask.md
     hash: sha256:ef99510dd818503f03ffde9790474c5c742745a575218f639371884a9561f39d
     type: task
@@ -3181,17 +3185,17 @@ files:
     type: workflow
     size: 16909
   - path: development/workflows/greenfield-fullstack.yaml
-    hash: sha256:ac0f5a7ac765f8ceb7391fba2b92b7881329e5d2b47cdb47f70ebc876c4a709e
+    hash: sha256:f5a8804eea5abce0f341448f20d65a5e45da00560e5c35e5ca6c3bbac4d687ec
     type: workflow
-    size: 16483
+    size: 17635
   - path: development/workflows/greenfield-service.yaml
-    hash: sha256:b3dd006cc6592430b0ae1b948c0702d44b45ab8a57261f177bd740447a92d70b
+    hash: sha256:b9c7668b0e1b7b81fd75f2be08899ab9e28c38ef1e1a7d0f59e797ad14b4fe73
     type: workflow
-    size: 11235
+    size: 11804
   - path: development/workflows/greenfield-ui.yaml
-    hash: sha256:86ebeadfc3e3f381d903f92fe3b70958913c0a1a5718b0a7ecf91cdafdaf196e
+    hash: sha256:0f704913e4bd5292f577c7c20357f6d59f6cc2f03e847788a4d307c3bb32afa7
     type: workflow
-    size: 10747
+    size: 11294
   - path: development/workflows/landing-page-pipeline.yaml
     hash: sha256:abf043c25fc907f62769821c69ac17d47f8ff843eb278bb26a6fa7e3a131194a
     type: workflow
@@ -4177,9 +4181,9 @@ files:
     type: template
     size: 21186
   - path: product/templates/brownfield-prd-tmpl.yaml
-    hash: sha256:bc1852d15e3a383c7519e5976094de3055c494fdd467acd83137700c900c4c61
+    hash: sha256:b9d54ecfd9be055690003fb4f66bfdb8e23ad7754b5191160dd0c7098fd6aaa6
     type: template
-    size: 14755
+    size: 15735
   - path: product/templates/brownfield-risk-report-tmpl.yaml
     hash: sha256:64ebe604639b86fac6410208355fa0d6660126b70306012849934856270c63f6
     type: template
@@ -4385,9 +4389,9 @@ files:
     type: template
     size: 3425
   - path: product/templates/prd-tmpl.yaml
-    hash: sha256:5d33a915d85d07befd0e791b67ea56e6fbb79ef76345fa6e820e13e1c1aca1b4
+    hash: sha256:03f496d4325760837d0c4bca2f81e345ad2a777ef1b82870ca30b74501aa2dd7
     type: template
-    size: 11952
+    size: 14210
   - path: product/templates/prd-v2.0.hbs
     hash: sha256:9a38e6e71d6a661f5b178fb72cd9506288990f6fe9553af5bd21033f4fbc1e4b
     type: template
@@ -4397,9 +4401,9 @@ files:
     type: template
     size: 3626
   - path: product/templates/project-brief-tmpl.yaml
-    hash: sha256:b8d388268c24dc5018f48a87036d591b11cb122fafe9b59c17809b06ea5d9d58
+    hash: sha256:109307f9bbfff581debbb7d722b6d00a65be2e280582fe5d4d74956a0fb8f4bd
     type: template
-    size: 8297
+    size: 9439
   - path: product/templates/qa-gate-tmpl.yaml
     hash: sha256:a0d3e4a37ee8f719aacb8a31949522bfa239982198d0f347ea7d3f44ad8003ca
     type: template
@@ -4437,9 +4441,9 @@ files:
     type: template
     size: 1800
   - path: product/templates/story-tmpl.yaml
-    hash: sha256:2b596a77968602f42bbd14f9609b6ef29feb6ea224e1dd5ccda7739e82d431f5
+    hash: sha256:bbec2a20227e25d21959decfa98b00ca0300d11cfabd02b46994fe36559c7bde
     type: template
-    size: 13769
+    size: 14176
   - path: product/templates/story.hbs
     hash: sha256:5ab8de2f0c7c523e9dbd7739c8530c0421ff199d62902b0f00dbbb0c7bdc08fb
     type: template

@@ -212,7 +212,7 @@ checklists:
 ## Purpose
 
 - Guide a structured response to a change trigger using the `.lmas-core/product/checklists/change-checklist.md`.
-- Analyze the impacts of the change on epics, project artifacts, and the MVP, guided by the checklist's structure.
+- Analyze the impacts of the change on epics, project artifacts, and the SLC slice scope (per CONSTITUTION_RULE_9), guided by the checklist's structure.
 - Explore potential solutions (e.g., adjust scope, rollback elements, re-scope features) as prompted by the checklist.
 - Draft specific, actionable proposed updates to any affected project artifacts (e.g., epics, user stories, PRD sections, architecture document sections) based on the analysis.
 - Produce a consolidated "Sprint Change Proposal" document that contains the impact analysis and the clearly drafted proposed edits for user review and approval.
@@ -259,7 +259,7 @@ checklists:
 
 - Synthesize the complete change-checklist analysis (covering findings from Sections 1-4) and all the agreed-upon proposed edits (from Instruction 3) into a single document titled "Sprint Change Proposal." This proposal should align with the structure suggested by Section 5 of the change-checklist.
 - The proposal must clearly present:
-  - **Analysis Summary:** A concise overview of the original issue, its analyzed impact (on epics, artifacts, MVP scope), and the rationale for the chosen path forward.
+  - **Analysis Summary:** A concise overview of the original issue, its analyzed impact (on epics, artifacts, SLC slice scope per CONSTITUTION_RULE_9), and the rationale for the chosen path forward.
   - **Specific Proposed Edits:** For each affected artifact, clearly show or describe the exact changes (e.g., "Change Story X.Y from: [old text] To: [new text]", "Add new Acceptance Criterion to Story A.B: [new AC]", "Update Section 3.2 of Architecture Document as follows: [new/modified text or diagram description]").
 - Present the complete draft of the "Sprint Change Proposal" to the user for final review and feedback. Incorporate any final adjustments requested by the user.
 

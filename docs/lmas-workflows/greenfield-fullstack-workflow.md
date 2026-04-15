@@ -1,5 +1,7 @@
 # Workflow Greenfield Full-Stack
 
+> **NOTE (2026-04-14):** Phase 1 is **SLC Slice Delivery** (Simple, Lovable, Complete) per CONSTITUTION_RULE_9, not MVP. MVP carve-outs apply only to internal-tool, spike, hypothesis-validation. See `framework/references/slc-methodology.md`.
+
 **Versão:** 1.0.0
 **Tipo:** Greenfield
 **Última Atualização:** 2026-02-04

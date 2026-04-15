@@ -46,6 +46,15 @@ sections:
     owner: scrum-master
     editors: [scrum-master, dev-agent]
 
+  - id: slc-phase-1-slice
+    title: SLC Phase 1 Slice
+    type: boolean
+    optional: true
+    instruction: |
+      Tag as true if this story belongs to the Phase 1 SLC slice (CONSTITUTION_RULE_9). Stories in the Phase 1 slice are subject to SLC axes enforcement at @qa gate and @smith audit. See framework/references/slc-methodology.md.
+    owner: scrum-master
+    editors: [scrum-master, product-owner]
+
   # Story 11.1: Dynamic Executor Assignment (Projeto Bob)
   - id: executor-assignment
     title: Executor Assignment

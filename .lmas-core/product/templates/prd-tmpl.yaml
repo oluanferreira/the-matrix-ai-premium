@@ -15,7 +15,7 @@ sections:
   - id: goals-context
     title: Goals and Background Context
     instruction: |
-      Ask if Project Brief document is available. If NO Project Brief exists, STRONGLY recommend creating one first using project-brief-tmpl (it provides essential foundation: problem statement, target users, success metrics, MVP scope, constraints). If user insists on PRD without brief, gather this information during Goals section. If Project Brief exists, review and use it to populate Goals (bullet list of desired outcomes) and Background Context (1-2 paragraphs on what this solves and why) so we can determine what is and is not in scope for PRD mvp. Either way this is critical to determine the requirements. Include Change Log table.
+      Ask if Project Brief document is available. If NO Project Brief exists, STRONGLY recommend creating one first using project-brief-tmpl (it provides essential foundation: problem statement, target users, success metrics, SLC slice definition, constraints). If user insists on PRD without brief, gather this information during Goals section. If Project Brief exists, review and use it to populate Goals (bullet list of desired outcomes) and Background Context (1-2 paragraphs on what this solves and why) so we can determine what is and is not in scope for the Phase 1 SLC slice. Either way this is critical to determine the requirements. Include Change Log table. The PRD MUST include an SLC Slice Definition section (see CONSTITUTION_RULE_9 and framework/references/slc-methodology.md).
     sections:
       - id: goals
         title: Goals
@@ -50,6 +50,30 @@ sections:
         instruction: Each Requirement will be a bullet markdown and an identifier sequence starting with NFR
         examples:
           - "NFR1: AWS service usage must aim to stay within free-tier limits where feasible."
+
+  - id: slc-slice
+    title: SLC Slice Definition (Phase 1)
+    instruction: |
+      MANDATORY per CONSTITUTION_RULE_9 (framework/references/slc-methodology.md). SLC (Simple, Lovable, Complete) is the DEFAULT methodology for Phase 1 delivery. MVP language is reserved for carve-outs only. The three axes are quality gates enforced by @qa and audited by @smith. A claim of SLC without evidence on ALL three axes is blocked.
+    elicit: true
+    sections:
+      - id: simple-scope
+        title: Simple — The One Journey
+        instruction: |
+          Describe the ONE end-to-end user journey this slice delivers. Not 5 journeys halfway — 1 journey fully. List features explicitly OUT of the slice and why (these become future phases).
+      - id: lovable-criteria
+        title: Lovable — Polish Requirements
+        instruction: |
+          State the concrete requirements for "lovable": UI polish standard, microcopy review by @copywriter, brand presence required (@kamala sign-off), UX flow approval by @ux-design-expert, accessibility baseline.
+      - id: complete-criteria
+        title: Complete — Definition of Done per Feature
+        instruction: |
+          For each feature in the slice, define what "complete" means: happy path + edge cases covered, tests (unit + integration minimums), error states implemented, no stubs, no TODOs deferred. @qa audits evidence for all three axes.
+      - id: slc-carve-out
+        title: SLC Carve-Out (Optional)
+        instruction: |
+          Declare the SLC posture for this project. Default is `none` (full SLC applies — the standard for user-facing projects with brand investment per CONSTITUTION_RULE_9). Carve-outs where MVP is still valid: `internal-tool` (<10 users, no brand surface), `spike` (throwaway technical validation with disposal plan), `hypothesis-validation` (no-brand conversion test with disposal plan). Any other value is rejected. Smith audits the declared value against the project's actual nature — mismatched carve-out = CRITICAL upgradeable.
+        choices: [internal-tool, spike, hypothesis-validation, none]
 
   - id: ui-goals
     title: User Interface Design Goals
@@ -101,7 +125,7 @@ sections:
       
       1. Check if .lmas-core/data/technical-preferences.yaml or an attached technical-preferences file exists - use it to pre-populate choices
       2. Ask user about: languages, frameworks, starter templates, libraries, APIs, deployment targets
-      3. For unknowns, offer guidance based on project goals and MVP scope
+      3. For unknowns, offer guidance based on project goals and SLC slice scope
       4. Document ALL technical choices with rationale (why this choice fits the project)
       5. These become constraints for the Architect - be specific and complete
     elicit: true
