@@ -9,6 +9,8 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const os = require('os');
+const dns = require('dns');
+const { Resolver } = dns.promises;
 
 // API config — will be set during build/deploy
 const API_BASE_URL = process.env.MATRIX_API_URL || 'https://qaomekspdjfbdeixxjky.supabase.co/functions/v1';
@@ -214,41 +216,149 @@ function purgeInstalledContent(projectDir) {
 }
 
 /**
- * Simple HTTPS POST helper
+ * Maximum time allowed per DNS lookup attempt before moving to next fallback.
+ * Prevents worst-case ~30s stall if system DNS hangs.
+ */
+const DNS_LOOKUP_TIMEOUT_MS = 3000;
+
+/**
+ * Silent error logger — writes to .lmas/installer-errors.log with 50-line rotation.
+ * Never throws. Fire-and-forget. Matches installer's silent-by-design standard.
+ * @param {string} message
+ */
+function silentErrorLog(message) {
+  try {
+    const logDir = path.join(process.cwd(), '.lmas');
+    const logPath = path.join(logDir, 'installer-errors.log');
+    if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+    const line = `[${new Date().toISOString()}] ${message}`;
+    let existing = '';
+    try { existing = fs.readFileSync(logPath, 'utf8'); } catch {}
+    const lines = (existing + line + '\n').split('\n').filter(Boolean).slice(-50);
+    fs.writeFileSync(logPath, lines.join('\n') + '\n');
+  } catch {
+    // Absolute silence — never throw from logging
+  }
+}
+
+/**
+ * Promise.race wrapper that rejects after `ms` milliseconds.
+ * The abandoned promise keeps running but resolver.cancel() cleans up the resource.
+ */
+function withTimeout(promise, ms, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      const t = setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms);
+      if (t.unref) t.unref();
+    }),
+  ]);
+}
+
+/**
+ * Resolve hostname using fallback DNS servers (Google, Cloudflare)
+ * when the system DNS fails (common with Brazilian ISPs and long Supabase subdomains).
+ * Each attempt is bounded by DNS_LOOKUP_TIMEOUT_MS; Resolver instances are explicitly
+ * cancelled to release UDP sockets; full error breadcrumbs included in final throw.
+ * @param {string} hostname
+ * @returns {Promise<string>} resolved IP address
+ */
+async function resolveDNSWithFallback(hostname) {
+  const errors = [];
+
+  // Try system DNS first (with timeout)
+  try {
+    const result = await withTimeout(
+      dns.promises.lookup(hostname),
+      DNS_LOOKUP_TIMEOUT_MS,
+      'system DNS'
+    );
+    if (result && result.address) return result.address;
+    errors.push('system: empty address');
+  } catch (e) {
+    errors.push(`system: ${e.code || e.message}`);
+  }
+
+  const fallbackServers = [
+    { name: 'Google', servers: ['8.8.8.8', '8.8.4.4'] },
+    { name: 'Cloudflare', servers: ['1.1.1.1', '1.0.0.1'] },
+  ];
+
+  for (const { name, servers } of fallbackServers) {
+    const resolver = new Resolver();
+    try {
+      resolver.setServers(servers);
+      const addresses = await withTimeout(
+        resolver.resolve4(hostname),
+        DNS_LOOKUP_TIMEOUT_MS,
+        `${name} DNS`
+      );
+      if (addresses && addresses.length > 0) return addresses[0];
+      errors.push(`${name}: empty result`);
+    } catch (e) {
+      errors.push(`${name}: ${e.code || e.message}`);
+    } finally {
+      // Release UDP socket resources (Smith F2)
+      try { resolver.cancel(); } catch {}
+    }
+  }
+
+  // Include all error details for remote diagnosis (Smith F4 + F8)
+  const summary = errors.join('; ');
+  silentErrorLog(`DNS fallback exhausted for ${hostname}: ${summary}`);
+  throw new Error(`DNS resolution failed for ${hostname} (${summary})`);
+}
+
+/**
+ * Simple HTTPS POST helper with DNS fallback
  */
 function fetchJSON(url, body) {
-  return new Promise((resolve, reject) => {
-    const parsed = new URL(url);
-    const lib = parsed.protocol === 'https:' ? https : http;
+  return new Promise(async (resolve, reject) => {
+    try {
+      const parsed = new URL(url);
+      const lib = parsed.protocol === 'https:' ? https : http;
 
-    const options = {
-      hostname: parsed.hostname,
-      port: parsed.port || (parsed.protocol === 'https:' ? 443 : 80),
-      path: parsed.pathname,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(body),
-      },
-      timeout: 10000,
-    };
+      // Resolve DNS with fallback if needed
+      let resolvedIP;
+      try {
+        resolvedIP = await resolveDNSWithFallback(parsed.hostname);
+      } catch (dnsErr) {
+        return reject(dnsErr);
+      }
 
-    const req = lib.request(options, (res) => {
-      let data = '';
-      res.on('data', (chunk) => data += chunk);
-      res.on('end', () => {
-        try {
-          resolve(JSON.parse(data));
-        } catch {
-          reject(new Error('Invalid JSON response'));
-        }
+      const options = {
+        hostname: resolvedIP,
+        port: parsed.port || (parsed.protocol === 'https:' ? 443 : 80),
+        path: parsed.pathname,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(body),
+          'Host': parsed.hostname, // Required for TLS/SNI when connecting via IP
+        },
+        servername: parsed.hostname, // TLS SNI — must match certificate
+        timeout: 10000,
+      };
+
+      const req = lib.request(options, (res) => {
+        let data = '';
+        res.on('data', (chunk) => data += chunk);
+        res.on('end', () => {
+          try {
+            resolve(JSON.parse(data));
+          } catch {
+            reject(new Error('Invalid JSON response'));
+          }
+        });
       });
-    });
 
-    req.on('error', reject);
-    req.on('timeout', () => { req.destroy(); reject(new Error('Request timeout')); });
-    req.write(body);
-    req.end();
+      req.on('error', reject);
+      req.on('timeout', () => { req.destroy(); reject(new Error('Request timeout')); });
+      req.write(body);
+      req.end();
+    } catch (err) {
+      reject(err);
+    }
   });
 }
 
@@ -301,4 +411,6 @@ module.exports = {
   clearTokenCache,
   purgeInstalledContent,
   logInstallSilent,
+  // Exported for unit testing (RULE_15 — Generator Completeness)
+  resolveDNSWithFallback,
 };
