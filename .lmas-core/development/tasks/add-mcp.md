@@ -189,14 +189,14 @@ docker mcp server enable {mcp-name}
       value: 'tool1,tool2,tool3'
 ```
 
-**Example for Apify:**
+**Example (generic MCP with auth token):**
 ```yaml
-apify-mcp-server:
+example-mcp-server:
   env:
     - name: TOOLS
-      value: 'actors,docs,apify/rag-web-browser'
-    - name: APIFY_TOKEN
-      value: 'apify_api_xxxxxxxxxxxxx'
+      value: 'tool1,tool2'
+    - name: EXAMPLE_TOKEN
+      value: 'your-actual-token-value'
 ```
 
 **Security Note:** This exposes credentials in a local file. Ensure:
@@ -421,7 +421,6 @@ changelog:
     - Added: Step 3.1 documenting Docker MCP secrets/template bug
     - Added: Workaround using catalog file direct edit
     - Updated: Error handling for credentials issues
-    - Fixed: Apify MCP now working with 7 tools
     - Note: Bug affects all MCPs requiring authentication
   1.2.0:
     - Added: Steps 7-9 for LMAS documentation and session restart

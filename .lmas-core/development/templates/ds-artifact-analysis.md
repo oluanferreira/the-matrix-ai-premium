@@ -1,7 +1,7 @@
 # Design System Artifact Analysis — {{ARTIFACT_NAME}}
 
 > **Template ID:** ds-artifact-analysis | **Version:** 1.0.0 | **Created:** 2026-03-17
-> **Used by:** @ux-design-expert (Switch)
+> **Used by:** @ux-design-expert (Sati)
 > **Artifact Source:** {{file path, URL, or Figma link}}
 > **Analysis Date:** {{DATE}}
 > **Status:** {{Draft | Final}}

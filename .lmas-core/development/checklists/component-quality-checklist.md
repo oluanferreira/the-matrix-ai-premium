@@ -10,7 +10,7 @@ checklist:
   mode: blocking
   domain: ux-design
   used_by:
-    - "@ux-design-expert (Switch)"
+    - "@ux-design-expert (Sati)"
     - "@dev (Neo)"
     - "@qa (Oracle)"
   scoring:

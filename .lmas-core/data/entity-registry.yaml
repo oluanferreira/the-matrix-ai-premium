@@ -1,7 +1,7 @@
 metadata:
   version: 1.0.0
-  lastUpdated: '2026-04-15T02:44:21.876Z'
-  entityCount: 843
+  lastUpdated: '2026-04-17T03:27:32.490Z'
+  entityCount: 844
   checksumAlgorithm: sha256
   resolutionRate: 100
 entities:
@@ -6683,6 +6683,26 @@ entities:
         extensionPoints: []
       checksum: sha256:2ddcdcc9bdb2bddfa46158bd6cdaeeac89a9606f007c22e8daf4f1c9e17d2dc1
       lastVerified: '2026-04-15T02:44:21.403Z'
+    init-artifacts:
+      path: .lmas-core/development/tasks/init-artifacts.md
+      layer: L2
+      type: task
+      purpose: >-
+        Create the artifact infrastructure (pipeline-status.yaml, artifacts/, bridges/) for a project that doesn't have
+        it yet. Called manually via `*init-artifacts` or suggested automatically by Pipeline-Sug
+      keywords:
+        - init
+        - artifacts
+        - 'task:'
+        - init-artifacts
+      usedBy: []
+      dependencies: []
+      adaptability:
+        score: 0.8
+        constraints: []
+        extensionPoints: []
+      checksum: sha256:c4d10db4ac8b1115d42d28815cc99f731e603f921f976f7e5271f0f57eee13f6
+      lastVerified: '2026-04-17T03:27:32.485Z'
   templates:
     activation-instructions-inline-greeting:
       path: .lmas-core/product/templates/activation-instructions-inline-greeting.yaml
@@ -13939,8 +13959,8 @@ entities:
         score: 0.3
         constraints: []
         extensionPoints: []
-      checksum: sha256:db49292431d141344a2ee88847198b9bb8ead1a4a2415acc341ae7e7c1b8fdfa
-      lastVerified: '2026-04-15T02:44:21.614Z'
+      checksum: sha256:fe1fd94a217d6f90ef029ad9308f9a5184282b9cbf8bff6d8fd43ad2f1162870
+      lastVerified: '2026-04-17T03:27:32.477Z'
     architect:
       path: .lmas-core/development/agents/architect.md
       layer: L2
@@ -14323,8 +14343,8 @@ entities:
         score: 0.3
         constraints: []
         extensionPoints: []
-      checksum: sha256:7bc9afde5e226f71add40c71b20cde2260edaf98e1700315145b670ae0c686a2
-      lastVerified: '2026-04-15T02:44:21.631Z'
+      checksum: sha256:66c468cfa999dadddf28bd63699c1e88900b174d0e369bedcebef578ec1278df
+      lastVerified: '2026-04-17T03:27:32.479Z'
     lmas-master:
       path: .lmas-core/development/agents/lmas-master.md
       layer: L2
@@ -14354,8 +14374,8 @@ entities:
         score: 0.3
         constraints: []
         extensionPoints: []
-      checksum: sha256:3d3c889d418ad222bc56a00169b628fb16184f95df4fc4c3e7ee9f6ce76b7d6e
-      lastVerified: '2026-04-15T02:44:21.632Z'
+      checksum: sha256:8c6cc676827004791bd02f6fdac6f3ac0948b13f2b79b54d6f8f540843ea8468
+      lastVerified: '2026-04-17T03:27:32.482Z'
     marketing-chief:
       path: .lmas-core/development/agents/marketing-chief.md
       layer: L2
@@ -15306,8 +15326,8 @@ entities:
         score: 0.5
         constraints: []
         extensionPoints: []
-      checksum: sha256:b6e3ea75a170874a8093ffa0d5ca7fe2e8188739490209f46015f93860706228
-      lastVerified: '2026-04-15T02:44:21.670Z'
+      checksum: sha256:4234c6fc7f2b3eb515eddf00efa8fb04b8816a228e44b345b9c3c15a9000e863
+      lastVerified: '2026-04-17T03:27:32.474Z'
     workflow-chains:
       path: .lmas-core/data/workflow-chains.yaml
       layer: L3

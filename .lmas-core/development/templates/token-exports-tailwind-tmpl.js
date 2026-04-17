@@ -2,7 +2,7 @@
  * LMAS Design Token Exports — Tailwind CSS Theme Configuration
  * Template ID: token-exports-tailwind
  * Version: 1.0.0 | Created: 2026-03-17
- * Used by: @ux-design-expert (Switch), @dev (Neo)
+ * Used by: @ux-design-expert (Sati), @dev (Neo)
  *
  * Generated from tokens-schema-tmpl.yaml.
  * Import in tailwind.config.js: const tokens = require('./path/to/this/file')

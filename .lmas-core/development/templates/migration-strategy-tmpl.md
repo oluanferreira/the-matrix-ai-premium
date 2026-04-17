@@ -1,7 +1,7 @@
 # Migration Strategy — {{PROJECT_NAME}}
 
 > **Template ID:** migration-strategy | **Version:** 1.0.0 | **Created:** 2026-03-17
-> **Used by:** @ux-design-expert (Switch), @architect (Architect)
+> **Used by:** @ux-design-expert (Sati), @architect (Architect)
 > **Status:** {{Draft | Approved | InProgress | Completed}}
 > **Story Ref:** {{STORY_ID}}
 

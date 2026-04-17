@@ -1,5 +1,5 @@
 # Design System State Persistence Template
-# LMAS Template — @ux-design-expert (Switch)
+# LMAS Template — @ux-design-expert (Sati)
 # Version: 1.0.0 | Created: 2026-03-17
 # Usage: Track long-running design system processes (audits, migrations, builds).
 # Save as `.state.yaml` in the design-system working directory.
@@ -10,7 +10,7 @@ metadata:
   version: "1.0.0"
   created: "2026-03-17"
   used_by:
-    - "@ux-design-expert (Switch)"
+    - "@ux-design-expert (Sati)"
 
 ---
 

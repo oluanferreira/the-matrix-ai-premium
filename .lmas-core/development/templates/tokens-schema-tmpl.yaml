@@ -1,5 +1,5 @@
 # Design Tokens Schema Template
-# LMAS Template — @ux-design-expert (Switch)
+# LMAS Template — @ux-design-expert (Sati)
 # Version: 1.0.0 | Created: 2026-03-17
 # Follows W3C Design Tokens Community Group (DTCG) format
 # Reference: https://design-tokens.github.io/community-group/format/
@@ -11,7 +11,7 @@ metadata:
   created: "2026-03-17"
   format: "W3C DTCG"
   used_by:
-    - "@ux-design-expert (Switch)"
+    - "@ux-design-expert (Sati)"
     - "@dev (Neo)"
 
 ---

@@ -236,7 +236,7 @@ function run() {
 
     methodology: {
       toolSearchLatency: 'Managed internally by Claude Code — not programmatically measurable. Guidance-level enforcement via CLAUDE.md.',
-      mcpCountUnit: 'servers (not individual tools). TOK-1.5 baseline uses tool count (e.g., Apify = 7 tools = 1 server).'
+      mcpCountUnit: 'servers (not individual tools). TOK-1.5 baseline uses tool count (e.g., a multi-tool MCP with N tools still counts as 1 server).'
     },
 
     runtime: {

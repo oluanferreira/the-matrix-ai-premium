@@ -8,7 +8,7 @@
 # - File types for categorization
 #
 version: 1.3.3
-generated_at: "2026-04-17T03:27:16.980Z"
+generated_at: "2026-04-17T03:39:57.585Z"
 generator: scripts/generate-install-manifest.js
 file_count: 1208
 files:
@@ -1273,17 +1273,17 @@ files:
     type: data
     size: 4798
   - path: data/capability-detection.js
-    hash: sha256:46a8701302ff80af52a7ef5b6694ecb6f54f51ab04ce28b9bbc8a9dce41d8b14
+    hash: sha256:5e4fc29d2ca8a476024a60813246e422fdf865148268f93297ca27a9419c13c8
     type: data
-    size: 9575
+    size: 9603
   - path: data/domain-registry.yaml
     hash: sha256:cb0d1dc156d452a3016a978ccc20c0eb48bc3df78e6d263986fd2483fdfc0a62
     type: data
     size: 11423
   - path: data/entity-registry.yaml
-    hash: sha256:62d6b2206b0430ed85c21f1633a771b00d339b4aec318e4c436176ace3729fb6
+    hash: sha256:9232ab8015eae65321855ab4a91d98a226c936d7c8401108a291f42c9015d58d
     type: data
-    size: 584737
+    size: 585444
   - path: data/learned-patterns.yaml
     hash: sha256:24ac0b160615583a0ff783d3da8af80b7f94191575d6db2054ec8e10a3f945dc
     type: data
@@ -1349,9 +1349,9 @@ files:
     type: data
     size: 14644
   - path: data/tool-search-validation.js
-    hash: sha256:8757bf087692f002d67115dbe1c8244bbd869600e4f52c49b0d9b07cb9fbb783
+    hash: sha256:3140ea7142afbd513d8bd9f548a256cbbaa8da700963bf98b18f7d5fa077114c
     type: data
-    size: 5754
+    size: 5664
   - path: data/workflow-chains.yaml
     hash: sha256:4d0caff05874fc7b6163151441084e660a5654ba9c6409e60c505f69da0b32ba
     type: data
@@ -1557,9 +1557,9 @@ files:
     type: agent
     size: 2925
   - path: development/checklists/accessibility-wcag-checklist.md
-    hash: sha256:f43cbe8c5fbed77fd724a04048c00929a2bc7dde52af24b3f2b1a09b89d1f1c5
+    hash: sha256:ad928160bfd0671582d954ff4d55443212a077cb53d5554961609e5513ed77d8
     type: checklist
-    size: 6922
+    size: 6920
   - path: development/checklists/agent-quality-gate.md
     hash: sha256:01378aca898a70327c7fef81a674c83a7d64ef4ac2f1bc3b41304cf9776a2b96
     type: checklist
@@ -1573,9 +1573,9 @@ files:
     type: checklist
     size: 3335
   - path: development/checklists/component-quality-checklist.md
-    hash: sha256:6808a4334d8883ef5eaa5b1faa5905f573ef0e249c5f532f19737702d49faa9a
+    hash: sha256:1d210d613e4e8e7545ee7c259a3138cc30d6c8d1e8d6e8a72b16b2f3e4289e3b
     type: checklist
-    size: 4488
+    size: 4486
   - path: development/checklists/content-quality-checklist.md
     hash: sha256:473132b328e070144860d0b986b840b55c360b3013f8de148700c1ad568e43cb
     type: checklist
@@ -1593,13 +1593,13 @@ files:
     type: checklist
     size: 2459
   - path: development/checklists/migration-readiness-checklist.md
-    hash: sha256:0d4fe7a3a989f66a10582b79f1616a690ff570ebbc6e80005dd1318ad90e8b8b
+    hash: sha256:670ebecf070707a0757c046a8ab10a3956665b8c848ece1af81a95f5c10e38d7
     type: checklist
-    size: 4380
+    size: 4378
   - path: development/checklists/pattern-audit-checklist.md
-    hash: sha256:e5a47e97f9aa10bb799d1cbc6e7160a3923fc4c6e545931c7f8b1f3edbdf865d
+    hash: sha256:fc7560737051e80408a6ba646d6b4a51ee31b3e09153f908e075de33bcd81274
     type: checklist
-    size: 3768
+    size: 3766
   - path: development/checklists/pre-publish-checklist.md
     hash: sha256:6cfaab1d34d99bf7c3f2c8344017673099af7b286302128d1aed2154509188da
     type: checklist
@@ -1921,9 +1921,9 @@ files:
     type: task
     size: 17304
   - path: development/tasks/add-mcp.md
-    hash: sha256:9d78f7ff36d513900eb42040d7b6cb5a179218758bf2326435b3d4e00cf5a549
+    hash: sha256:bd9f067d3fb31d412510f438a93d7076647a4874abd236e1a363e15b033b2bdd
     type: task
-    size: 10205
+    size: 10159
   - path: development/tasks/advanced-elicitation.md
     hash: sha256:b21402ccba2666776c340f13304d692b710db7025253fe5795dcd05dc3c05c70
     type: task
@@ -2725,9 +2725,9 @@ files:
     type: task
     size: 4692
   - path: development/tasks/setup-mcp-docker.md
-    hash: sha256:007f81d31f2aac6a2dace00d802b8d4b43a1a509b0661988090361001a362743
+    hash: sha256:59ed8086fccc612d4842b9d0fcda9e48c42070da3a48cbcf102eedb22c4dd25f
     type: task
-    size: 16308
+    size: 16295
   - path: development/tasks/setup-project-docs.md
     hash: sha256:ddff8b172f9e73d39a508d0953334613c16d40240ef777a814201e63d857a7a9
     type: task
@@ -2973,25 +2973,25 @@ files:
     type: template
     size: 7240
   - path: development/templates/ds-artifact-analysis.md
-    hash: sha256:f3d29e0eafc11f83de17285077f4195408b2b372fad1bd6a45fb3cadf62e498e
+    hash: sha256:457f2ff59f758b97f008a2a4da1c0d891e23796eae4c0d901919bbb779707e30
     type: template
-    size: 4778
+    size: 4776
   - path: development/templates/editorial-calendar-tmpl.md
     hash: sha256:c189dc7f82f20c8b7c4eb1925f1aea0e1dd4804931d017516adf9e2110b14322
     type: template
     size: 10523
   - path: development/templates/front-end-spec-tmpl.yaml
-    hash: sha256:e3a593fff1759a4c88522cd5b844346f1dfca5c6933974eca5b30e0ba8a6876e
+    hash: sha256:53fe1df40cff119e20b793f035588d797ef519ea97d92bd75ccb4eb8a8cbe12e
     type: template
-    size: 4491
+    size: 4487
   - path: development/templates/lmas-doc-template.md
     hash: sha256:4dcf55928a670073468a0b75ab0fca1503264dcc338c6f74ef35bd61971bad2d
     type: template
     size: 8230
   - path: development/templates/migration-strategy-tmpl.md
-    hash: sha256:bfcf37e8b2d3534fd3c8e35c0a0dc589760530d87422e897227ccf021921b473
+    hash: sha256:fcf8be004347e61ab19c85284413c1f87f98f3e1f5664718352440f18926906b
     type: template
-    size: 7183
+    size: 7181
   - path: development/templates/ptc-entity-validation.md
     hash: sha256:70f121251c9e9ebb8fff0433ddaadf0cbcea99a3285ceab0249ada3df51d703f
     type: template
@@ -3125,9 +3125,9 @@ files:
     type: template
     size: 2199
   - path: development/templates/state-persistence-tmpl.yaml
-    hash: sha256:bb06e6665942232aeb0cde83fa1c4b98c90b2b37ec850d8c6f6cc06d3d212257
+    hash: sha256:ce341b0eeeed37c61bbd13cf71bec5d66ac0bce1683460123ab113fef05b9f70
     type: template
-    size: 3745
+    size: 3741
   - path: development/templates/subagent-step-prompt.md
     hash: sha256:35d16e97a9059f9d4b598540a1d87603b52a9ae5e058d8b5592d54da489a9950
     type: template
@@ -3137,13 +3137,13 @@ files:
     type: template
     size: 5808
   - path: development/templates/token-exports-tailwind-tmpl.js
-    hash: sha256:2d1b426bb1a913d0329ed3a356725d442f2a6ae436d55cc84ee1550a9c31dbac
+    hash: sha256:f26639c976b76d18dca8f686c08eefb345f8fd55df4aa6d2ec8296737f5b095b
     type: template
-    size: 4689
+    size: 4687
   - path: development/templates/tokens-schema-tmpl.yaml
-    hash: sha256:fad1baddef7abd867df2c7a8cd650f4acb7f8210150f7ac609ec02f2cd7cc4ac
+    hash: sha256:1f12e08a25bfa74e4e0f2082255b28a979e5b404ad7216f5cd9a803329632ef5
     type: template
-    size: 6642
+    size: 6638
   - path: development/workflows/auto-worktree.yaml
     hash: sha256:e42f787f2370221722bfb560725e62ce2983b74e035de127118a9d155eb208d3
     type: workflow
