@@ -24,6 +24,9 @@ SE projects/ existe (multi-project mode):
   4. Armazenar no contexto: "Projeto ativo: {id}"
   5. Raiz de docs = projects/{id}/
   6. Code path = ler de projects/{id}/.project.yaml → code_path
+  7. VALIDAR: code_path DEVE apontar para FORA do vault (CONSTITUTION_RULE_8).
+     Se code_path esta dentro de MINHA MATRIX/ → AVISAR usuario e sugerir migracao.
+     Builds e implementacao de codigo SOMENTE no code_path, NUNCA no vault.
 
 SENAO (legacy single-project):
   Raiz de docs = docs/
@@ -31,6 +34,7 @@ SENAO (legacy single-project):
 
 **IMPORTANTE:** O projeto ativo vive no CONTEXTO DA CONVERSA, NAO em arquivo.
 Duas sessoes simultaneas podem trabalhar em projetos diferentes sem conflito.
+**CONSTITUTION_RULE_8:** Codigo de app NUNCA dentro do vault. Se detectar code_path apontando para dentro de MINHA MATRIX, avisar e bloquear build.
 
 ### O que ler (em ordem de prioridade):
 
@@ -132,6 +136,27 @@ Quando o próximo step está em OUTRO setor, incluir informação do bridge cont
    → Artefato esperado: projects/{projeto}/artifacts/{setor-destino}/{stage-destino}.md
    Prosseguir? (sim / pular / ver pipeline completo)
 ```
+
+### Artifact Bootstrap Detection (no momento do handoff cross-setor):
+
+Quando Pipeline-Suggest detecta que o proximo step envolve BRIDGE cross-setor, verificar:
+
+```
+SE projects/{projeto}/pipeline-status.yaml NAO existe
+E o proximo step tem bridges_to definido em sector-stages.yaml:
+
+  ⚠️ Artifact system nao configurado para este projeto.
+  Para rastrear handoffs entre setores, rode:
+  → *init-artifacts
+  
+  Ou prossiga sem tracking (artifacts nao sao obrigatorios).
+```
+
+**Regras do bootstrap detection:**
+- Mostrar UMA VEZ por sessao (nao repetir se usuario ignorou)
+- NAO bloquear — usuario pode prosseguir sem artifacts
+- Mostrar SOMENTE quando ha bridge envolvido (handoff intra-setor nao precisa)
+- Se pipeline-status.yaml JA existe, nunca mostrar
 
 ### Pipeline-Status Update (MUST — em TODA fase):
 

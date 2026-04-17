@@ -25,10 +25,11 @@ Other agents (Dev, Architect, etc.) are MCP **consumers**, not administrators. I
 LMAS uses Docker MCP Toolkit as the primary MCP infrastructure:
 
 ### Direct in Claude Code (global ~/.claude.json)
-| MCP | Purpose |
-|-----|---------|
-| **playwright** | Browser automation, screenshots, web testing |
-| **desktop-commander** | Docker container operations via docker-gateway |
+| MCP | Purpose | Transport |
+|-----|---------|-----------|
+| **playwright** | Browser automation, screenshots, web testing | stdio |
+| **desktop-commander** | Docker container operations via docker-gateway | stdio |
+| **magic** | 21st.dev component builder | stdio |
 
 ### Inside Docker Desktop (via docker-gateway)
 
@@ -36,7 +37,6 @@ LMAS uses Docker MCP Toolkit as the primary MCP infrastructure:
 |-----|---------|
 | **EXA** | Web search, research, company/competitor analysis |
 | **Context7** | Library documentation lookup |
-| **Apify** | Web scraping, Actors, social media data extraction |
 
 ## CRITICAL: Tool Selection Priority
 
@@ -108,34 +108,85 @@ mcp__docker-gateway__resolve-library-id
 mcp__docker-gateway__get-library-docs
 ```
 
-## Apify MCP Usage (via Docker)
+## 21st.dev Magic MCP Usage (Direct — stdio)
 
-### Use Apify for:
-1. Searching Actors in Apify Store (web scrapers, automation tools)
-2. Running web scrapers for social media (Instagram, TikTok, LinkedIn, etc.)
-3. Extracting data from e-commerce sites
-4. Automated data collection from any website
-5. RAG-enabled web browsing for AI context
+21st.dev e um ecossistema com 3 camadas: Library (1.100+ componentes gratuitos), MCP Tools (4 tools AI), e Agents SDK.
 
-### Access pattern (7 tools available):
+### Hierarquia de uso: Library > Builder > Manual
 
-```text
-mcp__docker-gateway__apify-slash-rag-web-browser  # RAG-enabled web browsing
-mcp__docker-gateway__search-actors                 # Search for Actors
-mcp__docker-gateway__call-actor                    # Run an Actor
-mcp__docker-gateway__fetch-actor-details           # Get Actor info/schema
-mcp__docker-gateway__get-actor-output              # Get results from Actor run
-mcp__docker-gateway__search-apify-docs             # Search Apify documentation
-mcp__docker-gateway__fetch-apify-docs              # Fetch documentation page
-```
+| Nivel | Canal | Custo | Quando |
+|-------|-------|-------|--------|
+| **1. Library (CLI)** | `npx shadcn@latest add "https://21st.dev/r/{autor}/{comp}"` | GRATIS | Componente pronto existe na library |
+| **2. MCP Inspiration** | `component_inspiration` | GRATIS (0 tokens) | Buscar referencias antes de gerar |
+| **3. MCP Builder** | `component_builder` | 1 token | Nada pronto atende, gerar com AI |
+| **4. MCP Refiner** | `component_refiner` | GRATIS | Melhorar componente existente |
+| **5. Manual** | Codigo manual | GRATIS | Muito especifico, sem padrao shadcn |
 
-### When to use Apify vs other tools:
-| Task | Tool |
-|------|------|
-| General web search | EXA (`web_search_exa`) |
-| Scrape specific website | Apify (`call-actor`) |
-| Social media data extraction | Apify (use specialized Actors) |
-| Library documentation | Context7 |
+### 4 Tools disponiveis:
+
+| Tool | Dono Primario | Dono Secundario | Uso |
+|------|-------------|----------------|-----|
+| `component_builder` | @dev | — | Gerar componentes React/Tailwind de descricao textual |
+| `component_refiner` | @dev | @ux-design-expert | Melhorar/redesenhar componentes existentes |
+| `component_inspiration` | @ux-design-expert | @dev, @kamala | Buscar referencias de componentes na library |
+| `logo_search` | @kamala | @dev, @ux-design-expert | Buscar logos profissionais (JSX/TSX/SVG) |
+
+### Library — Inventario (1.100+ componentes):
+
+| Categoria | Qtd | Uso |
+|-----------|-----|-----|
+| Hero Sections | 284 | Landing pages |
+| Buttons | 250 | CTAs, forms |
+| Cards | 79 | Features, products |
+| Texts/Typography | 58 | Animated, gradient |
+| Modals/Dialogs | 37 | Forms overlay |
+| Features | 36 | Product sections |
+| Hooks | 31 | useMediaQuery, useDebounce |
+| Tables | 30 | Dashboards |
+| Images | 26 | Galleries, zoom |
+| Scroll Areas | 24 | Parallax, snap |
+| Pricing | 17 | SaaS pricing |
+| Testimonials | 15 | Social proof |
+| Backgrounds | 15 | Animated, particles |
+| Sidebars | 14 | Dashboard layouts |
+| Footers | 14 | Links, social |
+| Navigation | 11 | Headers, menus |
+| AI Chat | 10 | Chat bubbles, streaming |
+| Dashboard | 8 | Analytics, KPIs |
+
+### Quando usar 21st.dev vs codigo manual:
+
+| Situacao | Usar 21st.dev? | Canal |
+|----------|---------------|-------|
+| Novo componente UI (botao, card, form, modal) | SIM | Library primeiro, Builder se nao tem |
+| Componente existe mas precisa de polish | SIM | Refiner |
+| Precisa de inspiracao antes de construir | SIM | Inspiration |
+| Precisa de logo de empresa/marca | SIM | logo_search |
+| Componente back-end only (API, service) | NAO | — |
+| Projeto nao usa React/Tailwind | NAO | — |
+| Landing page completa | SIM | Library para cada secao (hero+features+pricing+CTA+footer) |
+
+---
+
+## MCP Control via Settings
+
+Chaves de `settings.json` para controle granular de MCP servers (descobertas via absorção claude-code-templates, 2026-03-31):
+
+| Chave | Tipo | Descricao | Exemplo |
+|-------|------|-----------|---------|
+| `enableAllProjectMcpServers` | boolean | Auto-aprovar todos MCPs do projeto (elimina prompts) | `true` |
+| `enabledMcpjsonServers` | string[] | Whitelist — apenas estes MCPs sao ativados | `["memory", "github"]` |
+| `disabledMcpjsonServers` | string[] | Blacklist — estes MCPs sao desativados | `["web-scraper"]` |
+| `MCP_TIMEOUT` | number (env) | Timeout de conexao MCP em ms | `30000` |
+| `MCP_TOOL_TIMEOUT` | number (env) | Timeout de execucao de tool MCP em ms | `60000` |
+| `MAX_MCP_OUTPUT_TOKENS` | number (env) | Limite de tokens de output MCP | `50000` |
+
+**Uso recomendado:**
+- **CI/ambientes trusted:** `enableAllProjectMcpServers: true` elimina aprovacao manual
+- **Projetos com MCPs arriscados:** `disabledMcpjsonServers` para blacklist seletiva
+- **Timeout de MCPs lentos:** `MCP_TOOL_TIMEOUT: 120000` para MCPs que demoram (CodeRabbit)
+
+> **Referencia completa:** `framework/references/claude-code-settings-keys.md`
 
 ---
 
@@ -145,7 +196,7 @@ mcp__docker-gateway__fetch-apify-docs              # Fetch documentation page
 - **docker-gateway** executes inside Docker containers (Linux)
 - Using docker-gateway for local operations causes path mismatches and failures
 - Native tools are faster and more reliable for local file operations
-- EXA, Context7, and Apify run inside Docker for isolation and consistent environment
+- EXA and Context7 run inside Docker for isolation and consistent environment
 - playwright runs directly for better browser integration with host system
 
 ---
@@ -169,7 +220,7 @@ mcp__docker-gateway__fetch-apify-docs              # Fetch documentation page
       value: 'actual-token-value'
 ```
 
-**Affected MCPs:** Any MCP requiring authentication (Apify, Notion, Slack, etc.)
+**Affected MCPs:** Any MCP requiring authentication (Notion, Slack, etc.)
 
 **Working MCPs:** EXA works because its key is in `~/.docker/mcp/config.yaml` under `apiKeys`
 

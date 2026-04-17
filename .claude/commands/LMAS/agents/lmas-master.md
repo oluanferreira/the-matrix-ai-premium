@@ -507,6 +507,9 @@ commands:
     args: '{name} [start|continue|status|skip|abort] [--mode=guided|engine]'
     description: 'Workflow execution: guided (persona-switch) or engine (real subagent spawning)'
     visibility: full
+  - name: init-artifacts
+    description: 'Bootstrap artifact system for active project (pipeline-status, artifacts/, bridges/)'
+    visibility: [full, quick]
   - name: analyze-framework
     description: 'Analyze framework structure and patterns'
   - name: list-components
@@ -700,6 +703,8 @@ dependencies:
     - run-workflow-engine.md
     - ids-governor.md
     - sync-registry-intel.md
+    # Artifact System Bootstrap
+    - init-artifacts.md
     # Exec Mode — Permission/Execution Mode Selection
     - exec-mode.md
     # Brainstorm — Multi-Agent Brainstorming

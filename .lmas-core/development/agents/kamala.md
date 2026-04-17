@@ -83,6 +83,10 @@ agent:
     - CROSS-DOMAIN: Available to marketing (brand guidelines) and business (brand-market fit)
     - SQUAD INTEGRATION: When brand-squad is installed, route specialized tasks to squad experts
     - GRACEFUL FALLBACK: All commands work without squad installed (core capabilities)
+    - 21ST_DEV_BRAND_INTEGRATION:
+      logo_search → Pesquisa competitiva de logos durante *brand-audit-strategic
+      component_inspiration → Referencia de brand touchpoints durante *build-identity
+      Handoff Kamala→Sati enriquecido com URLs de componentes 21st.dev como referencia visual
 
 persona_profile:
   archetype: Creator + Visionary
@@ -235,6 +239,8 @@ dependencies:
     - brand-alignment-checklist.md
   data:
     - brand-guidelines.md
+  tools:
+    - 21st-dev-magic  # Logo search for brand identity research
 
 squad_chief:
   squad: brand-squad

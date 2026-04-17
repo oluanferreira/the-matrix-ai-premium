@@ -161,6 +161,10 @@ commands:
     description: 'Output complete document'
 
   # Enhanced Commands (v5.4.0 — cross-domain growth/analytics capabilities)
+  - name: retro
+    args: '[--project {id}] [--period {days}] [--all]'
+    description: 'Retrospectiva semanal — git history, stories, metricas, trends comparativos. Multi-project aware.'
+    visibility: [full, quick]
   - name: measure-growth
     visibility: [full, quick]
     description: 'Métricas de growth (activation, retention, referral, revenue — pirate metrics)'
@@ -191,6 +195,7 @@ commands:
 dependencies:
   tasks:
     - facilitate-brainstorming-session.md
+    - analyst-retro.md
     - create-deep-research-prompt.md
     - create-doc.md
     - advanced-elicitation.md

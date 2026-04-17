@@ -8,9 +8,9 @@
 # - File types for categorization
 #
 version: 1.3.3
-generated_at: "2026-04-15T00:42:21.409Z"
+generated_at: "2026-04-17T03:27:16.980Z"
 generator: scripts/generate-install-manifest.js
-file_count: 1207
+file_count: 1208
 files:
   - path: cli/commands/config/index.js
     hash: sha256:c241b04a75440d489bc8c80160bc1aa8070cac1d424e9305413d933083a6a593
@@ -1281,9 +1281,9 @@ files:
     type: data
     size: 11423
   - path: data/entity-registry.yaml
-    hash: sha256:f0d9c5a0487cb84ea21b0aa1eed9213cb35f80aaa1d72ef9dcfa3dd8f1fb3bca
+    hash: sha256:62d6b2206b0430ed85c21f1633a771b00d339b4aec318e4c436176ace3729fb6
     type: data
-    size: 556845
+    size: 584737
   - path: data/learned-patterns.yaml
     hash: sha256:24ac0b160615583a0ff783d3da8af80b7f94191575d6db2054ec8e10a3f945dc
     type: data
@@ -1345,9 +1345,9 @@ files:
     type: data
     size: 4622
   - path: data/tool-registry.yaml
-    hash: sha256:b6e3ea75a170874a8093ffa0d5ca7fe2e8188739490209f46015f93860706228
+    hash: sha256:4234c6fc7f2b3eb515eddf00efa8fb04b8816a228e44b345b9c3c15a9000e863
     type: data
-    size: 15178
+    size: 14644
   - path: data/tool-search-validation.js
     hash: sha256:8757bf087692f002d67115dbe1c8244bbd869600e4f52c49b0d9b07cb9fbb783
     type: data
@@ -1397,9 +1397,9 @@ files:
     type: development
     size: 5119
   - path: development/agents/analyst.md
-    hash: sha256:db49292431d141344a2ee88847198b9bb8ead1a4a2415acc341ae7e7c1b8fdfa
+    hash: sha256:fe1fd94a217d6f90ef029ad9308f9a5184282b9cbf8bff6d8fd43ad2f1162870
     type: agent
-    size: 14873
+    size: 15116
   - path: development/agents/analyst/MEMORY.md
     hash: sha256:3bc1fdc291953bf389ea3043ec3ac96d761410ea02cc3b3599295d083f52c331
     type: agent
@@ -1473,17 +1473,17 @@ files:
     type: agent
     size: 160
   - path: development/agents/kamala.md
-    hash: sha256:7bc9afde5e226f71add40c71b20cde2260edaf98e1700315145b670ae0c686a2
+    hash: sha256:66c468cfa999dadddf28bd63699c1e88900b174d0e369bedcebef578ec1278df
     type: agent
-    size: 18890
+    size: 19264
   - path: development/agents/kamala/MEMORY.md
     hash: sha256:bb922a73e200fb4c30300b23d2dfd2e0bb446aa4ec18a59c7754150c3d038fde
     type: agent
     size: 160
   - path: development/agents/lmas-master.md
-    hash: sha256:3d3c889d418ad222bc56a00169b628fb16184f95df4fc4c3e7ee9f6ce76b7d6e
+    hash: sha256:8c6cc676827004791bd02f6fdac6f3ac0948b13f2b79b54d6f8f540843ea8468
     type: agent
-    size: 47184
+    size: 47651
   - path: development/agents/marketing-chief.md
     hash: sha256:a42f338698b445a333cff4bf750305923255e963a711c50e756ecd9b3d2149e3
     type: agent
@@ -2380,6 +2380,10 @@ files:
     hash: sha256:16252b80df0d7f9b9eb5c77ec861d4fcba4c62705d07f60f1306b9a3e1d4e230
     type: task
     size: 9942
+  - path: development/tasks/init-artifacts.md
+    hash: sha256:c4d10db4ac8b1115d42d28815cc99f731e603f921f976f7e5271f0f57eee13f6
+    type: task
+    size: 3535
   - path: development/tasks/init-project-status.md
     hash: sha256:bbb1d03ee2d88edcd18004c66c3d1937d50424e3d9547c1639a82e4e72f1b172
     type: task

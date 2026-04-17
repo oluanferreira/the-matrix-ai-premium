@@ -465,8 +465,8 @@ routing_logic:
       video-studio:
         chief: studio-director
         persona: The Projectionist
-        agents: 5
-        trigger_keywords: [video, reel, reels, motion graphics, remotion, avatar, clone video, 3d video, vfx, storyboard, render video, ad creative video, institucional, video production]
+        agents: 6
+        trigger_keywords: [video, reel, reels, motion graphics, remotion, avatar, clone video, 3d video, vfx, storyboard, render video, ad creative video, institucional, video production, video prompt, shot list, seedance, kling, veo, shot-by-shot, ai video generation]
         skill: "/video-studio:agents:studio-director"
 
 # All commands require * prefix when used (e.g., *help)
@@ -507,6 +507,9 @@ commands:
     args: '{name} [start|continue|status|skip|abort] [--mode=guided|engine]'
     description: 'Workflow execution: guided (persona-switch) or engine (real subagent spawning)'
     visibility: full
+  - name: init-artifacts
+    description: 'Bootstrap artifact system for active project (pipeline-status, artifacts/, bridges/)'
+    visibility: [full, quick]
   - name: analyze-framework
     description: 'Analyze framework structure and patterns'
   - name: list-components
@@ -700,6 +703,8 @@ dependencies:
     - run-workflow-engine.md
     - ids-governor.md
     - sync-registry-intel.md
+    # Artifact System Bootstrap
+    - init-artifacts.md
     # Exec Mode — Permission/Execution Mode Selection
     - exec-mode.md
     # Brainstorm — Multi-Agent Brainstorming
@@ -994,6 +999,11 @@ Type `*help` to see all commands, or `*kb` to enable KB mode.
 **Universal (Cross-Domain):**
 
 - Adversarial delivery verification → Use `@smith`
+
+**Cybersecurity (Cross-Domain):**
+
+- Pentest / security audit / red team → Use `@cyber-chief` (Trainman)
+- Incident response / OSINT → Use `@cyber-chief` (Trainman)
 
 **Note:** Morpheus is the single entry point for ALL 4 domains. Use `*route` for intent analysis, `*domains` to see all domains, or `@agent-name` for direct activation.
 
